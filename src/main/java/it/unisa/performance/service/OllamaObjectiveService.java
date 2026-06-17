@@ -6,7 +6,6 @@ import it.unisa.performance.domain.Direction;
 import it.unisa.performance.domain.StrategicLine;
 import it.unisa.performance.domain.StructureUnit;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -49,7 +48,7 @@ public class OllamaObjectiveService {
       rawResponse = generateRaw(prompt);
       try {
         var assigned = parseAssignedObjectives(rawResponse);
-        validateAssignedObjectives(assigned, lines, structures, objectivesPerLine);
+        validateHasAssignableObjectives(assigned, lines, structures);
         return assigned;
       } catch (RuntimeException exception) {
         lastException = exception;
@@ -120,11 +119,7 @@ public class OllamaObjectiveService {
       }
 
       var objectives = new ArrayList<AssignedObjectiveTemplate>();
-      for (var node : objectivesNode) {
-        var lineCode = requiredText(node, "lineCode", "line");
-        var structureCode = requiredText(node, "structureCode", "assignedStructureCode", "structure");
-        objectives.add(new AssignedObjectiveTemplate(lineCode, structureCode, toTemplate(node)));
-      }
+      collectAssignedObjectives(objectivesNode, objectives);
 
       if (objectives.isEmpty()) {
         throw new IllegalStateException("Risposta Ollama senza obiettivi assegnati validi");
@@ -133,6 +128,43 @@ public class OllamaObjectiveService {
     } catch (Exception exception) {
       throw new IllegalStateException("Impossibile interpretare la risposta Ollama: " + rawJson, exception);
     }
+  }
+
+  private void collectAssignedObjectives(JsonNode node, List<AssignedObjectiveTemplate> objectives) {
+    if (node.isObject()) {
+      if (looksLikeAssignedObjective(node)) {
+        try {
+          var lineCode = requiredText(node, "lineCode", "line");
+          var structureCode = requiredText(node, "structureCode", "assignedStructureCode", "structure");
+          objectives.add(new AssignedObjectiveTemplate(lineCode, structureCode, toTemplate(node)));
+          return;
+        } catch (RuntimeException ignored) {
+          // Ignore partial objects and keep searching nested fragments.
+        }
+      }
+      node.fields().forEachRemaining(entry -> collectAssignedObjectives(entry.getValue(), objectives));
+      return;
+    }
+    if (node.isArray()) {
+      node.forEach(child -> collectAssignedObjectives(child, objectives));
+    }
+  }
+
+  private boolean looksLikeAssignedObjective(JsonNode node) {
+    return hasAny(node, "lineCode", "line")
+        && hasAny(node, "structureCode", "assignedStructureCode", "structure")
+        && hasAny(node, "title", "t")
+        && hasAny(node, "indicator", "ind");
+  }
+
+  private boolean hasAny(JsonNode node, String... names) {
+    for (var name : names) {
+      var value = node.path(name).asText(null);
+      if (value != null && !value.isBlank()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private ObjectiveTemplate toTemplate(JsonNode node) {
@@ -154,38 +186,31 @@ public class OllamaObjectiveService {
     return new ObjectiveTemplate(title, description, indicator, base, unit, direction);
   }
 
-  private void validateAssignedObjectives(
+  private void validateHasAssignableObjectives(
       List<AssignedObjectiveTemplate> assigned,
       List<StrategicLine> lines,
-      List<StructureUnit> structures,
-      int objectivesPerLine) {
+      List<StructureUnit> structures) {
     var lineCodes = lines.stream().map(StrategicLine::getCode).collect(Collectors.toCollection(java.util.LinkedHashSet::new));
     var structureCodes = structures.stream().map(StructureUnit::getCode).collect(Collectors.toSet());
-    var countByLine = new LinkedHashMap<String, Integer>();
-    lineCodes.forEach(code -> countByLine.put(code, 0));
     var errors = new ArrayList<String>();
+    var valid = 0;
 
     for (var objective : assigned) {
       var lineCode = resolveKnownCode(objective.lineCode(), lineCodes);
       if (lineCode.isEmpty()) {
         errors.add("lineCode non ammesso: " + objective.lineCode());
-      } else {
-        countByLine.computeIfPresent(lineCode.get(), (code, current) -> current + 1);
       }
 
       if (resolveKnownCode(objective.structureCode(), structureCodes).isEmpty()) {
         errors.add("structureCode non ammesso: " + objective.structureCode());
       }
+      if (lineCode.isPresent() && resolveKnownCode(objective.structureCode(), structureCodes).isPresent()) {
+        valid++;
+      }
     }
 
-    countByLine.forEach((lineCode, count) -> {
-      if (count != objectivesPerLine) {
-        errors.add("la linea " + lineCode + " ha " + count + " obiettivi invece di " + objectivesPerLine);
-      }
-    });
-
-    if (!errors.isEmpty()) {
-      throw new IllegalStateException(String.join("; ", errors));
+    if (valid == 0) {
+      throw new IllegalStateException("nessun obiettivo assegnabile ai codici presenti; " + String.join("; ", errors));
     }
   }
 
