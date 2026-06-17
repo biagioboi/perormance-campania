@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -128,6 +129,11 @@ public class DashboardService {
 
   @Transactional
   public GenerationRun generateObjectives(GenerateObjectivesRequest request) {
+    return generateObjectives(request, ignored -> {});
+  }
+
+  @Transactional
+  public GenerationRun generateObjectives(GenerateObjectivesRequest request, Consumer<String> progress) {
     var run = new GenerationRun();
     var aiMode = "ai".equalsIgnoreCase(request.mode());
     run.setMode(aiMode ? "ollama:" + ollamaObjectiveService.modelName() : "template");
@@ -146,7 +152,7 @@ public class DashboardService {
           .collect(Collectors.toMap(StrategicLine::getCode, Function.identity()));
       var structuresByCode = structures.stream()
           .collect(Collectors.toMap(StructureUnit::getCode, Function.identity()));
-      var assignedObjectives = ollamaObjectiveService.generateAssigned(lines, structures, request.nPerLine());
+      var assignedObjectives = ollamaObjectiveService.generateAssigned(lines, structures, request.nPerLine(), progress);
 
       for (var assigned : assignedObjectives) {
         var line = findKnownLine(linesByCode, assigned.lineCode());

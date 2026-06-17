@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -40,30 +41,49 @@ public class OllamaObjectiveService {
       List<StrategicLine> lines,
       List<StructureUnit> structures,
       int objectivesPerLine) {
-    var prompt = assignmentPrompt(lines, structures, objectivesPerLine);
-    String rawResponse = "";
+    return generateAssigned(lines, structures, objectivesPerLine, ignored -> {});
+  }
+
+  public List<AssignedObjectiveTemplate> generateAssigned(
+      List<StrategicLine> lines,
+      List<StructureUnit> structures,
+      int objectivesPerLine,
+      Consumer<String> progress) {
+    var allAssigned = new ArrayList<AssignedObjectiveTemplate>();
+    for (var i = 0; i < lines.size(); i++) {
+      var line = lines.get(i);
+      progress.accept("Ollama: linea " + (i + 1) + "/" + lines.size() + " (" + line.getCode() + ")");
+      allAssigned.addAll(generateAssignedForLine(line, structures, objectivesPerLine));
+    }
+    return allAssigned;
+  }
+
+  private List<AssignedObjectiveTemplate> generateAssignedForLine(
+      StrategicLine line,
+      List<StructureUnit> structures,
+      int objectivesPerLine) {
+    var prompt = assignmentPrompt(line, structures, objectivesPerLine);
     RuntimeException lastException = null;
+    String rawResponse = "";
 
     for (var attempt = 1; attempt <= 2; attempt++) {
       rawResponse = generateRaw(prompt);
       try {
         var assigned = parseAssignedObjectives(rawResponse);
-        validateHasAssignableObjectives(assigned, lines, structures);
-        return assigned;
+        validateAssignedObjectivesForLine(assigned, line, structures);
+        return assigned.stream()
+            .filter(objective -> resolveKnownCode(objective.lineCode(), Set.of(line.getCode())).isPresent())
+            .limit(objectivesPerLine)
+            .toList();
       } catch (RuntimeException exception) {
         lastException = exception;
-        prompt = retryAssignmentPrompt(
-            lines,
-            structures,
-            objectivesPerLine,
-            exception.getMessage(),
-            rawResponse);
+        prompt = retryAssignmentPrompt(line, structures, objectivesPerLine, exception.getMessage());
       }
     }
 
     throw new IllegalStateException(
-        "Ollama non ha restituito obiettivi assegnati validi dopo il retry: "
-            + lastException.getMessage(),
+        "Ollama non ha restituito obiettivi validi per " + line.getCode()
+            + " dopo il retry: " + lastException.getMessage(),
         lastException);
   }
 
@@ -186,11 +206,11 @@ public class OllamaObjectiveService {
     return new ObjectiveTemplate(title, description, indicator, base, unit, direction);
   }
 
-  private void validateHasAssignableObjectives(
+  private void validateAssignedObjectivesForLine(
       List<AssignedObjectiveTemplate> assigned,
-      List<StrategicLine> lines,
+      StrategicLine line,
       List<StructureUnit> structures) {
-    var lineCodes = lines.stream().map(StrategicLine::getCode).collect(Collectors.toCollection(java.util.LinkedHashSet::new));
+    var lineCodes = Set.of(line.getCode());
     var structureCodes = structures.stream().map(StructureUnit::getCode).collect(Collectors.toSet());
     var errors = new ArrayList<String>();
     var valid = 0;
@@ -210,7 +230,7 @@ public class OllamaObjectiveService {
     }
 
     if (valid == 0) {
-      throw new IllegalStateException("nessun obiettivo assegnabile ai codici presenti; " + String.join("; ", errors));
+      throw new IllegalStateException("nessun obiettivo assegnabile a " + line.getCode() + "; " + String.join("; ", errors));
     }
   }
 
@@ -371,110 +391,84 @@ public class OllamaObjectiveService {
   }
 
   private String assignmentPrompt(
-      List<StrategicLine> lines,
+      StrategicLine line,
       List<StructureUnit> structures,
       int objectivesPerLine) {
     return """
-        Sei un esperto del ciclo della performance nella Pubblica Amministrazione italiana, PIAO, obiettivi SMART e assegnazione alle Direzioni Generali.
+        Genera obiettivi SMART per il ciclo della performance PA.
+        Usa SOLO il lineCode indicato e assegna ogni obiettivo a una DG esistente.
 
-        Devi generare obiettivi operativi SMART gia assegnati alle Direzioni Generali competenti.
-        Usa sia le linee di indirizzo sia la composizione delle Direzioni Generali con area e indici storici.
-
-        LINEE DI INDIRIZZO:
+        LINEA DI INDIRIZZO:
         %s
 
-        DIREZIONI GENERALI E PERFORMANCE STORICA:
+        DG DISPONIBILI:
         %s
 
-        Rispondi solo con JSON valido, senza markdown e senza testo extra.
-        Schema obbligatorio:
+        Output: SOLO JSON valido, nessun markdown.
+        Schema:
         {
           "objectives": [
             {
-              "lineCode": "LS.01",
+              "lineCode": "%s",
               "structureCode": "DG.50.01",
-              "title": "titolo sintetico dell'obiettivo",
-              "description": "descrizione operativa massimo 220 caratteri",
-              "indicator": "indicatore misurabile",
+              "title": "titolo",
+              "description": "descrizione max 180 caratteri",
+              "indicator": "indicatore",
               "base": 50,
-              "unit": "%%, gg, km, utenti, pratiche o n.",
+              "unit": "%%|gg|km|n.",
               "direction": "up oppure down"
             }
           ]
         }
 
-        Regole obbligatorie:
-        - genera esattamente %d obiettivi per ogni linea di indirizzo
-        - lineCode deve essere uno dei codici presenti nelle linee di indirizzo
-        - structureCode deve essere uno dei codici presenti nelle Direzioni Generali
-        - assegna ogni obiettivo alla Direzione Generale piu coerente per competenza, area e performance storica
-        - le linee Trasversale possono essere assegnate anche a piu Direzioni Generali diverse
-        - usa base numerici realistici per una amministrazione regionale
-        - direction deve essere "up" se il miglioramento aumenta il valore
-        - direction deve essere "down" se il miglioramento riduce tempi, arretrati, attese o costi
-        - unit non deve mai essere vuoto: usa "n." per conteggi assoluti
+        Vincoli:
+        - genera esattamente %d obiettivi
+        - lineCode deve essere sempre "%s"
+        - structureCode deve essere uno dei codici DG disponibili
+        - unit mai vuoto, usa "n." per conteggi
+        - direction solo "up" o "down"
         """.formatted(
-        strategicLinesForPrompt(lines),
+        strategicLineForPrompt(line),
         structuresForPrompt(structures),
-        objectivesPerLine);
+        line.getCode(),
+        objectivesPerLine,
+        line.getCode());
   }
 
   private String retryAssignmentPrompt(
-      List<StrategicLine> lines,
+      StrategicLine line,
       List<StructureUnit> structures,
       int objectivesPerLine,
-      String errors,
-      String previousResponse) {
+      String errors) {
     return """
         CORREZIONE OBBLIGATORIA.
-        La tua risposta precedente NON e valida e non deve essere ripetuta.
+        Errori: %s
+        Usa SOLO lineCode "%s".
+        Usa SOLO questi structureCode: %s.
+        Restituisci ESATTAMENTE %d obiettivi.
+        Output SOLO JSON valido: {"objectives":[{"lineCode":"%s","structureCode":"DG.50.01","title":"...","description":"...","indicator":"...","base":1,"unit":"n.","direction":"up"}]}
 
-        ERRORI DA CORREGGERE:
+        LINEA:
         %s
 
-        CODICI LINEA AMMESSI, usa SOLO questi e nessun altro:
-        %s
-
-        CODICI DIREZIONE GENERALE AMMESSI, usa SOLO questi e nessun altro:
-        %s
-
-        Devi restituire ESATTAMENTE %d obiettivi per ciascun lineCode ammesso.
-        Non inventare lineCode. Non inventare structureCode. Non usare codici di esempio.
-        Se una linea sembra non avere una struttura perfetta, assegna la DG piu coerente tra quelle ammesse.
-        Rispondi solo con JSON valido nel formato:
-        {"objectives":[{"lineCode":"LS.01","structureCode":"DG.50.01","title":"...","description":"...","indicator":"...","base":1,"unit":"n.","direction":"up"}]}
-
-        CONTESTO DA USARE:
-        LINEE:
-        %s
-
-        DIREZIONI:
-        %s
-
-        RISPOSTA PRECEDENTE ERRATA, da non copiare:
+        DG:
         %s
         """.formatted(
         errors,
-        lines.stream().map(StrategicLine::getCode).collect(Collectors.joining(", ")),
+        line.getCode(),
         structures.stream().map(StructureUnit::getCode).collect(Collectors.joining(", ")),
         objectivesPerLine,
-        strategicLinesForPrompt(lines),
-        structuresForPrompt(structures),
-        truncate(previousResponse, 4000));
+        line.getCode(),
+        strategicLineForPrompt(line),
+        structuresForPrompt(structures));
   }
 
-  private String strategicLinesForPrompt(List<StrategicLine> lines) {
-    var builder = new StringBuilder();
-    for (var line : lines) {
-      builder.append("- ")
-          .append(line.getCode())
-          .append(" | titolo: ").append(line.getTitle())
-          .append(" | area: ").append(line.getArea())
-          .append(" | priorita: ").append(line.getPriority().name())
-          .append(" | descrizione: ").append(line.getDescription())
-          .append('\n');
-    }
-    return builder.toString();
+  private String strategicLineForPrompt(StrategicLine line) {
+    return "- " + line.getCode()
+        + " | titolo: " + compact(line.getTitle(), 120)
+        + " | area: " + line.getArea()
+        + " | priorita: " + line.getPriority().name()
+        + " | descrizione: " + compact(line.getDescription(), 450);
   }
 
   private String structuresForPrompt(List<StructureUnit> structures) {
@@ -482,18 +476,15 @@ public class OllamaObjectiveService {
     for (var structure : structures) {
       builder.append("- ")
           .append(structure.getCode())
-          .append(" | nome: ").append(structure.getName())
+          .append(" | nome: ").append(compact(structure.getName(), 70))
           .append(" | area: ").append(structure.getArea())
-          .append(" | perf2023: ").append(structure.getPerformance2023())
-          .append(" | perf2024: ").append(structure.getPerformance2024())
-          .append(" | perf2025: ").append(structure.getPerformance2025())
-          .append(" | indiceMedio: ").append(structure.getAveragePerformance())
+          .append(" | indice: ").append(structure.getAveragePerformance())
           .append('\n');
     }
     return builder.toString();
   }
 
-  private String truncate(String value, int maxLength) {
+  private String compact(String value, int maxLength) {
     if (value == null || value.length() <= maxLength) {
       return value;
     }

@@ -33,7 +33,9 @@ public class GenerationJobService {
   private void runJob(String jobId, GenerateObjectivesRequest request) {
     try {
       jobs.put(jobId, GenerationJobResponse.running(jobId, "Generazione obiettivi in corso"));
-      var run = dashboardService.generateObjectives(request);
+      var run = dashboardService.generateObjectives(
+          request,
+          message -> jobs.put(jobId, GenerationJobResponse.running(jobId, message)));
       var generation = dashboardService.generation(run.getId())
           .orElseThrow(() -> new IllegalStateException("Simulazione generata ma non riletta dal database"));
       jobs.put(jobId, GenerationJobResponse.completed(jobId, generation));

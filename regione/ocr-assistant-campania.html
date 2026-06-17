@@ -1190,7 +1190,7 @@ async function generateObjectives(){
   log(`Linee strategiche caricate: ${STATE.strategicLines.length}`);
   log(`Strutture coinvolte: ${STATE.structures.length}`);
   if(mode === 'ai'){
-    log('Invio a Ollama di linee strategiche, DG, aree e indici storici', 'ai');
+    log('Avvio generazione Ollama per singola linea strategica', 'ai');
   }
   log('Invio parametri al backend Spring Boot', 'calc');
 
@@ -1228,6 +1228,7 @@ async function generateObjectives(){
 
 async function waitForGenerationJob(jobId){
   let attempt = 0;
+  let lastMessage = '';
   while(true){
     await sleep(2000);
     attempt++;
@@ -1238,6 +1239,10 @@ async function waitForGenerationJob(jobId){
     }
     if(job.status === 'FAILED'){
       throw new Error(job.message || 'Generazione fallita');
+    }
+    if(job.message && job.message !== lastMessage){
+      lastMessage = job.message;
+      log(job.message, 'ai');
     }
     if(attempt % 5 === 0){
       log(`Generazione ancora in corso · ${(attempt * 2)}s`, 'calc');
