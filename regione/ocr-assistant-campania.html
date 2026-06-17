@@ -546,6 +546,7 @@ const API = {
   extractStrategicPdf: '/api/strategic-lines/extract-pdf',
   structures: '/api/structures',
   generations: '/api/generations',
+  generationJobs: '/api/generation-jobs',
   objectives: '/api/objectives',
   latestGeneration: '/api/generations/latest'
 };
@@ -1194,7 +1195,7 @@ async function generateObjectives(){
   log('Invio parametri al backend Spring Boot', 'calc');
 
   try{
-    const generation = await apiJson(API.generations, {
+    const job = await apiJson(API.generationJobs, {
       method:'POST',
       body: JSON.stringify({
         mode,
@@ -1205,6 +1206,8 @@ async function generateObjectives(){
         stretchRec: +document.getElementById('stretch-rec').value
       })
     });
+    log(`Job asincrono avviato · ${job.jobId}`, 'ok');
+    const generation = await waitForGenerationJob(job.jobId);
     STATE.latestGenerationId = generation.generationId;
     STATE.objectives = generation.objectives;
     log(`Calibrazione completata — ${STATE.objectives.length} obiettivi salvati`, 'ok');
@@ -1216,10 +1219,29 @@ async function generateObjectives(){
     renderObjectives();
   } catch(e){
     log(`Errore backend: ${e.message}`, 'calc');
-    alert('Impossibile generare e salvare gli obiettivi. Verifica che Spring Boot sia avviato.');
+    alert(e.message || 'Impossibile generare e salvare gli obiettivi. Verifica che Spring Boot sia avviato.');
   } finally {
     btn.disabled = false;
     btn.innerHTML = '◆ Genera obiettivi calibrati';
+  }
+}
+
+async function waitForGenerationJob(jobId){
+  let attempt = 0;
+  while(true){
+    await sleep(2000);
+    attempt++;
+    const job = await apiJson(`${API.generationJobs}/${jobId}`);
+    if(job.status === 'COMPLETED'){
+      log('Job completato dal backend', 'ok');
+      return job.generation;
+    }
+    if(job.status === 'FAILED'){
+      throw new Error(job.message || 'Generazione fallita');
+    }
+    if(attempt % 5 === 0){
+      log(`Generazione ancora in corso · ${(attempt * 2)}s`, 'calc');
+    }
   }
 }
 

@@ -1,6 +1,7 @@
 package it.unisa.performance.controller;
 
 import it.unisa.performance.dto.GenerateObjectivesRequest;
+import it.unisa.performance.dto.GenerationJobResponse;
 import it.unisa.performance.dto.GenerationResponse;
 import it.unisa.performance.dto.GenerationSummaryResponse;
 import it.unisa.performance.dto.ObjectiveResponse;
@@ -13,6 +14,7 @@ import it.unisa.performance.repository.StrategicLineRepository;
 import it.unisa.performance.repository.StructureUnitRepository;
 import it.unisa.performance.service.DashboardService;
 import it.unisa.performance.service.DemoDataService;
+import it.unisa.performance.service.GenerationJobService;
 import it.unisa.performance.service.PdfExtractionService;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -39,18 +41,21 @@ public class DashboardController {
   private final DashboardService dashboardService;
   private final DemoDataService demoDataService;
   private final PdfExtractionService pdfExtractionService;
+  private final GenerationJobService generationJobService;
 
   public DashboardController(
       StrategicLineRepository strategicLineRepository,
       StructureUnitRepository structureUnitRepository,
       DashboardService dashboardService,
       DemoDataService demoDataService,
-      PdfExtractionService pdfExtractionService) {
+      PdfExtractionService pdfExtractionService,
+      GenerationJobService generationJobService) {
     this.strategicLineRepository = strategicLineRepository;
     this.structureUnitRepository = structureUnitRepository;
     this.dashboardService = dashboardService;
     this.demoDataService = demoDataService;
     this.pdfExtractionService = pdfExtractionService;
+    this.generationJobService = generationJobService;
   }
 
   @GetMapping("/strategic-lines")
@@ -118,6 +123,16 @@ public class DashboardController {
   @PostMapping("/generations")
   public GenerationResponse generateObjectives(@Valid @RequestBody GenerateObjectivesRequest request) {
     return GenerationResponse.from(dashboardService.generateObjectives(request));
+  }
+
+  @PostMapping("/generation-jobs")
+  public GenerationJobResponse startGenerationJob(@Valid @RequestBody GenerateObjectivesRequest request) {
+    return generationJobService.start(request);
+  }
+
+  @GetMapping("/generation-jobs/{jobId}")
+  public GenerationJobResponse generationJobStatus(@PathVariable String jobId) {
+    return generationJobService.status(jobId);
   }
 
   @GetMapping("/generations")
