@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OCR Assistant — Regione Campania</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --parchment:#F4EEE1;--parchment-2:#EDE4D1;--parchment-3:#E6DBc6;
+  --ink:#0F1D34;--ink-2:#1A2C4A;--ink-3:#3A4A66;--ink-4:#6A7A96;
+  --pompei:#B23A2F;--pompei-deep:#7A2820;--pompei-light:rgba(178,58,47,.12);
+  --bronze:#9A7B43;--olive:#5C7A4F;--olive-light:#8AA37A;
+  --sand:#D4CAB8;--sand-2:#C4B89C;--gold:#C9A864;
+  --font-sans:"Manrope","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --font-serif:"Fraunces",Georgia,"Times New Roman",serif;
+  --font-mono:"JetBrains Mono","SF Mono",Menlo,Monaco,monospace;
+  --radius:0px;
+  --shadow:0 1px 3px rgba(15,29,52,.08),0 8px 24px -8px rgba(15,29,52,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--parchment);color:var(--ink);
+  font-family:var(--font-sans);font-size:14px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  min-height:100vh;
+}
+
+/* ── Layout ─────────────────────────────── */
+.app-shell{display:flex;min-height:100vh}
+.sidebar{
+  width:256px;flex-shrink:0;background:var(--ink);color:var(--parchment);
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;
+  z-index:50;
+}
+.main-area{flex:1;min-width:0;padding:32px 36px 80px;overflow-x:hidden}
+
+/* ── Sidebar internals ───────────────────── */
+.sb-brand{padding:24px 20px 20px;border-bottom:.5px solid rgba(244,238,225,.12);display:flex;gap:14px;align-items:flex-start}
+.sb-crest{width:40px;height:40px;flex-shrink:0;border:1.5px solid rgba(244,238,225,.5);display:grid;place-items:center;background:rgba(244,238,225,.04)}
+.sb-logo-text{min-width:0}
+.sb-eyebrow{font-family:var(--font-mono);font-size:9px;letter-spacing:.24em;color:var(--gold);text-transform:uppercase;margin-bottom:4px}
+.sb-title{font-family:var(--font-serif);font-size:17px;font-weight:400;line-height:1.2;font-variation-settings:"SOFT" 40,"WONK" 1}
+.sb-title em{font-style:italic;color:var(--gold)}
+.sb-org{padding:12px 20px;border-bottom:.5px solid rgba(244,238,225,.08)}
+.sb-org-label{font-family:var(--font-mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--sand);opacity:.6;margin-bottom:3px}
+.sb-org-name{font-family:var(--font-serif);font-style:italic;font-size:14px}
+.sb-org-sub{font-size:11px;color:var(--sand);opacity:.6;margin-top:1px}
+.sb-nav{flex:1;padding:10px 0}
+.sb-section{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--sand);opacity:.4;padding:8px 20px 6px}
+.nav-item{
+  display:flex;align-items:center;gap:12px;padding:11px 18px;
+  color:rgba(212,202,184,.8);cursor:pointer;font-size:13px;font-weight:500;
+  border-left:2px solid transparent;transition:all .15s;letter-spacing:.01em;
+}
+.nav-item:hover{background:rgba(244,238,225,.06);color:var(--parchment)}
+.nav-item.active{background:rgba(178,58,47,.18);color:var(--parchment);border-left-color:var(--pompei)}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:.8}
+.nav-badge{
+  margin-left:auto;background:rgba(244,238,225,.1);color:rgba(212,202,184,.8);
+  padding:1px 7px;font-family:var(--font-mono);font-size:9px;letter-spacing:.06em;
+  border-radius:2px;
+}
+.nav-item.active .nav-badge{background:var(--pompei);color:var(--parchment)}
+.sb-footer{padding:14px 20px;border-top:.5px solid rgba(244,238,225,.1)}
+.sb-footer-note{font-size:9px;color:var(--sand);opacity:.45;line-height:1.6;margin-top:10px}
+
+/* ── Buttons ─────────────────────────────── */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;padding:9px 16px;
+  border:1px solid var(--ink);background:var(--parchment);color:var(--ink);
+  font-family:var(--font-sans);font-size:11px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;cursor:pointer;transition:all .15s;white-space:nowrap;
+  -webkit-appearance:none;
+}
+.btn:hover{background:var(--ink);color:var(--parchment)}
+.btn-primary{background:var(--ink);color:var(--parchment);border-color:var(--ink)}
+.btn-primary:hover{background:var(--pompei);border-color:var(--pompei)}
+.btn-ai{background:var(--pompei);color:var(--parchment);border-color:var(--pompei)}
+.btn-ai:hover{background:var(--pompei-deep);border-color:var(--pompei-deep)}
+.btn-ghost{background:transparent;border-color:var(--ink-3);color:var(--ink-3)}
+.btn-ghost:hover{background:var(--ink-3);color:var(--parchment)}
+.btn-danger{background:transparent;border-color:var(--pompei);color:var(--pompei)}
+.btn-danger:hover{background:var(--pompei);color:var(--parchment)}
+.btn-sm{padding:5px 10px;font-size:10px}
+.btn:disabled{opacity:.38;cursor:not-allowed;pointer-events:none}
+.btn-reset{width:100%;justify-content:center;border-color:rgba(244,238,225,.25);color:rgba(212,202,184,.7);background:transparent;font-size:10px}
+.btn-reset:hover{background:rgba(244,238,225,.08);color:var(--parchment)}
+
+/* ── Form controls ───────────────────────── */
+.field{margin-bottom:16px}
+.field-label{display:block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--ink-3);margin-bottom:6px}
+input,select,textarea{
+  width:100%;padding:10px 12px;background:var(--parchment);
+  border:1px solid rgba(58,74,102,.4);color:var(--ink);
+  font-family:var(--font-sans);font-size:14px;transition:border-color .15s;
+  -webkit-appearance:none;appearance:none;
+}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pompei);background:#fff}
+input.mono,select.mono{font-family:var(--font-mono)}
+textarea{resize:vertical;min-height:80px}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%233A4A66' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+
+/* ── Page header ─────────────────────────── */
+.page-header{padding-bottom:20px;margin-bottom:28px;border-bottom:.5px solid var(--ink-3);display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}
+.page-header-left{}
+.page-eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--pompei);margin-bottom:6px}
+.page-title{font-family:var(--font-serif);font-size:38px;font-weight:300;letter-spacing:-.02em;line-height:1.05;font-variation-settings:"SOFT" 30}
+.page-title em{font-style:italic;color:var(--pompei);font-weight:400}
+.page-subtitle{color:var(--ink-3);font-size:13.5px;margin-top:8px;max-width:620px;line-height:1.6}
+.page-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* ── Cards ───────────────────────────────── */
+.card{background:var(--parchment-2);border:1px solid rgba(15,29,52,.2);padding:22px}
+.card-hover{transition:transform .2s,box-shadow .2s}
+.card-hover:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+
+/* ── KPI grid ────────────────────────────── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.kpi-card{background:var(--parchment-2);border:1px solid rgba(15,29,52,.2);padding:20px;position:relative;overflow:hidden;cursor:pointer;transition:all .18s}
+.kpi-card:hover{background:var(--parchment-3)}
+.kpi-card::after{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--pompei)}
+.kpi-card.kpi-olive::after{background:var(--olive)}
+.kpi-card.kpi-bronze::after{background:var(--bronze)}
+.kpi-card.kpi-ink::after{background:var(--ink)}
+.kpi-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--ink-3);margin-bottom:12px}
+.kpi-value{font-family:var(--font-serif);font-size:44px;font-weight:300;line-height:1;letter-spacing:-.02em;font-variation-settings:"SOFT" 30}
+.kpi-sub{font-size:11px;color:var(--ink-4);margin-top:6px}
+
+/* ── Tier badges ─────────────────────────── */
+.tier-badge{display:inline-block;font-size:9px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;padding:3px 8px;white-space:nowrap}
+.tier-eccellente{background:var(--olive);color:#fff}
+.tier-buona{background:var(--olive-light);color:var(--ink)}
+.tier-adeguata{background:var(--bronze);color:#fff}
+.tier-recupero{background:var(--pompei);color:#fff}
+
+/* ── Table ───────────────────────────────── */
+.table-wrap{border:1px solid rgba(15,29,52,.2);overflow:auto;background:var(--parchment-2)}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th{background:var(--ink);color:var(--parchment);text-align:left;padding:11px 14px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;white-space:nowrap}
+td{padding:11px 14px;border-bottom:.5px solid var(--sand-2);font-size:13px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(178,58,47,.03)}
+.struct-name{font-family:var(--font-serif);font-weight:400;font-size:14px;line-height:1.2}
+.struct-code{font-family:var(--font-mono);font-size:10px;color:var(--pompei);letter-spacing:.1em}
+
+/* ── Progress bar ────────────────────────── */
+.prog-wrap{display:flex;align-items:center;gap:8px}
+.prog-track{flex:1;height:5px;background:var(--sand-2);overflow:hidden}
+.prog-fill{height:100%;transition:width .5s ease}
+.prog-val{font-family:var(--font-mono);font-size:11px;font-weight:500;min-width:34px;text-align:right}
+
+/* ── PIAO cards grid ─────────────────────── */
+.strat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.strat-card{background:var(--parchment-2);border:1px solid rgba(15,29,52,.2);padding:22px;position:relative;transition:all .2s}
+.strat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.strat-pri{position:absolute;top:0;right:0;font-family:var(--font-mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;padding:4px 10px;color:#fff}
+.strat-pri-alta{background:var(--pompei)}
+.strat-pri-media{background:var(--bronze)}
+.strat-pri-bassa{background:var(--ink-3)}
+.strat-code{font-family:var(--font-mono);font-size:10px;color:var(--pompei);letter-spacing:.14em;font-weight:500}
+.strat-title{font-family:var(--font-serif);font-size:18px;font-weight:400;margin:5px 0 4px;line-height:1.25;letter-spacing:-.01em}
+.strat-area{display:inline-block;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);padding:3px 8px;border:.5px solid var(--sand-2);background:var(--parchment);margin-top:6px}
+.strat-desc{font-size:12.5px;color:var(--ink-3);margin-top:10px;line-height:1.6}
+.strat-actions{display:flex;gap:6px;margin-top:14px;padding-top:12px;border-top:.5px dashed var(--sand-2)}
+.strat-add{
+  border:1.5px dashed rgba(58,74,102,.4);background:transparent;padding:24px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-serif);font-style:italic;font-size:17px;color:var(--ink-3);
+  cursor:pointer;transition:all .2s;min-height:180px;
+}
+.strat-add:hover{border-color:var(--pompei);color:var(--pompei);background:var(--pompei-light)}
+
+/* ── Calibration ─────────────────────────── */
+.calib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:24px}
+.calib-card{background:var(--parchment-2);border:1px solid rgba(15,29,52,.2);padding:22px;position:relative;overflow:hidden}
+.calib-top-bar{position:absolute;top:0;left:0;right:0;height:3px}
+.calib-range{font-family:var(--font-mono);font-size:9px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;margin:4px 0 8px}
+.calib-desc{font-size:12px;color:var(--ink-3);line-height:1.5;min-height:52px}
+.calib-input-row{display:flex;align-items:baseline;gap:8px;margin-top:14px}
+.calib-input-row input{font-family:var(--font-mono);font-size:22px;font-weight:500;text-align:right;padding:8px 10px}
+.calib-pct{font-family:var(--font-serif);font-size:24px;font-style:italic;color:var(--pompei)}
+.example-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:16px}
+.example-cell{padding:16px;background:var(--parchment);border:1px solid rgba(15,29,52,.15)}
+.example-val{font-family:var(--font-serif);font-size:34px;font-weight:300;line-height:1;margin-top:10px}
+.example-stretch{font-family:var(--font-mono);font-size:10px;color:var(--pompei);margin-top:3px;letter-spacing:.08em}
+.info-box{padding:16px 18px;background:var(--parchment-2);border:1px solid rgba(15,29,52,.15);display:flex;gap:14px;align-items:flex-start;margin-top:20px}
+.info-box p{font-size:12.5px;color:var(--ink-3);line-height:1.65}
+.info-box strong{color:var(--ink)}
+
+/* ── Generate ────────────────────────────── */
+.gen-layout{display:grid;grid-template-columns:1fr 1.35fr;gap:18px}
+.gen-panel{background:var(--parchment-2);border:1px solid rgba(15,29,52,.2)}
+.gen-panel-head{padding:20px 22px 16px;border-bottom:1px solid rgba(15,29,52,.15)}
+.gen-panel-body{padding:22px}
+.gen-summary{background:var(--parchment);border:1px solid rgba(15,29,52,.15);padding:14px 16px;margin-bottom:18px}
+.gen-summary-row{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3);padding:3px 0}
+.gen-summary-row strong{font-family:var(--font-mono);font-size:12px;color:var(--ink)}
+.gen-summary-row.highlight strong{color:var(--pompei)}
+.log-console{padding:14px 18px;min-height:340px;max-height:460px;overflow-y:auto;background:var(--parchment);font-family:var(--font-mono)}
+.log-empty{text-align:center;padding:50px 20px;color:var(--ink-3)}
+.log-empty-icon{margin-bottom:12px;opacity:.3}
+.log-empty-title{font-family:var(--font-serif);font-style:italic;font-size:17px;margin-bottom:4px}
+.log-line{display:flex;gap:10px;padding:3px 0;border-bottom:.5px solid rgba(196,184,156,.4);font-size:11px;color:var(--ink-3)}
+.log-line:last-child{border-bottom:none}
+.log-ts{color:var(--pompei);min-width:62px;flex-shrink:0}
+.log-ok .log-msg::before{content:"✓ ";color:var(--olive);font-weight:bold}
+.log-ai .log-msg::before{content:"◆ ";color:var(--pompei)}
+.log-calc .log-msg::before{content:"∑ ";color:var(--bronze)}
+.log-warn .log-msg::before{content:"⚠ ";color:var(--bronze)}
+.spinner{display:inline-block;width:13px;height:13px;border:1.5px solid rgba(255,255,255,.3);border-top-color:currentColor;border-radius:50%;animation:spin .75s linear infinite;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── API Key panel ───────────────────────── */
+.apikey-panel{background:var(--parchment);border:1px solid rgba(178,58,47,.35);padding:18px 20px;margin-bottom:18px}
+.apikey-panel-title{font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--pompei);margin-bottom:10px}
+.apikey-input-row{display:flex;gap:8px;align-items:stretch}
+.apikey-input-row input{flex:1;font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;border-color:rgba(178,58,47,.4)}
+.apikey-toggle{padding:10px 14px;background:transparent;border:1px solid rgba(58,74,102,.4);color:var(--ink-3);font-family:var(--font-mono);font-size:11px;cursor:pointer;white-space:nowrap;transition:all .15s;-webkit-appearance:none}
+.apikey-toggle:hover{background:var(--ink-3);color:#fff}
+.apikey-remember{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--ink-3);cursor:pointer}
+.apikey-remember input[type=checkbox]{width:auto;padding:0;cursor:pointer}
+.apikey-status{font-size:11px;margin-top:8px;font-family:var(--font-mono);letter-spacing:.04em}
+.apikey-ok{color:var(--olive)}
+.apikey-missing{color:var(--bronze)}
+
+/* ── Objectives ──────────────────────────── */
+.filter-bar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{
+  padding:5px 11px;border:.5px solid rgba(58,74,102,.4);background:transparent;
+  font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  color:var(--ink-3);transition:all .15s;font-family:var(--font-sans);font-weight:600;
+  -webkit-appearance:none;
+}
+.chip:hover{border-color:var(--ink);color:var(--ink)}
+.chip.active{background:var(--ink);color:var(--parchment);border-color:var(--ink)}
+.filter-right{display:flex;gap:6px;align-items:center}
+.filter-right select{width:160px;font-size:12px;padding:7px 28px 7px 10px}
+.filter-right input{width:180px;font-size:12px;padding:7px 10px}
+.obj-count-bar{font-family:var(--font-mono);font-size:10px;color:var(--ink-3);letter-spacing:.1em;margin-bottom:12px}
+.obj-list{display:flex;flex-direction:column;gap:12px}
+.obj-card{
+  background:var(--parchment-2);border:1px solid rgba(15,29,52,.2);
+  display:grid;grid-template-columns:1fr 270px;position:relative;overflow:hidden;
+}
+.obj-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
+.obj-card[data-tier="eccellente"]::before{background:var(--olive)}
+.obj-card[data-tier="buona"]::before{background:var(--olive-light)}
+.obj-card[data-tier="adeguata"]::before{background:var(--bronze)}
+.obj-card[data-tier="recupero"]::before{background:var(--pompei)}
+.obj-main{padding:20px 20px 20px 24px}
+.obj-meta{font-family:var(--font-mono);font-size:9px;letter-spacing:.18em;color:var(--pompei);margin-bottom:6px;text-transform:uppercase}
+.obj-title{font-family:var(--font-serif);font-size:20px;font-weight:400;line-height:1.25;letter-spacing:-.01em;margin-bottom:8px}
+.obj-desc{font-size:12.5px;color:var(--ink-3);line-height:1.65;margin-bottom:14px}
+.obj-attrs{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px}
+.obj-attr-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:2px}
+.obj-attr-val{font-family:var(--font-mono);font-size:11px;color:var(--ink);font-weight:500}
+.obj-rationale{font-size:11.5px;color:var(--ink-3);font-style:italic;padding:9px 12px;background:var(--parchment);border-left:2px solid var(--pompei);line-height:1.55}
+.obj-side{padding:20px 18px;border-left:.5px solid var(--sand-2);display:flex;flex-direction:column;justify-content:space-between;background:rgba(244,238,225,.4)}
+.obj-target-section{}
+.obj-target-label{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin-bottom:3px}
+.obj-target-base{font-family:var(--font-mono);font-size:12px;color:var(--ink-3);text-decoration:line-through;text-decoration-thickness:1px}
+.obj-target-cal{font-family:var(--font-serif);font-size:34px;font-weight:300;letter-spacing:-.02em;line-height:1;margin:6px 0 2px}
+.obj-target-unit{font-family:var(--font-mono);font-size:13px;color:var(--pompei);font-style:italic;margin-left:3px}
+.obj-stretch-badge{font-family:var(--font-mono);font-size:10px;color:var(--pompei);letter-spacing:.08em}
+.obj-assigned{margin-top:14px;padding-top:12px;border-top:.5px dashed var(--sand-2)}
+.obj-assigned-label{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin-bottom:3px}
+.obj-assigned-name{font-family:var(--font-serif);font-style:italic;font-size:14px;line-height:1.3}
+.obj-assigned-meta{font-family:var(--font-mono);font-size:9px;color:var(--ink-3);margin-top:2px}
+.empty-state{text-align:center;padding:60px 20px}
+.empty-icon{opacity:.25;margin-bottom:14px}
+.empty-title{font-family:var(--font-serif);font-style:italic;font-size:20px;color:var(--ink-3);margin-bottom:6px}
+.empty-sub{font-size:13px;color:var(--ink-3);margin-bottom:20px}
+
+/* ── Charts ──────────────────────────────── */
+.charts-row{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-bottom:20px}
+.chart-card{background:var(--parchment-2);border:1px solid rgba(15,29,52,.2);padding:20px}
+.chart-title{font-family:var(--font-serif);font-size:19px;font-weight:400;letter-spacing:-.01em;margin-bottom:2px}
+.chart-title em{font-style:italic;color:var(--pompei)}
+.chart-sub{font-size:11px;color:var(--ink-3);letter-spacing:.03em;margin-bottom:14px}
+canvas{display:block}
+.legend-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:10px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px}
+.legend-dot{width:9px;height:9px;flex-shrink:0}
+.legend-name{color:var(--ink-3)}
+.legend-val{font-family:var(--font-mono);font-weight:500;margin-left:auto;font-size:11px}
+
+/* ── Workflow cards ──────────────────────── */
+.workflow-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.wf-card{background:var(--parchment);border:1px solid rgba(15,29,52,.18);padding:18px;cursor:pointer;transition:all .18s}
+.wf-card:hover{background:var(--pompei-light);border-color:rgba(178,58,47,.3)}
+.wf-num{font-family:var(--font-serif);font-style:italic;font-size:30px;font-weight:300;color:var(--pompei);line-height:1;margin-bottom:14px}
+.wf-label{font-family:var(--font-serif);font-size:16px;font-weight:400;letter-spacing:-.01em;margin-bottom:4px}
+.wf-status{font-size:10px;letter-spacing:.08em}
+
+/* ── Modal ───────────────────────────────── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(15,29,52,.55);z-index:200;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.modal-box{
+  background:var(--parchment);border:1px solid var(--ink);
+  max-width:540px;width:100%;padding:32px;position:relative;
+  max-height:88vh;overflow-y:auto;
+  box-shadow:0 20px 60px rgba(15,29,52,.25);
+}
+.modal-box::before{content:"";position:absolute;inset:7px;border:.5px solid var(--ink);opacity:.15;pointer-events:none}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--ink-3);line-height:1;-webkit-appearance:none}
+.modal-close:hover{color:var(--ink)}
+.modal-title{font-family:var(--font-serif);font-size:26px;font-weight:300;letter-spacing:-.01em;margin-bottom:18px}
+.modal-title em{font-style:italic;color:var(--pompei)}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:22px;padding-top:16px;border-top:.5px solid var(--sand-2)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ── Mobile ──────────────────────────────── */
+.mobile-menu-btn{display:none;margin-bottom:18px}
+.mobile-overlay{display:none;position:fixed;inset:0;background:rgba(15,29,52,.5);z-index:45}
+
+/* ── Tooltip ─────────────────────────────── */
+#tt{
+  position:fixed;pointer-events:none;background:var(--parchment);
+  border:1px solid var(--ink);padding:8px 12px;font-size:12px;
+  box-shadow:var(--shadow);z-index:300;display:none;max-width:220px;line-height:1.4;
+}
+
+/* ── Fade in ─────────────────────────────── */
+.fade-in{animation:fadein .3s ease both}
+@keyframes fadein{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Responsive ──────────────────────────── */
+@media(max-width:900px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .gen-layout{grid-template-columns:1fr}
+  .charts-row{grid-template-columns:1fr}
+  .workflow-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  .sidebar{position:fixed;left:-260px;height:100vh;top:0;transition:left .25s ease}
+  .sidebar.open{left:0;box-shadow:4px 0 24px rgba(0,0,0,.3)}
+  .main-area{padding:20px 18px 60px}
+  .mobile-menu-btn{display:inline-flex !important}
+  .mobile-overlay.open{display:block}
+  .obj-card{grid-template-columns:1fr}
+  .obj-side{border-left:none;border-top:.5px solid var(--sand-2)}
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .page-header{flex-direction:column;align-items:flex-start}
+  .filter-bar{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:480px){
+  .kpi-grid{grid-template-columns:1fr}
+  .grid-2{grid-template-columns:1fr}
+  .calib-grid{grid-template-columns:1fr}
+  .workflow-grid{grid-template-columns:1fr}
+  .page-title{font-size:28px}
+}
+</style>
+</head>
+<body>
+
+<div id="tt"></div>
+<div class="mobile-overlay" id="mobile-overlay"></div>
+
+<div class="app-shell">
+
+  <!-- ══ SIDEBAR ══════════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-crest">
+        <svg width="24" height="24" viewBox="0 0 30 30" fill="none">
+          <path d="M15 3L27 11L24 25L6 25L3 11Z" stroke="#F4EEE1" stroke-width="1.2"/>
+          <circle cx="15" cy="15" r="4.5" stroke="#B23A2F" stroke-width="1.2"/>
+          <line x1="15" y1="10.5" x2="15" y2="19.5" stroke="#F4EEE1" stroke-width=".8"/>
+          <line x1="10.5" y1="15" x2="19.5" y2="15" stroke="#F4EEE1" stroke-width=".8"/>
+        </svg>
+      </div>
+      <div class="sb-logo-text">
+        <div class="sb-eyebrow">OCR Assistant</div>
+        <div class="sb-title">Obiettivi <em>Calibrati</em><br>di Risultato</div>
+      </div>
+    </div>
+
+    <div class="sb-org">
+      <div class="sb-org-label">Ente</div>
+      <div class="sb-org-name">Regione Campania</div>
+      <div class="sb-org-sub">PIAO 2026 – 2028</div>
+    </div>
+
+    <nav class="sb-nav">
+      <div class="sb-section">Workflow</div>
+      <div class="nav-item active" data-view="dashboard" onclick="nav('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" data-view="piao" onclick="nav('piao')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Linee PIAO
+        <span class="nav-badge" id="badge-lines">0</span>
+      </div>
+      <div class="nav-item" data-view="structures" onclick="nav('structures')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="2" width="16" height="20"/><line x1="9" y1="22" x2="9" y2="2"/><line x1="15" y1="22" x2="15" y2="2"/></svg>
+        Strutture
+        <span class="nav-badge" id="badge-structs">0</span>
+      </div>
+      <div class="nav-item" data-view="calibration" onclick="nav('calibration')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+        Calibrazione
+      </div>
+      <div class="nav-item" data-view="generate" onclick="nav('generate')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l2 6h6l-5 4 2 6-5-4-5 4 2-6-5-4h6z"/></svg>
+        Genera Obiettivi
+      </div>
+      <div class="nav-item" data-view="objectives" onclick="nav('objectives')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        Obiettivi Assegnati
+        <span class="nav-badge" id="badge-objs">0</span>
+      </div>
+    </nav>
+
+    <div class="sb-footer">
+      <button class="btn btn-reset" onclick="resetAll()">↺ ripristina dati demo</button>
+      <div class="sb-footer-note">D.lgs. 150/2009 · D.L. 80/2021 art.6<br>Dati salvati localmente nel browser</div>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN ═════════════════════════════════════════════════ -->
+  <main class="main-area">
+    <button class="btn mobile-menu-btn" id="mobile-btn" style="display:none" onclick="toggleSidebar()">☰ Menu</button>
+    <div id="view-container"></div>
+  </main>
+</div>
+
+<!-- ══ MODAL ════════════════════════════════════════════════ -->
+<div id="modal-host"></div>
+
+<script>
+"use strict";
+
+/* ═══════════════════════════════════════════════════════════
+   DEMO DATA
+═══════════════════════════════════════════════════════════ */
+const DEMO_LINES = [
+  {id:1,code:"LS.01",title:"Semplificazione amministrativa e digitalizzazione",area:"Digitalizzazione",priority:"alta",desc:"Riduzione dei tempi dei procedimenti, dematerializzazione dei flussi documentali, adozione di servizi pienamente digitali per cittadini e imprese."},
+  {id:2,code:"LS.02",title:"Riduzione delle liste d'attesa sanitarie",area:"Sanità",priority:"alta",desc:"Potenziamento delle agende, monitoraggio dei tempi di erogazione delle prestazioni e recupero della domanda inevasa nelle ASL regionali."},
+  {id:3,code:"LS.03",title:"Transizione ecologica e ciclo dei rifiuti",area:"Ambiente",priority:"alta",desc:"Incremento della raccolta differenziata, riduzione del conferimento in discarica, monitoraggio delle aree contaminate e bonifica dei SIN."},
+  {id:4,code:"LS.04",title:"Politiche attive del lavoro e competenze",area:"Lavoro e Formazione",priority:"media",desc:"Aumento della partecipazione ai percorsi formativi, integrazione tra CPI e sistema regionale di formazione professionale."},
+  {id:5,code:"LS.05",title:"Valorizzazione del patrimonio culturale",area:"Cultura e Turismo",priority:"media",desc:"Incremento dei visitatori dei siti regionali, digitalizzazione delle collezioni museali, sviluppo di itinerari turistici integrati."},
+  {id:6,code:"LS.06",title:"Anticorruzione e trasparenza",area:"Trasversale",priority:"alta",desc:"Rotazione del personale nei procedimenti a maggior rischio, pubblicazione integrale dei dati di Amministrazione Trasparente."}
+];
+
+const DEMO_STRUCTS = [
+  {id:1,code:"DG.50.01",name:"DG Risorse Umane",area:"Trasversale",h:[78,82,86]},
+  {id:2,code:"DG.50.02",name:"DG Risorse Finanziarie e Patrimonio",area:"Trasversale",h:[84,88,91]},
+  {id:3,code:"DG.50.03",name:"DG Sviluppo Economico",area:"Sviluppo Economico",h:[72,75,79]},
+  {id:4,code:"DG.50.04",name:"DG Tutela della Salute",area:"Sanità",h:[68,71,74]},
+  {id:5,code:"DG.50.05",name:"DG Politiche Sociali",area:"Politiche Sociali",h:[81,84,87]},
+  {id:6,code:"DG.50.06",name:"DG Istruzione, Formazione, Lavoro",area:"Lavoro e Formazione",h:[76,80,83]},
+  {id:7,code:"DG.50.07",name:"DG Mobilità",area:"Mobilità",h:[63,66,69]},
+  {id:8,code:"DG.50.08",name:"DG Governo del Territorio",area:"Ambiente",h:[70,73,77]},
+  {id:9,code:"DG.50.09",name:"DG Ambiente e Difesa del Suolo",area:"Ambiente",h:[79,83,89]},
+  {id:10,code:"DG.50.10",name:"DG Politiche Culturali e Turismo",area:"Cultura e Turismo",h:[85,89,92]},
+  {id:11,code:"DG.50.11",name:"DG Università e Innovazione",area:"Digitalizzazione",h:[88,91,93]},
+  {id:12,code:"DG.50.12",name:"DG Politiche Agricole",area:"Sviluppo Economico",h:[74,77,80]}
+];
+
+const OBJ_TPL = {
+  "Digitalizzazione":[
+    {t:"Riduzione tempi medi dei procedimenti",desc:"Diminuire i tempi medi di conclusione dei procedimenti amministrativi mediante reingegnerizzazione dei flussi e adozione di workflow digitali.",ind:"giorni medi procedimento",base:30,unit:"gg",dir:"down"},
+    {t:"Servizi pienamente digitali al cittadino",desc:"Aumentare la percentuale di servizi erogati interamente in modalità digitale tramite il portale unico regionale.",ind:"% servizi digitali",base:60,unit:"%",dir:"up"},
+    {t:"Tasso di adesione SPID/CIE",desc:"Incremento dell'utilizzo dell'identità digitale nei servizi regionali.",ind:"% accessi identità digitale",base:70,unit:"%",dir:"up"}
+  ],
+  "Sanità":[
+    {t:"Riduzione liste d'attesa classe B",desc:"Ridurre il tempo medio di attesa per le prestazioni ambulatoriali di classe B nelle ASL regionali.",ind:"giorni medi attesa classe B",base:25,unit:"gg",dir:"down"},
+    {t:"Copertura screening oncologici",desc:"Incrementare l'adesione ai programmi di screening oncologico mammografico, colorettale e cervicale.",ind:"% copertura pop. target",base:55,unit:"%",dir:"up"},
+    {t:"Aderenza ai LEA",desc:"Miglioramento del punteggio del Nuovo Sistema di Garanzia LEA.",ind:"punteggio NSG",base:200,unit:"pt",dir:"up"}
+  ],
+  "Ambiente":[
+    {t:"Raccolta differenziata",desc:"Incrementare la quota di raccolta differenziata nei comuni capoluogo.",ind:"% RD media regionale",base:58,unit:"%",dir:"up"},
+    {t:"Bonifica siti contaminati",desc:"Avanzamento dei procedimenti di bonifica nei Siti di Interesse Nazionale.",ind:"% superficie certificata",base:35,unit:"%",dir:"up"},
+    {t:"Riduzione conferimento in discarica",desc:"Diminuzione progressiva del rifiuto urbano conferito in discarica.",ind:"tonnellate annue",base:480000,unit:"t",dir:"down"}
+  ],
+  "Lavoro e Formazione":[
+    {t:"Tasso occupazione post-formazione",desc:"Innalzare il tasso di occupazione a 12 mesi dei partecipanti ai corsi di formazione professionale.",ind:"% occupati a 12 mesi",base:50,unit:"%",dir:"up"},
+    {t:"Presa in carico CPI",desc:"Aumentare le prese in carico effettive presso i Centri per l'Impiego entro 60 giorni dalla DID.",ind:"% prese in carico ≤60gg",base:65,unit:"%",dir:"up"}
+  ],
+  "Cultura e Turismo":[
+    {t:"Visitatori siti regionali",desc:"Incrementare il numero di visitatori dei siti museali e archeologici regionali.",ind:"visitatori annui (k)",base:850,unit:"k",dir:"up"},
+    {t:"Digitalizzazione patrimonio museale",desc:"Aumentare la quota di patrimonio museale catalogato in formato digitale aperto.",ind:"% beni digitalizzati",base:40,unit:"%",dir:"up"}
+  ],
+  "Politiche Sociali":[
+    {t:"Copertura assistenza domiciliare anziani",desc:"Estendere la copertura del servizio di assistenza domiciliare integrata per la popolazione anziana.",ind:"% pop. target servita",base:32,unit:"%",dir:"up"},
+    {t:"Posti strutture protette",desc:"Aumento dei posti in strutture residenziali per disabilità grave.",ind:"posti disponibili",base:1200,unit:"posti",dir:"up"}
+  ],
+  "Mobilità":[
+    {t:"Puntualità trasporto pubblico",desc:"Migliorare la puntualità del servizio di TPL su gomma e ferro.",ind:"% corse puntuali (±5')",base:78,unit:"%",dir:"up"},
+    {t:"Estensione rete ciclabile",desc:"Aumentare i km di rete ciclabile regionale realizzati o messi in esercizio.",ind:"km cumulati",base:180,unit:"km",dir:"up"}
+  ],
+  "Sviluppo Economico":[
+    {t:"Tempi erogazione contributi alle imprese",desc:"Ridurre i tempi medi di erogazione dei contributi a fondo perduto POR FESR.",ind:"gg medi da ammissione a erogazione",base:120,unit:"gg",dir:"down"},
+    {t:"Imprese beneficiarie programmi regionali",desc:"Aumentare le imprese beneficiarie dei bandi regionali per l'innovazione.",ind:"n. imprese beneficiarie",base:480,unit:"imprese",dir:"up"}
+  ],
+  "Trasversale":[
+    {t:"Adempimenti Amministrazione Trasparente",desc:"Garantire la pubblicazione tempestiva e integrale degli obblighi di Amministrazione Trasparente.",ind:"% adempimenti nei termini",base:88,unit:"%",dir:"up"},
+    {t:"Formazione anticorruzione",desc:"Estendere la partecipazione ai percorsi formativi obbligatori in materia di anticorruzione.",ind:"% personale formato",base:75,unit:"%",dir:"up"}
+  ]
+};
+
+const AREAS = ["Digitalizzazione","Sanità","Ambiente","Lavoro e Formazione","Cultura e Turismo","Politiche Sociali","Mobilità","Sviluppo Economico","Trasversale"];
+const DEF_CALIB = {ecc:20,buo:12,ade:6,rec:2};
+
+/* ═══════════════════════════════════════════════════════════
+   STORAGE — Safe wrapper (fixes Safari file:// crash)
+═══════════════════════════════════════════════════════════ */
+const Store = {
+  get(key){ try{ const v=localStorage.getItem(key); return v?JSON.parse(v):null; }catch(e){ return null; } },
+  set(key,val){ try{ localStorage.setItem(key,JSON.stringify(val)); return true; }catch(e){ return false; } },
+  remove(key){ try{ localStorage.removeItem(key); }catch(e){} }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   APP STATE
+═══════════════════════════════════════════════════════════ */
+const S = {
+  view: 'dashboard',
+  lines: [],
+  structs: [],
+  objs: [],
+  calib: {...DEF_CALIB},
+  apiKey: '',
+  rememberKey: false,
+  filter: 'all',
+  areaFilter: 'all',
+  search: '',
+  structSearch: '',
+  genRunning: false,
+  genLog: [],
+  genDone: false,
+  genCount: 0,
+  genMode: 'template',
+  genN: 2
+};
+
+function saveAll(){
+  Store.set('ocr-lines', S.lines);
+  Store.set('ocr-structs', S.structs);
+  Store.set('ocr-objs', S.objs);
+  Store.set('ocr-calib', S.calib);
+  Store.set('ocr-genmode', S.genMode);
+  Store.set('ocr-genn', S.genN);
+  if(S.rememberKey && S.apiKey) Store.set('ocr-apikey', S.apiKey);
+  else Store.remove('ocr-apikey');
+  Store.set('ocr-rememberkey', S.rememberKey);
+}
+
+function loadAll(){
+  S.lines   = Store.get('ocr-lines')   || JSON.parse(JSON.stringify(DEMO_LINES));
+  S.structs = Store.get('ocr-structs') || JSON.parse(JSON.stringify(DEMO_STRUCTS));
+  S.objs    = Store.get('ocr-objs')    || [];
+  S.calib   = Store.get('ocr-calib')   || {...DEF_CALIB};
+  S.genMode = Store.get('ocr-genmode') || 'template';
+  S.genN    = Store.get('ocr-genn')    || 2;
+  S.rememberKey = Store.get('ocr-rememberkey') || false;
+  if(S.rememberKey){ S.apiKey = Store.get('ocr-apikey') || ''; }
+}
+
+function resetAll(){
+  if(!confirm('Ripristinare tutti i dati demo? Le modifiche saranno perse.')) return;
+  ['ocr-lines','ocr-structs','ocr-objs','ocr-calib','ocr-genmode','ocr-genn'].forEach(k=>Store.remove(k));
+  S.lines = JSON.parse(JSON.stringify(DEMO_LINES));
+  S.structs = JSON.parse(JSON.stringify(DEMO_STRUCTS));
+  S.objs = [];
+  S.calib = {...DEF_CALIB};
+  S.genMode = 'template'; S.genN = 2;
+  S.genLog = []; S.genDone = false; S.genCount = 0;
+  saveAll(); render();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════════ */
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+
+function avgPerf(s){
+  if(!s.h||!s.h.length) return 0;
+  if(s.h.length===3) return Math.round((s.h[0]*.2+s.h[1]*.3+s.h[2]*.5)*10)/10;
+  return Math.round(s.h.reduce((a,b)=>a+b,0)/s.h.length*10)/10;
+}
+
+function tierOf(v){
+  if(v>=90) return {k:'eccellente',l:'Eccellente',c:'#5C7A4F'};
+  if(v>=80) return {k:'buona',l:'Buona',c:'#8AA37A'};
+  if(v>=70) return {k:'adeguata',l:'Adeguata',c:'#9A7B43'};
+  return {k:'recupero',l:'In recupero',c:'#B23A2F'};
+}
+
+function getStretch(v){
+  if(v>=90) return S.calib.ecc/100;
+  if(v>=80) return S.calib.buo/100;
+  if(v>=70) return S.calib.ade/100;
+  return S.calib.rec/100;
+}
+
+function enrichedStructs(){
+  return S.structs.map(s=>({...s,avg:avgPerf(s)}));
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════════════ */
+function nav(v){
+  S.view=v;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.view===v));
+  closeSidebar();
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  const ov=document.getElementById('mobile-overlay');
+  sb.classList.toggle('open');
+  ov.classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('mobile-overlay').classList.remove('open');
+}
+document.getElementById('mobile-overlay').onclick=closeSidebar;
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER DISPATCHER
+═══════════════════════════════════════════════════════════ */
+function render(){
+  // Badges
+  document.getElementById('badge-lines').textContent=S.lines.length;
+  document.getElementById('badge-structs').textContent=S.structs.length;
+  document.getElementById('badge-objs').textContent=S.objs.length||'';
+
+  const vc=document.getElementById('view-container');
+  vc.innerHTML='';
+  vc.className='fade-in';
+
+  const div=document.createElement('div');
+  div.className='fade-in';
+
+  switch(S.view){
+    case 'dashboard':   div.innerHTML=viewDashboard();   break;
+    case 'piao':        div.innerHTML=viewPIAO();         break;
+    case 'structures':  div.innerHTML=viewStructures();   break;
+    case 'calibration': div.innerHTML=viewCalibration();  break;
+    case 'generate':    div.innerHTML=viewGenerate();     break;
+    case 'objectives':  div.innerHTML=viewObjectives();   break;
+  }
+  vc.appendChild(div);
+  if(S.view==='dashboard') setTimeout(drawCharts,60);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PAGE HEADER helper
+═══════════════════════════════════════════════════════════ */
+function ph(eyebrow,title,em,subtitle,actions){
+  return `<div class="page-header">
+    <div class="page-header-left">
+      <div class="page-eyebrow">${eyebrow}</div>
+      <h1 class="page-title">${title}${em?` <em>${em}</em>`:''}</h1>
+      ${subtitle?`<p class="page-subtitle">${subtitle}</p>`:''}
+    </div>
+    ${actions?`<div class="page-actions">${actions}</div>`:''}
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════════════════════════ */
+function viewDashboard(){
+  const en=enrichedStructs();
+  const tc={eccellente:0,buona:0,adeguata:0,recupero:0};
+  en.forEach(s=>tc[tierOf(s.avg).k]++);
+  const ap = en.length?Math.round(en.reduce((a,s)=>a+s.avg,0)/en.length*10)/10:0;
+  const as_ = S.objs.length?Math.round(S.objs.reduce((a,o)=>a+o.stretch,0)/S.objs.length*10)/10:0;
+  const hp = S.lines.filter(l=>l.priority==='alta').length;
+
+  const wfStatus = [
+    {n:'I',l:'Linee PIAO',v:'piao',done:S.lines.length>0},
+    {n:'II',l:'Strutture',v:'structures',done:S.structs.length>0},
+    {n:'III',l:'Calibrazione',v:'calibration',done:true},
+    {n:'IV',l:'Generazione',v:'generate',done:S.objs.length>0}
+  ];
+
+  return ph('Dashboard · sintesi','Quadro','d\'insieme','Vista riassuntiva: linee strategiche PIAO, baseline delle strutture e obiettivi calibrati generati dal modello.',
+    `<button class="btn btn-ai" onclick="nav('generate')">◆ nuova generazione</button>`) +
+  `<div class="kpi-grid">
+    <div class="kpi-card kpi-ink" onclick="nav('piao')">
+      <div class="kpi-label">Linee Strategiche</div>
+      <div class="kpi-value">${S.lines.length}</div>
+      <div class="kpi-sub">${hp} ad alta priorità</div>
+    </div>
+    <div class="kpi-card kpi-bronze" onclick="nav('structures')">
+      <div class="kpi-label">Strutture</div>
+      <div class="kpi-value">${S.structs.length}</div>
+      <div class="kpi-sub">indice medio ${ap}</div>
+    </div>
+    <div class="kpi-card kpi-olive" onclick="nav('objectives')">
+      <div class="kpi-label">Obiettivi Calibrati</div>
+      <div class="kpi-value">${S.objs.length}</div>
+      <div class="kpi-sub">${S.objs.length?'stretch medio +'+as_+'%':'da generare'}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Strutture Eccellenti</div>
+      <div class="kpi-value">${tc.eccellente}</div>
+      <div class="kpi-sub">${Math.round(tc.eccellente/Math.max(1,en.length)*100)}% del totale</div>
+    </div>
+  </div>
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Performance <em>per struttura</em></div>
+      <div class="chart-sub">indice medio ponderato 2023–2025 (ordinato)</div>
+      <canvas id="bar-canvas" height="240" style="width:100%"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Distribuzione <em>fasce</em></div>
+      <div class="chart-sub">strutture per livello di performance</div>
+      <canvas id="pie-canvas" height="180" style="width:100%"></canvas>
+      <div class="legend-grid">
+        ${[{l:'Eccellente',c:'#5C7A4F',v:tc.eccellente},{l:'Buona',c:'#8AA37A',v:tc.buona},{l:'Adeguata',c:'#9A7B43',v:tc.adeguata},{l:'In recupero',c:'#B23A2F',v:tc.recupero}].map(t=>`
+          <div class="legend-item"><div class="legend-dot" style="background:${t.c}"></div><span class="legend-name">${t.l}</span><span class="legend-val">${t.v}</span></div>
+        `).join('')}
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div style="margin-bottom:18px">
+      <div class="chart-title" style="font-size:21px">Flusso <em>operativo</em></div>
+      <div class="chart-sub">le quattro fasi dalla pianificazione all'assegnazione degli obiettivi</div>
+    </div>
+    <div class="workflow-grid">
+      ${wfStatus.map(w=>`
+        <div class="wf-card" onclick="nav('${w.v}')">
+          <div class="wf-num">${w.n}</div>
+          <div class="wf-label">${w.l}</div>
+          <div class="wf-status" style="color:${w.done?'var(--olive)':'var(--ink-3)'}">${w.done?'✓ completato':'— in attesa'}</div>
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CHARTS (canvas)
+═══════════════════════════════════════════════════════════ */
+function drawCharts(){
+  const en=enrichedStructs().map(s=>({label:s.code.replace('DG.50.',''),full:s.name,v:s.avg,c:tierOf(s.avg).c})).sort((a,b)=>b.v-a.v);
+  drawBar(en);
+  drawPie(en);
+}
+
+function drawBar(data){
+  const canvas=document.getElementById('bar-canvas'); if(!canvas)return;
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.offsetWidth||600, H=240;
+  canvas.width=W*dpr; canvas.height=H*dpr;
+  canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d'); ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  const pL=38,pR=8,pT=8,pB=28;
+  const cw=W-pL-pR, ch=H-pT-pB;
+  const n=data.length, bw=cw/n*.7, gap=cw/n*.3;
+  ctx.strokeStyle='#C4B89C'; ctx.lineWidth=.5; ctx.setLineDash([2,4]);
+  for(let i=0;i<=4;i++){
+    const y=pT+ch*i/4;
+    ctx.beginPath(); ctx.moveTo(pL,y); ctx.lineTo(W-pR,y); ctx.stroke();
+    ctx.fillStyle='#3A4A66'; ctx.font=`9px "JetBrains Mono",monospace`; ctx.textAlign='right';
+    ctx.fillText(100-25*i,pL-5,y+3);
+  }
+  ctx.setLineDash([]);
+  const tt=document.getElementById('tt');
+  canvas.onmousemove=e=>{
+    const r=canvas.getBoundingClientRect();
+    const mx=e.clientX-r.left, my=e.clientY-r.top;
+    let found=null;
+    data.forEach((d,i)=>{
+      const x=pL+i*(bw+gap)+gap/2, h=d.v/100*ch, y=pT+ch-h;
+      if(mx>=x&&mx<=x+bw&&my>=y&&my<=pT+ch) found=d;
+    });
+    if(found){ tt.style.display='block'; tt.style.left=(e.clientX+12)+'px'; tt.style.top=(e.clientY+12)+'px'; tt.innerHTML=`<strong>${esc(found.full)}</strong><br>Indice: <span style="font-family:monospace">${found.v}</span>`; }
+    else tt.style.display='none';
+  };
+  canvas.onmouseleave=()=>tt.style.display='none';
+  data.forEach((d,i)=>{
+    const x=pL+i*(bw+gap)+gap/2, h=d.v/100*ch, y=pT+ch-h;
+    ctx.fillStyle=d.c; ctx.fillRect(x,y,bw,h);
+    ctx.fillStyle='#3A4A66'; ctx.font=`9px "JetBrains Mono",monospace`; ctx.textAlign='center';
+    ctx.fillText(d.label,x+bw/2,H-pB+13);
+  });
+}
+
+function drawPie(data){
+  const canvas=document.getElementById('pie-canvas'); if(!canvas)return;
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.offsetWidth||360, H=180;
+  canvas.width=W*dpr; canvas.height=H*dpr;
+  canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d'); ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  const tc={eccellente:0,buona:0,adeguata:0,recupero:0};
+  data.forEach(s=>tc[tierOf(s.v).k]++);
+  const td=[{v:tc.eccellente,c:'#5C7A4F'},{v:tc.buona,c:'#8AA37A'},{v:tc.adeguata,c:'#9A7B43'},{v:tc.recupero,c:'#B23A2F'}];
+  const total=td.reduce((a,d)=>a+d.v,0); if(!total)return;
+  const cx=W/2,cy=H/2,ro=Math.min(W,H)/2-8,ri=ro*.58;
+  let start=-Math.PI/2;
+  const slices=[];
+  td.forEach(d=>{
+    if(!d.v)return;
+    const angle=d.v/total*Math.PI*2, end=start+angle;
+    ctx.beginPath(); ctx.arc(cx,cy,ro,start,end); ctx.arc(cx,cy,ri,end,start,true); ctx.closePath();
+    ctx.fillStyle=d.c; ctx.fill(); ctx.strokeStyle='#F4EEE1'; ctx.lineWidth=1.5; ctx.stroke();
+    slices.push({...d,start,end}); start=end;
+  });
+  const tt=document.getElementById('tt');
+  const tiers=['Eccellente','Buona','Adeguata','In recupero'];
+  canvas.onmousemove=e=>{
+    const r=canvas.getBoundingClientRect();
+    const mx=e.clientX-r.left-cx,my=e.clientY-r.top-cy;
+    const dist=Math.sqrt(mx*mx+my*my);
+    if(dist<ri||dist>ro){tt.style.display='none';return;}
+    let ang=Math.atan2(my,mx);
+    if(ang<-Math.PI/2) ang+=Math.PI*2;
+    const found=slices.find(s=>ang>=s.start&&ang<=s.end);
+    if(found){
+      const idx=td.indexOf(td.find(d=>d.c===found.c));
+      tt.style.display='block'; tt.style.left=(e.clientX+12)+'px'; tt.style.top=(e.clientY+12)+'px';
+      tt.innerHTML=`<strong>${tiers[idx]||''}</strong>: ${found.v} strutture (${Math.round(found.v/total*100)}%)`;
+    } else tt.style.display='none';
+  };
+  canvas.onmouseleave=()=>tt.style.display='none';
+}
+
+window.addEventListener('resize',()=>{ if(S.view==='dashboard') setTimeout(drawCharts,60); });
+
+/* ═══════════════════════════════════════════════════════════
+   PIAO VIEW
+═══════════════════════════════════════════════════════════ */
+function viewPIAO(){
+  return ph('Fase I · pianificazione','Linee strategiche','del PIAO','Ambiti prioritari di intervento estratti dalla Sezione 2 del PIAO. Ogni linea sarà declinata in obiettivi operativi assegnati alle strutture competenti.',
+    `<button class="btn btn-primary" onclick="openLineModal()">+ nuova linea</button>`) +
+  `<div class="strat-grid">
+    ${S.lines.map(l=>`
+      <div class="strat-card">
+        <div class="strat-pri strat-pri-${esc(l.priority)}">${esc(l.priority)}</div>
+        <div class="strat-code">${esc(l.code)}</div>
+        <div class="strat-title">${esc(l.title)}</div>
+        <span class="strat-area">${esc(l.area)}</span>
+        <div class="strat-desc">${esc(l.desc)}</div>
+        <div class="strat-actions">
+          <button class="btn btn-ghost btn-sm" style="flex:1;justify-content:center" onclick="openLineModal(${l.id})">modifica</button>
+          <button class="btn btn-danger btn-sm" style="flex:1;justify-content:center" onclick="deleteLine(${l.id})">elimina</button>
+        </div>
+      </div>
+    `).join('')}
+    <div class="strat-add" onclick="openLineModal()" onmouseenter="this.style.borderColor='var(--pompei)';this.style.color='var(--pompei)'" onmouseleave="this.style.borderColor='rgba(58,74,102,.4)';this.style.color='var(--ink-3)'">
+      + aggiungi linea strategica
+    </div>
+  </div>`;
+}
+
+function openLineModal(id){
+  const e=id?{...S.lines.find(l=>l.id===id)}:{id:Date.now(),code:'',title:'',area:'Trasversale',priority:'media',desc:''};
+  modal(`Linea <em>strategica</em>`,`
+    <div class="grid-2 field">
+      <div><label class="field-label">Codice</label><input id="ml-code" class="mono" value="${esc(e.code)}" placeholder="LS.07"></div>
+      <div><label class="field-label">Priorità</label><select id="ml-pri">${['alta','media','bassa'].map(p=>`<option${e.priority===p?' selected':''}>${p}</option>`).join('')}</select></div>
+    </div>
+    <div class="field"><label class="field-label">Titolo</label><input id="ml-title" value="${esc(e.title)}" placeholder="es. Riduzione liste d'attesa"></div>
+    <div class="field"><label class="field-label">Area</label><select id="ml-area">${AREAS.map(a=>`<option${e.area===a?' selected':''}>${a}</option>`).join('')}</select></div>
+    <div class="field"><label class="field-label">Descrizione</label><textarea id="ml-desc">${esc(e.desc)}</textarea></div>`,
+    `<button class="btn btn-ghost" onclick="closeModal()">Annulla</button>
+     <button class="btn btn-primary" onclick="saveLine(${e.id})">Salva</button>`
+  );
+}
+
+function saveLine(id){
+  const code=document.getElementById('ml-code').value.trim();
+  const title=document.getElementById('ml-title').value.trim();
+  if(!code||!title){alert('Codice e titolo sono obbligatori');return;}
+  const obj={id,code,title,area:document.getElementById('ml-area').value,priority:document.getElementById('ml-pri').value,desc:document.getElementById('ml-desc').value||'—'};
+  if(S.lines.find(l=>l.id===id)) S.lines=S.lines.map(l=>l.id===id?obj:l);
+  else S.lines.push(obj);
+  saveAll(); closeModal(); render();
+}
+
+function deleteLine(id){
+  if(!confirm('Eliminare questa linea strategica?')) return;
+  S.lines=S.lines.filter(l=>l.id!==id);
+  saveAll(); render();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   STRUCTURES VIEW
+═══════════════════════════════════════════════════════════ */
+function viewStructures(){
+  const en=enrichedStructs();
+  const q=S.structSearch.toLowerCase();
+  const filtered=en.filter(s=>!q||s.name.toLowerCase().includes(q)||s.code.toLowerCase().includes(q)||s.area.toLowerCase().includes(q));
+  return ph('Fase II · baseline','Strutture','e performance storica','Direzioni Generali e UOD. L\'indice è calcolato come media ponderata triennale (pesi 20/30/50).',
+    `<input placeholder="cerca struttura…" value="${esc(S.structSearch)}" oninput="S.structSearch=this.value;render();document.querySelector('.page-actions input').focus()" style="width:200px">
+     <button class="btn btn-primary" onclick="openStructModal()">+ aggiungi</button>`) +
+  `<div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th style="width:30%">Struttura</th><th>Codice</th>
+        <th>2023</th><th>2024</th><th>2025</th>
+        <th style="width:20%">Indice medio</th><th>Fascia</th><th style="width:100px"></th>
+      </tr></thead>
+      <tbody>${filtered.map(s=>{const t=tierOf(s.avg);return`
+        <tr>
+          <td><div class="struct-name">${esc(s.name)}</div><div style="font-size:10px;color:var(--ink-3);margin-top:2px">${esc(s.area)}</div></td>
+          <td><span class="struct-code">${esc(s.code)}</span></td>
+          <td style="font-family:var(--font-mono)">${s.h[0]}</td>
+          <td style="font-family:var(--font-mono)">${s.h[1]}</td>
+          <td style="font-family:var(--font-mono)">${s.h[2]}</td>
+          <td>
+            <div class="prog-wrap">
+              <div class="prog-track"><div class="prog-fill" style="width:${s.avg}%;background:${t.c}"></div></div>
+              <span class="prog-val">${s.avg.toFixed(1)}</span>
+            </div>
+          </td>
+          <td><span class="tier-badge tier-${t.k}">${t.l}</span></td>
+          <td style="text-align:right;white-space:nowrap">
+            <button class="btn btn-ghost btn-sm" onclick="openStructModal(${s.id})" style="margin-right:4px">✎</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteStruct(${s.id})">×</button>
+          </td>
+        </tr>`;}).join('')}</tbody>
+    </table>
+  </div>`;
+}
+
+function openStructModal(id){
+  const src=id?S.structs.find(s=>s.id===id):null;
+  const e=src?{...src,h:[...src.h]}:{id:Date.now(),code:'',name:'',area:'Trasversale',h:[70,70,70]};
+  const avg=avgPerf(e), t=tierOf(avg);
+  modal(`Struttura <em>organizzativa</em>`,`
+    <div class="field"><label class="field-label">Denominazione</label><input id="ms-name" value="${esc(e.name)}"></div>
+    <div class="grid-2 field">
+      <div><label class="field-label">Codice</label><input id="ms-code" class="mono" value="${esc(e.code)}" placeholder="DG.50.XX"></div>
+      <div><label class="field-label">Area</label><select id="ms-area">${AREAS.map(a=>`<option${e.area===a?' selected':''}>${a}</option>`).join('')}</select></div>
+    </div>
+    <div class="field">
+      <label class="field-label">Performance storica (0–100)</label>
+      <div class="grid-2" style="grid-template-columns:1fr 1fr 1fr;gap:10px">
+        ${['2023','2024','2025'].map((y,i)=>`<div><div style="font-size:10px;color:var(--ink-3);margin-bottom:4px">${y}</div><input type="number" id="ms-h${i}" min="0" max="100" value="${e.h[i]}" class="mono" oninput="refreshStructPreview()"></div>`).join('')}
+      </div>
+    </div>
+    <div id="struct-preview" style="padding:10px 12px;background:var(--parchment-2);border:.5px solid var(--sand-2);font-size:12px;color:var(--ink-3)">
+      Indice ponderato: <strong style="font-family:var(--font-mono);color:var(--ink)">${avg.toFixed(1)}</strong>
+      <span class="tier-badge tier-${t.k}" style="margin-left:8px">${t.l}</span>
+    </div>`,
+    `<button class="btn btn-ghost" onclick="closeModal()">Annulla</button>
+     <button class="btn btn-primary" onclick="saveStruct(${e.id})">Salva</button>`
+  );
+}
+
+window.refreshStructPreview=function(){
+  const h=[0,1,2].map(i=>+(document.getElementById('ms-h'+i)||{value:0}).value||0);
+  const avg=h.length===3?Math.round((h[0]*.2+h[1]*.3+h[2]*.5)*10)/10:0;
+  const t=tierOf(avg);
+  const el=document.getElementById('struct-preview');
+  if(el) el.innerHTML=`Indice ponderato: <strong style="font-family:var(--font-mono);color:var(--ink)">${avg.toFixed(1)}</strong><span class="tier-badge tier-${t.k}" style="margin-left:8px">${t.l}</span>`;
+};
+
+function saveStruct(id){
+  const name=document.getElementById('ms-name').value.trim();
+  const code=document.getElementById('ms-code').value.trim();
+  if(!name||!code){alert('Denominazione e codice sono obbligatori');return;}
+  const h=[0,1,2].map(i=>+(document.getElementById('ms-h'+i)||{value:70}).value||70);
+  const obj={id,code,name,area:document.getElementById('ms-area').value,h};
+  if(S.structs.find(s=>s.id===id)) S.structs=S.structs.map(s=>s.id===id?obj:s);
+  else S.structs.push(obj);
+  saveAll(); closeModal(); render();
+}
+
+function deleteStruct(id){
+  if(!confirm('Eliminare questa struttura?')) return;
+  S.structs=S.structs.filter(s=>s.id!==id);
+  saveAll(); render();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CALIBRATION VIEW
+═══════════════════════════════════════════════════════════ */
+function viewCalibration(){
+  const en=enrichedStructs();
+  const tc={eccellente:0,buona:0,adeguata:0,recupero:0};
+  en.forEach(s=>tc[tierOf(s.avg).k]++);
+  const tiers=[
+    {k:'ecc',tk:'eccellente',l:'Eccellente',range:'indice ≥ 90',c:'#5C7A4F',cnt:tc.eccellente,desc:'Strutture di vertice. Stretch sfidante per valorizzare la capacità realizzativa e prevenire fenomeni di plateau.'},
+    {k:'buo',tk:'buona',l:'Buona',range:'indice 80–89',c:'#8AA37A',cnt:tc.buona,desc:'Strutture solide. Stretch significativo per progredire verso la fascia di eccellenza.'},
+    {k:'ade',tk:'adeguata',l:'Adeguata',range:'indice 70–79',c:'#9A7B43',cnt:tc.adeguata,desc:'Strutture in linea con gli standard. Stretch contenuto, orientato al consolidamento.'},
+    {k:'rec',tk:'recupero',l:'In recupero',range:'indice < 70',c:'#B23A2F',cnt:tc.recupero,desc:'Strutture in difficoltà. Stretch minimo per un percorso sostenibile di miglioramento progressivo.'}
+  ];
+  return ph('Fase III · parametri','Matrice','di calibrazione','Coefficiente di incremento del target base per fascia di performance. Strutture con performance migliore ricevono target più ambiziosi.') +
+  `<div class="calib-grid">
+    ${tiers.map(t=>`
+      <div class="calib-card">
+        <div class="calib-top-bar" style="background:${t.c}"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span class="tier-badge tier-${t.tk}">${t.l}</span>
+          <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-3)">${t.cnt} strutt.</span>
+        </div>
+        <div class="calib-range">${t.range}</div>
+        <div class="calib-desc">${t.desc}</div>
+        <div class="calib-input-row">
+          <input type="number" min="0" max="50" value="${S.calib[t.k]}" oninput="S.calib['${t.k}']=Math.min(50,Math.max(0,+this.value||0));saveAll();updateCalibExamples()">
+          <span class="calib-pct">%</span>
+        </div>
+      </div>
+    `).join('')}
+  </div>
+  <div class="card" style="margin-bottom:20px">
+    <div style="font-family:var(--font-serif);font-size:19px;font-weight:400;margin-bottom:4px">Esempio <em style="font-style:italic;color:var(--pompei)">applicativo</em></div>
+    <div style="font-size:12px;color:var(--ink-3);margin-bottom:16px">Su un target base di <strong style="color:var(--ink)">100 unità</strong> in incremento, i target calibrati risultano:</div>
+    <div class="example-grid" id="calib-examples">
+      ${tiers.map(t=>`
+        <div class="example-cell">
+          <span class="tier-badge tier-${t.tk}">${t.l}</span>
+          <div class="example-val" id="ex-val-${t.k}">${(100*(1+S.calib[t.k]/100)).toFixed(0)}</div>
+          <div class="example-stretch" id="ex-str-${t.k}">+${S.calib[t.k]}%</div>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+  <div class="info-box">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B23A2F" stroke-width="2" style="flex-shrink:0;margin-top:1px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    <p><strong>Nota metodologica.</strong> La calibrazione differenziata risponde al principio di equità sostanziale: trattare in modo diverso situazioni diverse. Si evita sia il livellamento verso il basso (chi performa meglio non riceve sfide adeguate) sia l'iniquità verso le strutture in difficoltà (target irrealistici causano demotivazione).</p>
+  </div>`;
+}
+
+window.updateCalibExamples=function(){
+  ['ecc','buo','ade','rec'].forEach(k=>{
+    const vEl=document.getElementById('ex-val-'+k);
+    const sEl=document.getElementById('ex-str-'+k);
+    if(vEl) vEl.textContent=(100*(1+S.calib[k]/100)).toFixed(0);
+    if(sEl) sEl.textContent='+'+S.calib[k]+'%';
+  });
+};
+
+/* ═══════════════════════════════════════════════════════════
+   GENERATE VIEW
+═══════════════════════════════════════════════════════════ */
+function viewGenerate(){
+  const en=enrichedStructs();
+  const apiMasked=S.apiKey?'sk-ant-…'+S.apiKey.slice(-6):'';
+  const keyOk=S.apiKey.length>20;
+  return ph('Fase IV · esecuzione','Generazione','assistita','Il modello traduce ciascuna linea strategica in obiettivi SMART, individua le strutture competenti per area e applica il coefficiente di stretch in base alla performance storica.') +
+  `<div class="gen-layout">
+    <div class="gen-panel">
+      <div class="gen-panel-head">
+        <div class="chart-title" style="font-size:19px">Parametri di <em>esecuzione</em></div>
+        <div style="font-size:11px;color:var(--ink-3);margin-top:2px">configura il modello prima di avviare</div>
+      </div>
+      <div class="gen-panel-body">
+
+        <div class="apikey-panel">
+          <div class="apikey-panel-title">🔑 Chiave API Anthropic</div>
+          <div class="apikey-input-row">
+            <input type="password" id="api-key-input" placeholder="sk-ant-…" value="${esc(S.apiKey)}" oninput="S.apiKey=this.value" autocomplete="off" spellcheck="false">
+            <button class="apikey-toggle" onclick="toggleKeyVisibility()">mostra</button>
+          </div>
+          <label class="apikey-remember">
+            <input type="checkbox" id="remember-key" ${S.rememberKey?'checked':''} onchange="S.rememberKey=this.checked;if(!this.checked){Store.remove('ocr-apikey')}else{saveAll()}">
+            Ricorda su questo dispositivo
+          </label>
+          <div class="apikey-status ${keyOk?'apikey-ok':'apikey-missing'}">
+            ${keyOk?'◆ Chiave inserita — modalità AI attiva':'◇ Assente — verrà usata la modalità template'}
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Modalità di generazione</label>
+          <select id="sel-mode" onchange="S.genMode=this.value;saveAll()">
+            <option value="template" ${S.genMode==='template'?'selected':''}>Template + calibrazione (offline)</option>
+            <option value="ai" ${S.genMode==='ai'?'selected':''}>◆ AI generativa (Claude API)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Obiettivi per linea strategica</label>
+          <select id="sel-n" onchange="S.genN=+this.value;saveAll()">
+            <option value="1" ${S.genN===1?'selected':''}>1 — sintetico</option>
+            <option value="2" ${S.genN===2?'selected':''}>2 — bilanciato</option>
+            <option value="3" ${S.genN===3?'selected':''}>3 — articolato</option>
+          </select>
+        </div>
+
+        <div class="gen-summary">
+          <div class="gen-summary-row"><span>Linee strategiche</span><strong>${S.lines.length}</strong></div>
+          <div class="gen-summary-row"><span>Strutture coinvolte</span><strong>${en.length}</strong></div>
+          <div class="gen-summary-row highlight"><span>Stretch range</span><strong>+${S.calib.rec}% → +${S.calib.ecc}%</strong></div>
+        </div>
+
+        <button class="btn btn-ai" id="gen-btn" ${S.genRunning||!S.lines.length||!en.length?'disabled':''} onclick="runGenerate()" style="width:100%;justify-content:center;margin-bottom:8px">
+          ${S.genRunning?'<span class="spinner"></span> elaborazione in corso…':'◆ avvia generazione'}
+        </button>
+        ${S.genDone?`<button class="btn btn-primary" onclick="nav('objectives')" style="width:100%;justify-content:center">→ vai agli obiettivi (${S.genCount})</button>`:''}
+      </div>
+    </div>
+
+    <div class="gen-panel">
+      <div class="gen-panel-head">
+        <div class="chart-title" style="font-size:19px">Console di <em>elaborazione</em></div>
+        <div style="font-size:11px;color:var(--ink-3);margin-top:2px">log delle operazioni in tempo reale</div>
+      </div>
+      <div class="log-console" id="log-console">
+        ${S.genLog.length===0?`
+          <div class="log-empty">
+            <div class="log-empty-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C4B89C" stroke-width="1.5"><path d="M12 3l2 6h6l-5 4 2 6-5-4-5 4 2-6-5-4h6z"/></svg></div>
+            <div class="log-empty-title">Console in attesa</div>
+            <div style="font-size:11px">configura i parametri e avvia la generazione</div>
+          </div>`
+        :S.genLog.map(l=>`<div class="log-line log-${l.k}"><span class="log-ts">${esc(l.ts)}</span><span class="log-msg">${esc(l.msg)}</span></div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+window.toggleKeyVisibility=function(){
+  const inp=document.getElementById('api-key-input');
+  const btn=document.querySelector('.apikey-toggle');
+  if(!inp||!btn) return;
+  if(inp.type==='password'){inp.type='text';btn.textContent='nascondi';}
+  else{inp.type='password';btn.textContent='mostra';}
+};
+
+function addLog(msg,k=''){
+  const ts=new Date().toLocaleTimeString('it-IT');
+  S.genLog.push({ts,msg,k});
+  const el=document.getElementById('log-console');
+  if(!el) return;
+  if(S.genLog.length===1) el.innerHTML='';
+  const div=document.createElement('div');
+  div.className='log-line log-'+k;
+  div.innerHTML=`<span class="log-ts">${ts}</span><span class="log-msg">${esc(msg)}</span>`;
+  el.appendChild(div);
+  el.scrollTop=el.scrollHeight;
+}
+
+async function runGenerate(){
+  // Re-read key from input at runtime
+  const keyInput=document.getElementById('api-key-input');
+  if(keyInput) S.apiKey=keyInput.value.trim();
+  if(S.rememberKey && S.apiKey) Store.set('ocr-apikey',S.apiKey);
+
+  S.genRunning=true; S.genLog=[]; S.genDone=false; S.genCount=0;
+  render(); await sleep(40);
+
+  const en=enrichedStructs();
+  const useAI=S.genMode==='ai' && S.apiKey.length>20;
+
+  addLog(`Avvio · modalità: ${useAI?'AI generativa (Claude API)':'template + calibrazione'}`, 'ai');
+  addLog(`Linee: ${S.lines.length} · Strutture: ${en.length} · n/linea: ${S.genN}`);
+  await sleep(350);
+
+  const newObjs=[];
+  let id=1;
+  for(const line of S.lines){
+    addLog(`Analisi ${line.code} — ${line.title}`, 'ai');
+    await sleep(200);
+    const cands=en.filter(s=>s.area===line.area||line.area==='Trasversale');
+    if(!cands.length){addLog(`  · nessuna struttura per area "${line.area}"`, 'warn');continue;}
+    addLog(`  · ${cands.length} strutture competenti`, 'calc');
+
+    let tpls=[];
+    if(useAI){
+      try{
+        tpls=await aiGenerate(line,S.genN);
+        addLog(`  · ◆ Claude API: ${tpls.length} obiettivi`, 'ai');
+      }catch(e){
+        addLog(`  · ⚠ API non disponibile, uso template`, 'warn');
+        tpls=pickTpl(line.area,S.genN);
+      }
+    } else {
+      tpls=pickTpl(line.area,S.genN);
+      addLog(`  · ${tpls.length} template selezionati`, 'calc');
+    }
+
+    for(const tpl of tpls){
+      for(const s of cands){
+        const st=getStretch(s.avg);
+        const cal=tpl.dir==='up'
+          ?Math.round(tpl.base*(1+st)*10)/10
+          :Math.round(tpl.base*(1-st)*10)/10;
+        const t=tierOf(s.avg);
+        newObjs.push({
+          id:'OB.'+String(id++).padStart(3,'0'),
+          line:line.code,lineTitle:line.title,area:line.area,
+          structure:s.name,structureCode:s.code,
+          tier:t.k,tierLabel:t.l,avgPerf:s.avg,
+          stretch:Math.round(st*1000)/10,
+          title:tpl.t,desc:tpl.desc,indicator:tpl.ind,
+          baseTarget:tpl.base,calibratedTarget:cal,unit:tpl.unit,direction:tpl.dir,
+          weight:line.priority==='alta'?25:line.priority==='media'?18:12
+        });
+      }
+      addLog(`    ∑ "${tpl.t}" → ${cands.length} target calibrati`, 'calc');
+      await sleep(80);
+    }
+  }
+  await sleep(250);
+  addLog(`Completato — ${newObjs.length} obiettivi generati`, 'ok');
+  if(newObjs.length){
+    const as_=newObjs.reduce((a,o)=>a+o.stretch,0)/newObjs.length;
+    addLog(`  · stretch medio: +${as_.toFixed(1)}%`, 'calc');
+  }
+  addLog('Output pronto per assegnazione', 'ok');
+  S.objs=newObjs; S.genCount=newObjs.length;
+  S.genRunning=false; S.genDone=true;
+  saveAll(); render();
+}
+
+function pickTpl(area,n){
+  return (OBJ_TPL[area]||OBJ_TPL['Trasversale']).slice(0,n);
+}
+
+async function aiGenerate(line,n){
+  const prompt=`Sei un esperto del ciclo della performance nella PA italiana e del PIAO.
+Genera ${n} obiettivi operativi SMART per questa linea strategica della Regione Campania:
+- Codice: ${line.code}
+- Titolo: ${line.title}
+- Area: ${line.area}
+- Descrizione: ${line.desc}
+Rispondi ESCLUSIVAMENTE con un array JSON valido (nessun testo aggiuntivo, nessun markdown):
+[{"t":"titolo","desc":"descrizione max 180 char","ind":"indicatore di misura","base":<numero>,"unit":"unità","dir":"up o down"}]`;
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':S.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:prompt}]})
+  });
+  if(!resp.ok) throw new Error('API error '+resp.status);
+  const data=await resp.json();
+  const txt=data.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();
+  return JSON.parse(txt);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   OBJECTIVES VIEW
+═══════════════════════════════════════════════════════════ */
+function viewObjectives(){
+  if(!S.objs.length) return ph('Output','Obiettivi','assegnati')+`
+    <div class="card empty-state">
+      <div class="empty-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#C4B89C" stroke-width="1.2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+      <div class="empty-title">Nessun obiettivo generato</div>
+      <div class="empty-sub">Avvia la generazione per calibrare gli obiettivi sulle strutture competenti.</div>
+      <button class="btn btn-ai" onclick="nav('generate')">◆ vai alla generazione</button>
+    </div>`;
+
+  const tcounts={all:S.objs.length,eccellente:0,buona:0,adeguata:0,recupero:0};
+  S.objs.forEach(o=>tcounts[o.tier]++);
+  const areas=[...new Set(S.objs.map(o=>o.area))];
+  const q=S.search.toLowerCase();
+  const filtered=S.objs.filter(o=>
+    (S.filter==='all'||o.tier===S.filter)&&
+    (S.areaFilter==='all'||o.area===S.areaFilter)&&
+    (!q||o.title.toLowerCase().includes(q)||o.structure.toLowerCase().includes(q)||o.id.toLowerCase().includes(q))
+  );
+  const ustructs=new Set(filtered.map(o=>o.structureCode)).size;
+
+  return ph('Fase IV · output','Obiettivi','assegnati','Schede-obiettivo con target calibrato sulla performance storica e razionale dello stretch applicato.',
+    `<button class="btn btn-ghost" onclick="exportCSV()">↓ CSV</button>
+     <button class="btn btn-ghost" onclick="exportJSON()">↓ JSON</button>`) +
+  `<div class="filter-bar">
+    <div class="chips">
+      ${[['all','Tutti'],['eccellente','Eccellenti'],['buona','Buone'],['adeguata','Adeguate'],['recupero','In recupero']].map(([k,l])=>`
+        <button class="chip ${S.filter===k?'active':''}" onclick="S.filter='${k}';render()">${l} <span style="opacity:.5;margin-left:3px">${tcounts[k]||''}</span></button>
+      `).join('')}
+    </div>
+    <div class="filter-right">
+      <select onchange="S.areaFilter=this.value;render()">
+        <option value="all">Tutte le aree</option>
+        ${areas.map(a=>`<option ${S.areaFilter===a?'selected':''}>${a}</option>`).join('')}
+      </select>
+      <input placeholder="cerca…" value="${esc(S.search)}" oninput="S.search=this.value;render();document.querySelector('.filter-right input').focus()">
+    </div>
+  </div>
+  <div class="obj-count-bar">${filtered.length} di ${S.objs.length} obiettivi · ${ustructs} strutture</div>
+  <div class="obj-list">
+    ${filtered.map(o=>objCard(o)).join('')}
+  </div>`;
+}
+
+function objCard(o){
+  const arrow=o.direction==='up'?'↑':'↓';
+  const sign=o.direction==='up'?'+':'−';
+  const rationale={
+    eccellente:`Struttura con performance storica eccellente (${o.avgPerf.toFixed(1)}). Stretch sfidante +${o.stretch}% per valorizzare la capacità realizzativa e prevenire fenomeni di plateau.`,
+    buona:`Struttura con performance buona (${o.avgPerf.toFixed(1)}). Stretch +${o.stretch}% per progredire verso la fascia di eccellenza.`,
+    adeguata:`Struttura con performance adeguata (${o.avgPerf.toFixed(1)}). Stretch contenuto +${o.stretch}% per il consolidamento dei risultati.`,
+    recupero:`Struttura in fase di recupero (${o.avgPerf.toFixed(1)}). Stretch minimo +${o.stretch}% per un percorso sostenibile di miglioramento.`
+  }[o.tier];
+  return `<div class="obj-card" data-tier="${o.tier}">
+    <div class="obj-main">
+      <div class="obj-meta">${esc(o.id)} · ${esc(o.line)} · peso ${o.weight}%</div>
+      <div class="obj-title">${esc(o.title)}</div>
+      <div class="obj-desc">${esc(o.desc)}</div>
+      <div class="obj-attrs">
+        <div><div class="obj-attr-label">Indicatore</div><div class="obj-attr-val">${esc(o.indicator)}</div></div>
+        <div><div class="obj-attr-label">Linea</div><div class="obj-attr-val">${esc(o.lineTitle)}</div></div>
+        <div><div class="obj-attr-label">Direzione</div><div class="obj-attr-val">${arrow} ${o.direction==='up'?'incremento':'riduzione'}</div></div>
+      </div>
+      <div class="obj-rationale">${rationale}</div>
+    </div>
+    <div class="obj-side">
+      <div class="obj-target-section">
+        <div class="obj-target-label">Target base</div>
+        <div class="obj-target-base">${o.baseTarget} ${o.unit}</div>
+        <div class="obj-target-label" style="margin-top:12px">Target calibrato</div>
+        <div class="obj-target-cal">${o.calibratedTarget}<span class="obj-target-unit">${esc(o.unit)}</span></div>
+        <div class="obj-stretch-badge">stretch ${sign}${o.stretch}%</div>
+      </div>
+      <div class="obj-assigned">
+        <div class="obj-assigned-label">Assegnato a</div>
+        <div class="obj-assigned-name">${esc(o.structure)}</div>
+        <div class="obj-assigned-meta">${esc(o.structureCode)} · perf. media ${o.avgPerf.toFixed(1)} · <span class="tier-badge tier-${o.tier}" style="font-size:7px">${o.tierLabel}</span></div>
+        <button class="btn btn-danger btn-sm" onclick="deleteObj('${esc(o.id)}')" style="width:100%;justify-content:center;margin-top:10px">× rimuovi</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function deleteObj(id){
+  if(!confirm('Eliminare questo obiettivo?')) return;
+  S.objs=S.objs.filter(o=>o.id!==id);
+  saveAll(); render();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   EXPORT
+═══════════════════════════════════════════════════════════ */
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(S.objs,null,2)],{type:'application/json'});
+  dl(blob,'obiettivi-calibrati-piao.json');
+}
+function exportCSV(){
+  const hdr=['ID','Linea','Titolo','Struttura','Codice','Fascia','Indice','Indicatore','Target Base','Target Calibrato','Unità','Stretch %','Peso %'];
+  const rows=S.objs.map(o=>[o.id,o.line,`"${o.title}"`,`"${o.structure}"`,o.structureCode,o.tierLabel,o.avgPerf,`"${o.indicator}"`,o.baseTarget,o.calibratedTarget,o.unit,o.stretch,o.weight]);
+  const csv=[hdr,...rows].map(r=>r.join(',')).join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+  dl(blob,'obiettivi-calibrati-piao.csv');
+}
+function dl(blob,name){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=name;document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════════════════════ */
+function modal(title,body,footer){
+  document.getElementById('modal-host').innerHTML=`
+    <div class="modal-overlay" onclick="closeModal(event)">
+      <div class="modal-box" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <div class="modal-title">${title}</div>
+        ${body}
+        <div class="modal-footer">${footer}</div>
+      </div>
+    </div>`;
+}
+function closeModal(e){
+  if(e&&!e.target.classList.contains('modal-overlay')) return;
+  document.getElementById('modal-host').innerHTML='';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE BUTTON
+═══════════════════════════════════════════════════════════ */
+const mBtn=document.getElementById('mobile-btn');
+if(window.innerWidth<=768) mBtn.style.display='inline-flex';
+window.addEventListener('resize',()=>{mBtn.style.display=window.innerWidth<=768?'inline-flex':'none';});
+
+/* ═══════════════════════════════════════════════════════════
+   BOOT
+═══════════════════════════════════════════════════════════ */
+loadAll();
+render();
+</script>
+</body>
+</html>

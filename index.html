@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dashboard KPI – PNRR / MUR</title>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+  :root{
+    --bg:#eef2f6;
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#64748b;
+    --primary:#005aa7;
+    --primary-2:#0b4e8a;
+    --border:#e2e8f0;
+    --danger:#b91c1c;
+    --ok:#0f766e;
+    --shadow: 0 2px 10px rgba(15, 23, 42, .08);
+    --radius: 10px;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    padding: 28px;
+    margin: 0;
+    color: var(--text);
+  }
+
+  h1 {
+    color: #002b55;
+    margin: 0 0 18px 0;
+    font-size: 22px;
+    line-height: 1.2;
+  }
+
+  .wrap{
+    max-width: 1800px;
+    margin: 0 auto;
+  }
+
+  .upload-box {
+    background: var(--card);
+    padding: 18px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 18px;
+    border: 1px solid var(--border);
+  }
+
+  .grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  .grid.two {
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+  }
+
+  @media (max-width: 860px){
+    .grid.two { grid-template-columns: 1fr; }
+  }
+
+  .field {
+    display: grid;
+    gap: 6px;
+  }
+
+  .label {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  input[type="file"]{
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    background: #fff;
+  }
+
+  .actions{
+    display:flex;
+    gap: 10px;
+    align-items:center;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: .12s ease;
+  }
+
+  button:hover{ background: var(--primary-2); }
+  button:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+  }
+
+  .hint{
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .status{
+    font-size: 13px;
+    color: var(--muted);
+    display:flex;
+    align-items:center;
+    gap: 10px;
+  }
+
+  .pill{
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: #f8fafc;
+    color: var(--muted);
+  }
+
+  .pill.ok { border-color: rgba(15,118,110,.25); background: rgba(15,118,110,.08); color: var(--ok); }
+  .pill.err { border-color: rgba(185,28,28,.25); background: rgba(185,28,28,.08); color: var(--danger); }
+
+  .loader {
+    display: none;
+    border: 5px solid #f1f5f9;
+    border-top: 5px solid var(--primary);
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .sections{
+    display:grid;
+    gap: 18px;
+    margin-top: 16px;
+  }
+
+  .section{
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .section-head{
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .section-title{
+    margin:0;
+    font-size: 15px;
+    font-weight: 700;
+    color:#0b2b55;
+  }
+
+  .section-body{
+    padding: 16px;
+  }
+
+  /* KPI cards */
+  .dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 14px;
+  }
+
+  .topic-card {
+    background: white;
+    border-radius: 10px;
+    padding: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .topic-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #002b55;
+    margin-bottom: 6px;
+  }
+
+  .topic-meta {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .topic-objective{
+    font-size: 13px;
+    color: #0f172a;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin: 10px 0 14px 0;
+    line-height: 1.35;
+  }
+
+  .insight {
+    border-left: 4px solid var(--primary);
+    padding-left: 12px;
+    margin-bottom: 12px;
+  }
+
+  .insight-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #111827;
+  }
+
+  .insight-body {
+    font-size: 13px;
+    color: #334155;
+    margin-top: 4px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+  }
+
+  /* Indicators table */
+  .table-wrap{
+    overflow:auto;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  table{
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    min-width: 760px;
+  }
+
+  thead th{
+    position: sticky;
+    top: 0;
+    background: #f8fafc;
+    color: #0f172a;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody td{
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    color: #0f172a;
+    vertical-align: top;
+  }
+
+  tbody tr:hover{
+    background: #f8fafc;
+  }
+
+  .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+  .empty{
+    color: var(--muted);
+    font-size: 13px;
+  }
+    /* Footer banner logos */
+  .footer-banner{
+    margin-top: 22px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 12px 16px;
+    display:flex;
+    align-items:center;
+    justify-content: center;
+  }
+
+  .footer-logos{
+    width: 100%;
+    display:flex;
+    align-items:center;
+    justify-content: center;
+    gap: 26px;
+    flex-wrap: wrap;
+  }
+
+  .footer-logos img{
+    height: 46px;
+    width: auto;
+    object-fit: contain;
+    filter: none;
+  }
+
+  .footer-sep{
+    width: 1px;
+    height: 42px;
+    background: var(--border);
+  }
+
+  @media (max-width: 520px){
+    .footer-sep{ display:none; }
+    .footer-logos img{ height: 40px; }
+  }
+
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <h1>Dashboard KPI – Attuazione Strategica PNRR (MUR)</h1>
+
+  <div class="upload-box">
+    <div class="grid two">
+      <div class="field">
+        <div class="label">Indicatori (campo form: <span class="mono">data</span>)</div>
+        <input type="file" id="fileIndicators" />
+      </div>
+      <div class="field">
+        <div class="label">Atto di indirizzo (campo form: <span class="mono">indirizzo</span>)</div>
+        <input type="file" id="fileIndirizzo" />
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="uploadBtn">Carica e Analizza</button>
+      <button id="mapBtn" style="display:none;">Effettua mapping</button>
+      <div class="loader" id="loader" aria-label="Caricamento"></div>
+      <div class="status">
+        <span class="hint">Timeout massimo: 10 minuti. La pagina resta in attesa della risposta.</span>
+        <span class="pill" id="pillState">Pronto</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="sections">
+
+    <div class="section" id="sectionIndicators" style="display:none;">
+      <div class="section-head">
+        <h2 class="section-title">Indicators</h2>
+        <span class="pill ok" id="indicatorsCount">0 righe</span>
+      </div>
+      <div class="section-body">
+        <div class="table-wrap">
+          <table>
+            <thead>
+  <tr>
+    <th style="width:170px;">codice</th>
+    <th>obiettivo_operativo</th>
+    <th>obiettivo_strategico</th>
+    <th style="width:110px;">peso</th>
+    <th style="width:170px;">id</th>
+    <th style="width:220px;">dimensione</th>
+    <th style="width:260px;">responsabile</th>
+    <th>formula</th>
+  </tr>
+</thead>
+
+            <tbody id="indicatorsTbody"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="indicatorsEmpty" style="display:none; margin-top:10px;">
+          Nessun indicatore presente in risposta.
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="sectionKpi" style="display:none;">
+      <div class="section-head">
+        <h2 class="section-title">KPI (topics / objective / insights)</h2>
+        <span class="pill ok" id="kpiCount">0 topic</span>
+      </div>
+      <div class="section-body">
+        <div class="dashboard" id="dashboard"></div>
+        <div class="empty" id="kpiEmpty" style="display:none;">
+          Nessun KPI presente in risposta.
+        </div>
+      </div>
+    </div>
+    <div class="footer-banner" aria-label="Loghi partner">
+          <img src="assets/gotmat.png" alt="GOTMAT" loading="lazy"> 
+        
+    </div>
+    <div style="display: flex; text-align: center; margin: auto;">
+    <div class="footer-banner" aria-label="Loghi partner" style="width: 70%; margin-right: 20px ;">
+        Soluzione realizzata dalla collaborazione di Università degli Studi di Salerno e Università degli Studi della Campania "Luigi Vanvitelli" nel corso del progetto Governing Technology to Manage the Transition (GoTMaT)
+    </div>
+
+    <div class="footer-banner" aria-label="Loghi partner">
+        <div class="footer-logos">
+          <img src="assets/unisa-logo.png" alt="Università degli Studi di Salerno (UNISA)" loading="lazy">
+          <div class="footer-sep" aria-hidden="true"></div>
+          <img src="assets/vanvitelli-logo.jpeg" alt="Università degli Studi della Campania 'Luigi Vanvitelli'" loading="lazy">
+        </div>
+        
+    </div></div>
+
+</div>
+
+  </div>
+</div>
+
+<script>
+  const ENDPOINT_URL = "https://n8n.habeslab.it/webhook/evaluate_kpi";
+  const TEN_MINUTES_MS = 10 * 60 * 1000;
+  const MAPPING_ENDPOINT_URL = "https://n8n.habeslab.it/webhook/make_mapping";
+
+    // tengo in memoria l'ultima risposta ricevuta dal server (quella da reinviare al mapping)
+    let LAST_SERVER_RESPONSE = null;
+
+    // dizionario: insightTitle -> [kpiName1, kpiName2, ...]
+    let INSIGHT_TO_KPIS = {};
+
+    let INSIGHT_TO_INDICATOR_IDS = {};
+
+  function setState(text, type) {
+    const pill = $("#pillState");
+    pill.removeClass("ok err");
+    if (type === "ok") pill.addClass("ok");
+    if (type === "err") pill.addClass("err");
+    pill.text(text);
+  }
+
+  function resetUI() {
+    $("#dashboard").empty();
+    $("#indicatorsTbody").empty();
+
+    $("#sectionIndicators").hide();
+    $("#sectionKpi").hide();
+
+    $("#indicatorsEmpty").hide();
+    $("#kpiEmpty").hide();
+
+    $("#indicatorsCount").text("0 righe");
+    $("#kpiCount").text("0 topic");
+
+    $("#mapBtn").hide().prop("disabled", true);
+    INSIGHT_TO_KPIS = {};
+    INSIGHT_TO_INDICATOR_IDS = {};
+
+  }
+
+  function escapeText(value) {
+    if (value === null || value === undefined) return "";
+    return String(value);
+  }
+
+  function renderIndicators(indicators) {
+  $("#sectionIndicators").show();
+
+  if (!Array.isArray(indicators) || indicators.length === 0) {
+    $("#indicatorsEmpty").show();
+    $("#indicatorsCount").text("0 righe");
+    return;
+  }
+
+  // Flatten: una riga per ogni elemento in parent.indicatori[]
+  const rows = [];
+  indicators.forEach((parent) => {
+    const parentCodice = parent?.codice ?? "";
+    const parentObOp   = parent?.obiettivo_operativo ?? "";
+    const parentObSt   = parent?.obiettivo_strategico ?? "";
+    const parentPeso   = parent?.peso ?? "";
+
+    const children = Array.isArray(parent?.indicatori) ? parent.indicatori : [];
+
+    // Se per qualche motivo non ci sono figli, mostro comunque una riga "vuota"
+    if (children.length === 0) {
+      rows.push({
+        codice: parentCodice,
+        obiettivo_operativo: parentObOp,
+        obiettivo_strategico: parentObSt,
+        peso: parentPeso,
+        id: "",
+        dimensione: "",
+        responsabile: "",
+        formula: ""
+      });
+      return;
+    }
+
+    children.forEach((child) => {
+      rows.push({
+        codice: parentCodice,
+        obiettivo_operativo: parentObOp,
+        obiettivo_strategico: parentObSt,
+        peso: parentPeso,
+        id: child?.idIndicatore ?? "",
+        dimensione: child?.dimensione ?? "",
+        responsabile: child?.responsabile ?? "",
+        formula: child?.formula ?? ""
+      });
+    });
+  });
+
+  $("#indicatorsCount").text(rows.length + " righe");
+  $("#indicatorsTbody").empty();
+
+  rows.forEach((r) => {
+    const tr = $("<tr>");
+    tr.append($("<td>").addClass("mono").text(escapeText(r.codice)));
+    tr.append($("<td>").text(escapeText(r.obiettivo_operativo)));
+    tr.append($("<td>").text(escapeText(r.obiettivo_strategico)));
+    tr.append($("<td>").text(escapeText(r.peso)));
+    tr.append($("<td>").addClass("mono").text(escapeText(r.id)));
+    tr.append($("<td>").text(escapeText(r.dimensione)));
+    tr.append($("<td>").text(escapeText(r.responsabile)));
+    tr.append($("<td>").text(escapeText(r.formula)));
+
+    $("#indicatorsTbody").append(tr);
+  });
+}
+
+
+  // KPI: mostro come ora, ma in più gestisco l’eventuale campo "objective"
+  function renderKpi(topics) {
+    $("#sectionKpi").show();
+
+    if (!Array.isArray(topics) || topics.length === 0) {
+      $("#kpiEmpty").show();
+      $("#kpiCount").text("0 topic");
+      return;
+    }
+
+    $("#kpiCount").text(topics.length + " topic");
+
+    topics.forEach((topicObj) => {
+      const topicCard = $("<div>").addClass("topic-card");
+
+      topicCard.append(
+        $("<div>").addClass("topic-title").text(escapeText(topicObj?.topic ?? ""))
+      );
+
+      const insightsArr = Array.isArray(topicObj?.insights) ? topicObj.insights : [];
+      const insightsCount = insightsArr.length;
+
+      topicCard.append(
+        $("<div>")
+          .addClass("topic-meta")
+          .text(`Linee di intervento / KPI qualitativi: ${insightsCount}`)
+      );
+
+      // objective (se presente nella nuova risposta kpi)
+      if (topicObj?.objective) {
+        topicCard.append(
+          $("<div>").addClass("topic-objective").text(escapeText(topicObj.objective))
+        );
+      }
+
+      insightsArr.forEach((insight) => {
+        const insightDiv = $("<div>").addClass("insight");
+
+        const title = escapeText(insight?.title ?? "");
+const ids = Array.isArray(INSIGHT_TO_INDICATOR_IDS[title]) ? INSIGHT_TO_INDICATOR_IDS[title] : [];
+
+const titleRow = $("<div>").css({
+  display: "flex",
+  gap: "8px",
+  alignItems: "center",
+  flexWrap: "wrap"
+});
+
+titleRow.append(
+  $("<div>").addClass("insight-title").text(title)
+);
+
+// aggiungo tutte le idIndicatore associate a questo insight title
+ids.forEach((id) => {
+  titleRow.append(
+    $("<span>").addClass("pill ok mono").text(id)
+  );
+});
+
+insightDiv.append(titleRow);
+
+
+        insightDiv.append(
+          $("<div>").addClass("insight-body").text(escapeText(insight?.body ?? ""))
+        );
+
+        topicCard.append(insightDiv);
+      });
+
+      $("#dashboard").append(topicCard);
+    });
+  }
+
+  $("#mapBtn").on("click", function () {
+      if (!LAST_SERVER_RESPONSE) {
+        alert("Nessuna risposta precedente disponibile per il mapping.");
+        return;
+      }
+
+      $("#loader").show();
+      $("#uploadBtn").prop("disabled", true);
+      $("#mapBtn").prop("disabled", true);
+      setState("Mapping in corso…", "ok");
+
+      $.ajax({
+        url: MAPPING_ENDPOINT_URL,
+        method: "POST",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(LAST_SERVER_RESPONSE),
+        timeout: TEN_MINUTES_MS,
+        success: function (mappingResp) {
+          console.log(mappingResp)
+          INSIGHT_TO_INDICATOR_IDS = {};
+
+            if (Array.isArray(mappingResp)) {
+                mappingResp.forEach((item) => {
+                    const idIndicatore = item?.idIndicatore ?? "";
+                    const titles = Array.isArray(item?.titoloInsights) ? item.titoloInsights : [];
+
+                    titles.forEach((t) => {
+                        const title = String(t ?? "").trim();
+                        if (!title) return;
+
+                        if (!INSIGHT_TO_INDICATOR_IDS[title]) INSIGHT_TO_INDICATOR_IDS[title] = [];
+                        if (idIndicatore && !INSIGHT_TO_INDICATOR_IDS[title].includes(idIndicatore)) {
+                            INSIGHT_TO_INDICATOR_IDS[title].push(idIndicatore);
+                        }
+                    });
+                });
+            }
+
+            // Ri-render KPI per applicare i tag sugli insight
+            const normalized = normalizeResponse(LAST_SERVER_RESPONSE);
+  $("#dashboard").empty();
+  renderKpi(normalized.kpi);
+
+  setState("Mapping completato", "ok");
+},
+        error: function (xhr, status) {
+          if (status === "timeout") {
+            setState("Timeout mapping (10 min)", "err");
+            alert("Il mapping ha superato i 10 minuti di attesa (timeout).");
+            return;
+          }
+          setState("Errore mapping", "err");
+          alert("Errore nella richiesta di mapping.");
+        },
+        complete: function () {
+          $("#loader").hide();
+          $("#uploadBtn").prop("disabled", false);
+          $("#mapBtn").prop("disabled", false);
+        }
+      });
+  });
+
+  function normalizeResponse(resp) {
+    // Nuovo formato atteso: { indicators, kpi }
+    // fallback: se l'endpoint ancora risponde col vecchio array topics, lo interpreto come kpi
+    if (resp && typeof resp === "object" && !Array.isArray(resp)) {
+      const indicators = resp.indicators ?? [];
+      const kpi = resp.kpi ?? [];
+      return { indicators, kpi };
+    }
+    if (Array.isArray(resp)) {
+      return { indicators: [], kpi: resp };
+    }
+    return { indicators: [], kpi: [] };
+  }
+
+  $("#uploadBtn").on("click", function () {
+    const fileIndicators = document.getElementById("fileIndicators");
+    const fileIndirizzo = document.getElementById("fileIndirizzo");
+
+    if (!fileIndicators.files.length) {
+      alert("Seleziona il file Indicatori (data).");
+      return;
+    }
+    if (!fileIndirizzo.files.length) {
+      alert("Seleziona il file Atto di indirizzo (indirizzo).");
+      return;
+    }
+
+    const form = new FormData();
+    // nomi richiesti:
+    form.append("data", fileIndicators.files[0]);        // indicatori
+    form.append("indirizzo", fileIndirizzo.files[0]);    // atto di indirizzo
+
+    resetUI();
+    $("#loader").show();
+    $("#uploadBtn").prop("disabled", true);
+    setState("Invio in corso…", "ok");
+
+    $.ajax({
+      url: ENDPOINT_URL,
+      method: "POST",
+      processData: false,
+      contentType: false,
+      data: form,
+      timeout: TEN_MINUTES_MS, // <= attende fino a 10 minuti
+      success: function (resp) {
+        try {
+          const { indicators, kpi } = normalizeResponse(resp);
+          LAST_SERVER_RESPONSE = resp; // salvo la risposta originale del server
+          $("#mapBtn").show().prop("disabled", false);
+
+          renderIndicators(indicators);
+          renderKpi(kpi);
+
+          setState("Completato", "ok");
+        } catch (e) {
+          console.error(e);
+          setState("Errore parsing risposta", "err");
+          alert("Errore nel parsing della risposta.");
+        }
+      },
+      error: function (xhr, status) {
+        if (status === "timeout") {
+          setState("Timeout (10 min)", "err");
+          alert("La richiesta ha superato i 10 minuti di attesa (timeout).");
+          return;
+        }
+        setState("Errore richiesta", "err");
+        alert("Errore nella richiesta.");
+      },
+      complete: function () {
+        $("#loader").hide();
+        $("#uploadBtn").prop("disabled", false);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
