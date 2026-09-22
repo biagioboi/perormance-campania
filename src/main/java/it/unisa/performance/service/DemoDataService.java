@@ -2,7 +2,9 @@ package it.unisa.performance.service;
 
 import it.unisa.performance.domain.Priority;
 import it.unisa.performance.domain.StrategicLine;
+import it.unisa.performance.domain.StrategicLineType;
 import it.unisa.performance.domain.StructureUnit;
+import it.unisa.performance.domain.StructureUnitType;
 import it.unisa.performance.repository.StrategicLineRepository;
 import it.unisa.performance.repository.StructureUnitRepository;
 import java.util.List;
@@ -24,8 +26,16 @@ public class DemoDataService {
 
   @Transactional
   public void seedIfEmpty() {
-    upsertStrategicLines(defaultStrategicLines());
-    upsertStructures(defaultStructures());
+    // Runs on every app boot (ApplicationRunner) — must only touch the database on a genuinely
+    // fresh install. Previously this upserted the demo rows unconditionally on every restart,
+    // silently overwriting any real strategic line or structure that happened to reuse a demo code
+    // (e.g. LS.01-LS.06).
+    if (strategicLineRepository.count() == 0) {
+      upsertStrategicLines(defaultStrategicLines());
+    }
+    if (structureUnitRepository.count() == 0) {
+      upsertStructures(defaultStructures());
+    }
   }
 
   @Transactional
@@ -51,7 +61,7 @@ public class DemoDataService {
 
   private List<StructureUnit> defaultStructures() {
     return List.of(
-        structure("DG.50.01", "DG Risorse Umane", "Trasversale", 78, 82, 86),
+        /*structure("DG.50.01", "DG Risorse Umane", "Trasversale", 78, 82, 86),
         structure("DG.50.02", "DG Risorse Finanziarie e Patrimonio", "Trasversale", 84, 88, 91),
         structure("DG.50.03", "DG Sviluppo Economico e Attivita Produttive", "Sviluppo Economico", 72, 75, 79),
         structure("DG.50.04", "DG Tutela della Salute", "Sanita", 68, 71, 74),
@@ -61,7 +71,7 @@ public class DemoDataService {
         structure("DG.50.08", "DG Governo del Territorio e Lavori Pubblici", "Ambiente", 70, 73, 77),
         structure("DG.50.09", "DG Ambiente, Difesa del Suolo ed Ecosistema", "Ambiente", 79, 83, 89),
         structure("DG.50.10", "DG Politiche Culturali e Turismo", "Cultura e Turismo", 85, 89, 92),
-        structure("DG.50.11", "DG Universita, Ricerca e Innovazione", "Digitalizzazione", 88, 91, 93),
+        structure("DG.50.11", "DG Universita, Ricerca e Innovazione", "Digitalizzazione", 88, 91, 93),*/
         structure("DG.50.12", "DG Politiche Agricole e Forestali", "Sviluppo Economico", 74, 77, 80));
   }
 
@@ -69,6 +79,7 @@ public class DemoDataService {
     var line = new StrategicLine();
     line.setCode(code);
     line.setTitle(title);
+    line.setType(StrategicLineType.macro_categoria);
     line.setArea(area);
     line.setPriority(priority);
     line.setDescription(description);
@@ -82,6 +93,8 @@ public class DemoDataService {
               .orElseGet(StrategicLine::new);
           line.setCode(defaultLine.getCode());
           line.setTitle(defaultLine.getTitle());
+          line.setType(defaultLine.getType());
+          line.setParent(defaultLine.getParent());
           line.setArea(defaultLine.getArea());
           line.setPriority(defaultLine.getPriority());
           line.setDescription(defaultLine.getDescription());
@@ -99,6 +112,8 @@ public class DemoDataService {
               .orElseGet(StructureUnit::new);
           structure.setCode(defaultStructure.getCode());
           structure.setName(defaultStructure.getName());
+          structure.setType(defaultStructure.getType());
+          structure.setParent(defaultStructure.getParent());
           structure.setArea(defaultStructure.getArea());
           structure.setPerformance2023(defaultStructure.getPerformance2023());
           structure.setPerformance2024(defaultStructure.getPerformance2024());
@@ -115,6 +130,7 @@ public class DemoDataService {
     var structure = new StructureUnit();
     structure.setCode(code);
     structure.setName(name);
+    structure.setType(StructureUnitType.direzione_generale);
     structure.setArea(area);
     structure.setPerformance2023(p2023);
     structure.setPerformance2024(p2024);

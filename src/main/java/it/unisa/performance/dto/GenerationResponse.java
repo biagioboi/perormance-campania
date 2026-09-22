@@ -14,7 +14,11 @@ public record GenerationResponse(
 
   public static GenerationResponse from(GenerationRun run) {
     var objectives = run.getObjectives().stream().map(ObjectiveResponse::from).toList();
-    double avgStretch = objectives.stream().mapToDouble(ObjectiveResponse::stretch).average().orElse(0);
+    double avgStretch = objectives.stream()
+        .flatMap(objective -> objective.assignments().stream())
+        .mapToDouble(ObjectiveResponse.AssignmentResponse::stretch)
+        .average()
+        .orElse(0);
     return new GenerationResponse(
         run.getId(),
         run.getCreatedAt(),

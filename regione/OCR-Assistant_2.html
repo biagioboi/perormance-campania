@@ -153,7 +153,7 @@ tr:hover td{background:rgba(178,58,47,.03)}
 .prog-fill{height:100%;transition:width .5s ease}
 .prog-val{font-family:var(--font-mono);font-size:11px;font-weight:500;min-width:34px;text-align:right}
 
-/* ── PIAO cards grid ─────────────────────── */
+/* ── DEFRC cards grid ─────────────────────── */
 .strat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
 .strat-card{background:var(--parchment-2);border:1px solid rgba(15,29,52,.2);padding:22px;position:relative;transition:all .2s}
 .strat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
@@ -386,7 +386,7 @@ canvas{display:block}
     <div class="sb-org">
       <div class="sb-org-label">Ente</div>
       <div class="sb-org-name">Regione Campania</div>
-      <div class="sb-org-sub">PIAO 2026 – 2028</div>
+      <div class="sb-org-sub">DEFRC 2026 – 2028</div>
     </div>
 
     <nav class="sb-nav">
@@ -395,9 +395,9 @@ canvas{display:block}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         Dashboard
       </div>
-      <div class="nav-item" data-view="piao" onclick="nav('piao')">
+      <div class="nav-item" data-view="defrc" onclick="nav('defrc')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        Linee PIAO
+        Linee DEFRC
         <span class="nav-badge" id="badge-lines">0</span>
       </div>
       <div class="nav-item" data-view="structures" onclick="nav('structures')">
@@ -591,16 +591,16 @@ function avgPerf(s){
 }
 
 function tierOf(v){
-  if(v>=90) return {k:'eccellente',l:'Eccellente',c:'#5C7A4F'};
-  if(v>=80) return {k:'buona',l:'Buona',c:'#8AA37A'};
-  if(v>=70) return {k:'adeguata',l:'Adeguata',c:'#9A7B43'};
+  if(v>=99) return {k:'eccellente',l:'Eccellente',c:'#5C7A4F'};
+  if(v>=98) return {k:'buona',l:'Buona',c:'#8AA37A'};
+  if(v>=97) return {k:'adeguata',l:'Adeguata',c:'#9A7B43'};
   return {k:'recupero',l:'In recupero',c:'#B23A2F'};
 }
 
 function getStretch(v){
-  if(v>=90) return S.calib.ecc/100;
-  if(v>=80) return S.calib.buo/100;
-  if(v>=70) return S.calib.ade/100;
+  if(v>=99) return S.calib.ecc/100;
+  if(v>=98) return S.calib.buo/100;
+  if(v>=97) return S.calib.ade/100;
   return S.calib.rec/100;
 }
 
@@ -649,7 +649,7 @@ function render(){
 
   switch(S.view){
     case 'dashboard':   div.innerHTML=viewDashboard();   break;
-    case 'piao':        div.innerHTML=viewPIAO();         break;
+    case 'defrc':        div.innerHTML=viewDEFRC();         break;
     case 'structures':  div.innerHTML=viewStructures();   break;
     case 'calibration': div.innerHTML=viewCalibration();  break;
     case 'generate':    div.innerHTML=viewGenerate();     break;
@@ -685,16 +685,16 @@ function viewDashboard(){
   const hp = S.lines.filter(l=>l.priority==='alta').length;
 
   const wfStatus = [
-    {n:'I',l:'Linee PIAO',v:'piao',done:S.lines.length>0},
+    {n:'I',l:'Linee DEFRC',v:'defrc',done:S.lines.length>0},
     {n:'II',l:'Strutture',v:'structures',done:S.structs.length>0},
     {n:'III',l:'Calibrazione',v:'calibration',done:true},
     {n:'IV',l:'Generazione',v:'generate',done:S.objs.length>0}
   ];
 
-  return ph('Dashboard · sintesi','Quadro','d\'insieme','Vista riassuntiva: linee strategiche PIAO, baseline delle strutture e obiettivi calibrati generati dal modello.',
+  return ph('Dashboard · sintesi','Quadro','d\'insieme','Vista riassuntiva: linee strategiche DEFRC, baseline delle strutture e obiettivi calibrati generati dal modello.',
     `<button class="btn btn-ai" onclick="nav('generate')">◆ nuova generazione</button>`) +
   `<div class="kpi-grid">
-    <div class="kpi-card kpi-ink" onclick="nav('piao')">
+    <div class="kpi-card kpi-ink" onclick="nav('defrc')">
       <div class="kpi-label">Linee Strategiche</div>
       <div class="kpi-value">${S.lines.length}</div>
       <div class="kpi-sub">${hp} ad alta priorità</div>
@@ -718,7 +718,7 @@ function viewDashboard(){
   <div class="charts-row">
     <div class="chart-card">
       <div class="chart-title">Performance <em>per struttura</em></div>
-      <div class="chart-sub">indice medio ponderato 2023–2025 (ordinato)</div>
+      <div class="chart-sub">indice medio ponderato 2022–2024 (ordinato)</div>
       <canvas id="bar-canvas" height="240" style="width:100%"></canvas>
     </div>
     <div class="chart-card">
@@ -842,10 +842,10 @@ function drawPie(data){
 window.addEventListener('resize',()=>{ if(S.view==='dashboard') setTimeout(drawCharts,60); });
 
 /* ═══════════════════════════════════════════════════════════
-   PIAO VIEW
+   DEFRC VIEW
 ═══════════════════════════════════════════════════════════ */
-function viewPIAO(){
-  return ph('Fase I · pianificazione','Linee strategiche','del PIAO','Ambiti prioritari di intervento estratti dalla Sezione 2 del PIAO. Ogni linea sarà declinata in obiettivi operativi assegnati alle strutture competenti.',
+function viewDEFRC(){
+  return ph('Fase I · pianificazione','Linee strategiche','del DEFRC','Ambiti prioritari di intervento estratti dalla Sezione 2 del DEFRC. Ogni linea sarà declinata in obiettivi operativi assegnati alle strutture competenti.',
     `<button class="btn btn-primary" onclick="openLineModal()">+ nuova linea</button>`) +
   `<div class="strat-grid">
     ${S.lines.map(l=>`
@@ -912,7 +912,7 @@ function viewStructures(){
     <table>
       <thead><tr>
         <th style="width:30%">Struttura</th><th>Codice</th>
-        <th>2023</th><th>2024</th><th>2025</th>
+        <th>2022</th><th>2023</th><th>2024</th>
         <th style="width:20%">Indice medio</th><th>Fascia</th><th style="width:100px"></th>
       </tr></thead>
       <tbody>${filtered.map(s=>{const t=tierOf(s.avg);return`
@@ -951,7 +951,7 @@ function openStructModal(id){
     <div class="field">
       <label class="field-label">Performance storica (0–100)</label>
       <div class="grid-2" style="grid-template-columns:1fr 1fr 1fr;gap:10px">
-        ${['2023','2024','2025'].map((y,i)=>`<div><div style="font-size:10px;color:var(--ink-3);margin-bottom:4px">${y}</div><input type="number" id="ms-h${i}" min="0" max="100" value="${e.h[i]}" class="mono" oninput="refreshStructPreview()"></div>`).join('')}
+        ${['2022','2023','2024'].map((y,i)=>`<div><div style="font-size:10px;color:var(--ink-3);margin-bottom:4px">${y}</div><input type="number" id="ms-h${i}" min="0" max="100" value="${e.h[i]}" class="mono" oninput="refreshStructPreview()"></div>`).join('')}
       </div>
     </div>
     <div id="struct-preview" style="padding:10px 12px;background:var(--parchment-2);border:.5px solid var(--sand-2);font-size:12px;color:var(--ink-3)">
@@ -996,10 +996,10 @@ function viewCalibration(){
   const tc={eccellente:0,buona:0,adeguata:0,recupero:0};
   en.forEach(s=>tc[tierOf(s.avg).k]++);
   const tiers=[
-    {k:'ecc',tk:'eccellente',l:'Eccellente',range:'indice ≥ 90',c:'#5C7A4F',cnt:tc.eccellente,desc:'Strutture di vertice. Stretch sfidante per valorizzare la capacità realizzativa e prevenire fenomeni di plateau.'},
-    {k:'buo',tk:'buona',l:'Buona',range:'indice 80–89',c:'#8AA37A',cnt:tc.buona,desc:'Strutture solide. Stretch significativo per progredire verso la fascia di eccellenza.'},
-    {k:'ade',tk:'adeguata',l:'Adeguata',range:'indice 70–79',c:'#9A7B43',cnt:tc.adeguata,desc:'Strutture in linea con gli standard. Stretch contenuto, orientato al consolidamento.'},
-    {k:'rec',tk:'recupero',l:'In recupero',range:'indice < 70',c:'#B23A2F',cnt:tc.recupero,desc:'Strutture in difficoltà. Stretch minimo per un percorso sostenibile di miglioramento progressivo.'}
+    {k:'ecc',tk:'eccellente',l:'Eccellente',range:'indice 99-100',c:'#5C7A4F',cnt:tc.eccellente,desc:'Strutture di vertice. Stretch sfidante per valorizzare la capacità realizzativa e prevenire fenomeni di plateau.'},
+    {k:'buo',tk:'buona',l:'Buona',range:'indice 98-98,99',c:'#8AA37A',cnt:tc.buona,desc:'Strutture solide. Stretch significativo per progredire verso la fascia di eccellenza.'},
+    {k:'ade',tk:'adeguata',l:'Adeguata',range:'indice 97-97,99',c:'#9A7B43',cnt:tc.adeguata,desc:'Strutture in linea con gli standard. Stretch contenuto, orientato al consolidamento.'},
+    {k:'rec',tk:'recupero',l:'In recupero',range:'indice < 97',c:'#B23A2F',cnt:tc.recupero,desc:'Strutture in difficoltà. Stretch minimo per un percorso sostenibile di miglioramento progressivo.'}
   ];
   return ph('Fase III · parametri','Matrice','di calibrazione','Coefficiente di incremento del target base per fascia di performance. Strutture con performance migliore ricevono target più ambiziosi.') +
   `<div class="calib-grid">
@@ -1224,7 +1224,7 @@ function pickTpl(area,n){
 }
 
 async function aiGenerate(line,n){
-  const prompt=`Sei un esperto del ciclo della performance nella PA italiana e del PIAO.
+  const prompt=`Sei un esperto del ciclo della performance nella PA italiana e del DEFRC.
 Genera ${n} obiettivi operativi SMART per questa linea strategica della Regione Campania:
 - Codice: ${line.code}
 - Titolo: ${line.title}
@@ -1339,14 +1339,14 @@ function deleteObj(id){
 ═══════════════════════════════════════════════════════════ */
 function exportJSON(){
   const blob=new Blob([JSON.stringify(S.objs,null,2)],{type:'application/json'});
-  dl(blob,'obiettivi-calibrati-piao.json');
+  dl(blob,'obiettivi-calibrati-defrc.json');
 }
 function exportCSV(){
   const hdr=['ID','Linea','Titolo','Struttura','Codice','Fascia','Indice','Indicatore','Target Base','Target Calibrato','Unità','Stretch %','Peso %'];
   const rows=S.objs.map(o=>[o.id,o.line,`"${o.title}"`,`"${o.structure}"`,o.structureCode,o.tierLabel,o.avgPerf,`"${o.indicator}"`,o.baseTarget,o.calibratedTarget,o.unit,o.stretch,o.weight]);
   const csv=[hdr,...rows].map(r=>r.join(',')).join('\n');
   const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
-  dl(blob,'obiettivi-calibrati-piao.csv');
+  dl(blob,'obiettivi-calibrati-defrc.csv');
 }
 function dl(blob,name){
   const url=URL.createObjectURL(blob);

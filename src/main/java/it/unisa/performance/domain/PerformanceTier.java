@@ -17,13 +17,13 @@ public enum PerformanceTier {
   }
 
   public static PerformanceTier fromAverage(double average) {
-    if (average >= 90) {
+    if (average >= 99) {
       return eccellente;
     }
-    if (average >= 80) {
+    if (average >= 98) {
       return buona;
     }
-    if (average >= 70) {
+    if (average >= 97) {
       return adeguata;
     }
     return recupero;

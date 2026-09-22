@@ -1,0 +1,53 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: ${DB_URL:-jdbc:mysql://mysql:3306/performance?useSSL=false&serverTimezone=Europe/Rome&allowPublicKeyRetrieval=true}
+      DB_USERNAME: ${DB_USERNAME:-root}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DRIVER: com.mysql.cj.jdbc.Driver
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://172.16.16.206:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-gemma4:12b}
+      OLLAMA_VISION_MODEL: ${OLLAMA_VISION_MODEL:-gemma4:12b}
+      OLLAMA_EMBEDDING_MODEL: ${OLLAMA_EMBEDDING_MODEL:-nomic-embed-text}
+      PDF_EXTRACTOR_BASE_URL: http://pdf-extractor:8000
+      QDRANT_BASE_URL: http://qdrant:6333
+      QDRANT_COLLECTION: ${QDRANT_COLLECTION:-rag_chunks}
+    depends_on:
+      pdf-extractor:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+    networks:
+      - performance-network
+
+  pdf-extractor:
+    build: ./pdf-extractor-service
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - performance-network
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    volumes:
+      - qdrant-data:/qdrant/storage
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/localhost/6333"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - performance-network
+
+networks:
+  performance-network:
+    external: true
+
+volumes:
+  qdrant-data:

@@ -42,6 +42,8 @@ public class ObjectiveTemplateCatalog {
     return pool.stream().limit(count).toList();
   }
 
+  private static final int TEMPLATE_ACTION_WEIGHT = 20;
+
   private static ObjectiveTemplate template(
       String title,
       String description,
@@ -49,6 +51,7 @@ public class ObjectiveTemplateCatalog {
       double base,
       String unit,
       Direction direction) {
-    return new ObjectiveTemplate(title, description, indicator, base, unit, direction);
+    var action = new ObjectiveActionTemplate(description, indicator, base, unit, direction, TEMPLATE_ACTION_WEIGHT);
+    return new ObjectiveTemplate(title, description, List.of(action));
   }
 }

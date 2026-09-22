@@ -1,16 +1,18 @@
 package it.unisa.performance.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "objectives")
@@ -29,24 +31,14 @@ public class Objective {
   @Column(nullable = false)
   private String lineTitle;
 
+  @Column(length = 32)
+  private String categoryCode;
+
+  @Column(length = 512)
+  private String categoryTitle;
+
   @Column(nullable = false, length = 80)
   private String area;
-
-  @Column(nullable = false)
-  private String structureName;
-
-  @Column(nullable = false, length = 32)
-  private String structureCode;
-
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false, length = 32)
-  private PerformanceTier tier;
-
-  @Column(nullable = false)
-  private double averagePerformance;
-
-  @Column(nullable = false)
-  private double stretch;
 
   @Column(nullable = false)
   private String title;
@@ -54,24 +46,13 @@ public class Objective {
   @Column(nullable = false, length = 1200)
   private String description;
 
-  @Column(nullable = false)
-  private String indicator;
+  private Boolean publicValue;
 
-  @Column(nullable = false)
-  private double baseTarget;
+  @Column(length = 512)
+  private String missionsPrograms;
 
-  @Column(nullable = false)
-  private double calibratedTarget;
-
-  @Column(nullable = false, length = 24)
-  private String unit;
-
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false, length = 8)
-  private Direction direction;
-
-  @Column(nullable = false)
-  private int weight;
+  @OneToMany(mappedBy = "objective", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<ObjectiveStructureAssignment> assignments = new ArrayList<>();
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "generation_run_id", nullable = false)
@@ -105,52 +86,28 @@ public class Objective {
     this.lineTitle = lineTitle;
   }
 
+  public String getCategoryCode() {
+    return categoryCode;
+  }
+
+  public void setCategoryCode(String categoryCode) {
+    this.categoryCode = categoryCode;
+  }
+
+  public String getCategoryTitle() {
+    return categoryTitle;
+  }
+
+  public void setCategoryTitle(String categoryTitle) {
+    this.categoryTitle = categoryTitle;
+  }
+
   public String getArea() {
     return area;
   }
 
   public void setArea(String area) {
     this.area = area;
-  }
-
-  public String getStructureName() {
-    return structureName;
-  }
-
-  public void setStructureName(String structureName) {
-    this.structureName = structureName;
-  }
-
-  public String getStructureCode() {
-    return structureCode;
-  }
-
-  public void setStructureCode(String structureCode) {
-    this.structureCode = structureCode;
-  }
-
-  public PerformanceTier getTier() {
-    return tier;
-  }
-
-  public void setTier(PerformanceTier tier) {
-    this.tier = tier;
-  }
-
-  public double getAveragePerformance() {
-    return averagePerformance;
-  }
-
-  public void setAveragePerformance(double averagePerformance) {
-    this.averagePerformance = averagePerformance;
-  }
-
-  public double getStretch() {
-    return stretch;
-  }
-
-  public void setStretch(double stretch) {
-    this.stretch = stretch;
   }
 
   public String getTitle() {
@@ -169,52 +126,28 @@ public class Objective {
     this.description = description;
   }
 
-  public String getIndicator() {
-    return indicator;
+  public Boolean getPublicValue() {
+    return publicValue;
   }
 
-  public void setIndicator(String indicator) {
-    this.indicator = indicator;
+  public void setPublicValue(Boolean publicValue) {
+    this.publicValue = publicValue;
   }
 
-  public double getBaseTarget() {
-    return baseTarget;
+  public String getMissionsPrograms() {
+    return missionsPrograms;
   }
 
-  public void setBaseTarget(double baseTarget) {
-    this.baseTarget = baseTarget;
+  public void setMissionsPrograms(String missionsPrograms) {
+    this.missionsPrograms = missionsPrograms;
   }
 
-  public double getCalibratedTarget() {
-    return calibratedTarget;
+  public List<ObjectiveStructureAssignment> getAssignments() {
+    return assignments;
   }
 
-  public void setCalibratedTarget(double calibratedTarget) {
-    this.calibratedTarget = calibratedTarget;
-  }
-
-  public String getUnit() {
-    return unit;
-  }
-
-  public void setUnit(String unit) {
-    this.unit = unit;
-  }
-
-  public Direction getDirection() {
-    return direction;
-  }
-
-  public void setDirection(Direction direction) {
-    this.direction = direction;
-  }
-
-  public int getWeight() {
-    return weight;
-  }
-
-  public void setWeight(int weight) {
-    this.weight = weight;
+  public void setAssignments(List<ObjectiveStructureAssignment> assignments) {
+    this.assignments = assignments;
   }
 
   public GenerationRun getGenerationRun() {

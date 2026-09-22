@@ -104,26 +104,110 @@ body{background-image:
 
 .add-strat{padding:20px;border:1.5px dashed var(--ink-3);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--ink-3);font-family:"Fraunces",serif;font-style:italic;font-size:18px;transition:all .2s;min-height:160px}
 .add-strat:hover{border-color:var(--pompei);color:var(--pompei);background:rgba(178,58,47,.04)}
+.strat-group-card{display:flex;flex-direction:column;gap:14px}
+.strat-group-head{padding-right:58px}
+.strat-type{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);margin-top:8px}
+.strat-type::before{content:"";display:inline-block;width:18px;height:1px;background:var(--pompei)}
+.strat-children{display:flex;flex-direction:column;gap:10px}
+.strat-children-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
+.strat-child{background:var(--parchment);border:0.5px solid var(--sand-2);padding:14px 16px}
+.strat-child-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.strat-child-code{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.14em;color:var(--pompei)}
+.strat-child-title{font-family:"Fraunces",serif;font-size:17px;line-height:1.25;color:var(--ink);margin-top:4px}
+.strat-empty{padding:14px 16px;border:0.5px dashed var(--sand-2);background:rgba(196,184,156,.12);font-size:12px;color:var(--ink-3);font-style:italic}
 
-/* ---------- TABELLA STRUTTURE ---------- */
-.struct-wrap{border:1px solid var(--ink);background:var(--parchment-2);overflow:hidden}
-.struct-table{width:100%;border-collapse:collapse;font-size:13px}
-.struct-table th{background:var(--ink);color:var(--parchment);text-align:left;padding:14px 16px;font-weight:500;font-size:10px;letter-spacing:.18em;text-transform:uppercase}
-.struct-table td{padding:14px 16px;border-bottom:0.5px solid var(--sand-2)}
-.struct-table tr:last-child td{border-bottom:none}
-.struct-table tr:hover td{background:rgba(178,58,47,.04)}
-.struct-name{font-family:"Fraunces",serif;font-weight:400;font-size:15px}
+/* ---------- ORGANIGRAMMA ESPANDIBILE ---------- */
+.org-wrap{border:1px solid var(--ink);background:linear-gradient(180deg,var(--parchment-2) 0%,rgba(246,241,229,.96) 100%);padding:12px}
+.org-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.org-legend-chip{display:inline-flex;align-items:center;gap:7px;padding:5px 9px;border:1px solid var(--sand-2);background:var(--parchment);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.org-legend-chip::before{content:"";display:inline-block;width:10px;height:10px;border-radius:999px}
+.org-legend-chip.dg::before{background:var(--navy)}
+.org-legend-chip.sector::before{background:var(--bronze)}
+.org-legend-chip.uos::before{background:var(--pompei)}
+.org-tree{display:flex;flex-direction:column;gap:10px}
+.org-node,.org-leaf-card{border:1px solid var(--ink);background:var(--parchment-2);box-shadow:0 10px 30px rgba(54,42,31,.06)}
+.org-node[open]{box-shadow:0 14px 38px rgba(54,42,31,.09)}
+.org-node.is-synthetic{opacity:.92}
+.org-summary{list-style:none;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(210px,.85fr) auto 16px;gap:12px;align-items:center;padding:12px 14px;cursor:pointer}
+.org-summary::-webkit-details-marker{display:none}
+.org-summary,.org-leaf-card{position:relative}
+.org-card-dg{border-left:6px solid var(--navy)}
+.org-card-sector{border-left:6px solid var(--bronze)}
+.org-card-uos{border-left:6px solid var(--pompei)}
+.org-node-main{min-width:0}
+.org-node-topline{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
+.org-type-chip{display:inline-flex;align-items:center;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+.org-type-chip.dg{background:rgba(32,55,101,.08);color:var(--navy)}
+.org-type-chip.sector{background:rgba(171,134,78,.14);color:var(--bronze)}
+.org-type-chip.uos{background:rgba(185,88,46,.12);color:var(--pompei)}
+.org-count-pill{display:inline-flex;align-items:center;padding:2px 7px;border-radius:999px;background:rgba(32,55,101,.06);font-size:9px;color:var(--ink-3);letter-spacing:.05em}
+.org-node-title{font-family:"Fraunces",serif;font-size:20px;line-height:1.08;color:var(--ink);letter-spacing:-.02em}
+.org-node-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:7px;font-size:10px;color:var(--ink-3)}
 .struct-code{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--pompei);letter-spacing:.1em}
-.perf-bar{display:flex;align-items:center;gap:10px}
+.org-node-metrics{display:flex;flex-direction:column;gap:7px;min-width:0}
+.org-year-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.org-year-cell{padding:7px 8px;border:1px solid var(--sand-2);background:rgba(255,255,255,.45)}
+.org-year-cell label{display:block;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:2px}
+.org-year-cell strong{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:var(--ink)}
+.org-score-line{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.org-score-line strong{font-family:"JetBrains Mono",monospace;font-size:16px;font-weight:600;color:var(--ink)}
+.org-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+.org-actions .btn{padding:6px 8px;font-size:9px}
+.org-disclosure{width:10px;height:10px;border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);transform:rotate(45deg);transition:transform .2s ease;margin-right:1px}
+details[open] > summary .org-disclosure{transform:rotate(225deg) translate(-2px,-2px)}
+.org-children{position:relative;padding:0 12px 12px 24px;display:flex;flex-direction:column;gap:10px}
+.org-children::before{content:"";position:absolute;left:12px;top:0;bottom:12px;width:1px;background:rgba(32,55,101,.18)}
+.org-branch{display:flex;flex-direction:column;gap:8px;position:relative}
+.org-cluster{position:relative;padding-left:12px}
+.org-cluster::before{content:"";position:absolute;left:0;top:18px;bottom:10px;width:1px;background:rgba(185,88,46,.22)}
+.org-cluster-head{display:flex;align-items:center;gap:8px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.org-cluster-head::before{content:"";display:block;width:14px;height:1px;background:rgba(185,88,46,.5)}
+.org-leaf{position:relative;padding-left:12px}
+.org-leaf::before{content:"";position:absolute;left:0;top:30px;width:12px;height:1px;background:rgba(32,55,101,.18)}
+.org-leaf-card{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(210px,.85fr) auto;gap:12px;align-items:center;padding:11px 13px;background:var(--parchment)}
+.org-empty{padding:10px 12px;border:1px dashed var(--sand-2);background:rgba(196,184,156,.12);font-size:11px;color:var(--ink-3);font-style:italic}
+.perf-bar{display:flex;align-items:center;gap:8px}
 .perf-track{flex:1;height:6px;background:var(--sand-2);position:relative;overflow:hidden}
 .perf-fill{height:100%;transition:width .6s ease}
-.perf-val{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:500;min-width:42px;text-align:right}
-.perf-tier{display:inline-block;font-size:9px;letter-spacing:.18em;text-transform:uppercase;padding:3px 8px;font-weight:500}
+.perf-val{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:500;min-width:36px;text-align:right}
+.perf-tier{display:inline-block;font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:3px 6px;font-weight:600}
 .tier-eccellente{background:var(--olive);color:var(--parchment)}
 .tier-buona{background:var(--olive-light);color:var(--ink)}
 .tier-adeguata{background:var(--bronze);color:var(--parchment)}
 .tier-recupero{background:var(--pompei);color:var(--parchment)}
+@media(max-width:1024px){
+  .org-summary,.org-leaf-card{grid-template-columns:1fr;align-items:flex-start}
+  .org-actions{justify-content:flex-start}
+  .org-node-title{font-size:21px}
+}
+@media(max-width:720px){
+  .org-wrap{padding:10px}
+  .org-children{padding:0 8px 10px 18px}
+  .org-children::before{left:8px}
+  .org-node-title{font-size:17px}
+  .org-year-grid{grid-template-columns:repeat(3,1fr)}
+}
 
+/* ---------- TASK DASHBOARD ---------- */
+.task-board{margin:18px 0 24px;border:1px solid var(--ink);background:var(--parchment-2);padding:14px 16px}
+.task-board-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.task-board-head h3{font-family:"Fraunces",serif;font-weight:400;font-size:20px;letter-spacing:-.01em}
+.task-board-head p{font-size:12px;color:var(--ink-3)}
+.task-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.task-card{border:1px solid var(--sand-2);background:var(--parchment);padding:12px 13px;display:flex;flex-direction:column;gap:8px}
+.task-card.running{border-left:5px solid var(--bronze)}
+.task-card.completed{border-left:5px solid var(--olive)}
+.task-card.failed{border-left:5px solid var(--pompei)}
+.task-topline{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.task-kind{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.task-title{font-family:"Fraunces",serif;font-size:18px;line-height:1.1}
+.task-status{display:inline-flex;align-items:center;padding:3px 7px;border-radius:999px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+.task-status.running{background:rgba(171,134,78,.16);color:var(--bronze)}
+.task-status.completed{background:rgba(116,133,92,.16);color:var(--olive)}
+.task-status.failed{background:rgba(185,88,46,.12);color:var(--pompei)}
+.task-message{font-size:12px;color:var(--ink)}
+.task-progress{display:flex;justify-content:space-between;gap:8px;font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--ink-3)}
+.task-empty{padding:10px 12px;border:1px dashed var(--sand-2);background:rgba(196,184,156,.12);font-size:12px;color:var(--ink-3);font-style:italic}
 /* ---------- GENERA OBIETTIVI ---------- */
 .gen-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:24px}
 @media(max-width:1024px){.gen-grid{grid-template-columns:1fr}}
@@ -144,6 +228,18 @@ body{background-image:
 .tier-row .label{font-size:12px}
 .tier-row .label small{display:block;color:var(--ink-3);font-size:10px;letter-spacing:.04em;margin-top:1px}
 .tier-row input[type="number"]{padding:6px 8px;font-family:"JetBrains Mono",monospace;font-size:13px;text-align:right}
+
+.slider-row{padding:12px 0;border-bottom:0.5px dashed var(--sand-2)}
+.slider-row:last-child{border-bottom:none}
+.slider-row .slider-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.slider-row .label{font-size:12px}
+.slider-row .label small{display:block;color:var(--ink-3);font-size:10px;letter-spacing:.04em;margin-top:1px}
+.slider-row .slider-value{font-family:"JetBrains Mono",monospace;font-size:15px;font-weight:600;color:var(--pompei);min-width:38px;text-align:right}
+.slider-row input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:var(--sand-2);outline:none;cursor:pointer;margin:4px 0}
+.slider-row input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--pompei);border:2px solid var(--parchment);box-shadow:0 0 0 1px var(--ink);cursor:pointer;transition:transform .15s}
+.slider-row input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.slider-row input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--pompei);border:2px solid var(--parchment);box-shadow:0 0 0 1px var(--ink);cursor:pointer}
+.slider-row input[type="range"]::-moz-range-track{background:var(--sand-2);height:4px}
 
 .gen-status{padding:24px;background:var(--parchment);border:1px solid var(--ink);min-height:300px}
 .gen-status .empty{text-align:center;padding:40px 20px;color:var(--ink-3)}
@@ -167,7 +263,19 @@ body{background-image:
 .chip:hover{border-color:var(--ink)}
 .chip.active{background:var(--ink);color:var(--parchment);border-color:var(--ink)}
 
-.obj-list{display:flex;flex-direction:column;gap:14px}
+.obj-list{display:flex;flex-direction:column;gap:18px}
+.obj-group{border:1px solid var(--ink);background:var(--parchment-2)}
+.obj-group-head{padding:18px 22px;background:linear-gradient(135deg,rgba(15,29,52,.98),rgba(15,29,52,.88));color:var(--parchment);border-bottom:1px solid var(--ink)}
+.obj-group-kicker{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.obj-group-head h3{font-family:"Fraunces",serif;font-weight:400;font-size:24px;letter-spacing:-.01em;margin-bottom:4px}
+.obj-group-meta{font-size:12px;color:var(--sand)}
+.obj-subgroup{padding:18px 22px;border-bottom:0.5px solid var(--sand-2)}
+.obj-subgroup:last-child{border-bottom:none}
+.obj-subgroup-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px}
+.obj-subgroup-title{display:flex;flex-direction:column;gap:4px}
+.obj-subgroup-code{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;color:var(--pompei)}
+.obj-subgroup-name{font-family:"Fraunces",serif;font-size:18px;color:var(--ink)}
+.obj-subgroup-count{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
 .obj-card{background:var(--parchment-2);border:1px solid var(--ink);padding:24px;display:grid;grid-template-columns:1fr 280px;gap:24px;position:relative;overflow:hidden}
 .obj-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--bronze)}
 .obj-card[data-tier="eccellente"]::before{background:var(--olive)}
@@ -241,13 +349,13 @@ body{background-image:
       <div class="brand-text">
         <div class="ocr">OCR Assistant · v1.0</div>
         <h1>Obiettivi <em>Calibrati</em> di Risultato</h1>
-        <div class="sub">Modello AI di supporto al ciclo della performance · Pianificazione PIAO</div>
+        <div class="sub">Modello AI di supporto al ciclo della performance · Pianificazione DEFRC</div>
       </div>
     </div>
     <div class="meta">
       Regione Campania
       <strong>Direzione Risorse Umane</strong>
-      <span class="badge">PIAO 2026 — 2028</span>
+      <span class="badge">DEFRC 2026 — 2028</span>
     </div>
   </div>
 
@@ -256,7 +364,7 @@ body{background-image:
     <div class="step active" data-view="strat">
       <div class="step-num">FASE I</div>
       <div class="step-title">Linee Strategiche</div>
-      <div class="step-desc">Acquisizione PIAO</div>
+      <div class="step-desc">Acquisizione DEFRC</div>
     </div>
     <div class="step" data-view="struct">
       <div class="step-num">FASE II</div>
@@ -273,19 +381,36 @@ body{background-image:
       <div class="step-title">Assegnazione</div>
       <div class="step-desc">Output al personale</div>
     </div>
+    <div class="step" data-view="rag">
+      <div class="step-num">RAG</div>
+      <div class="step-title">Fonti RAG</div>
+      <div class="step-desc">Contesto per l'AI</div>
+    </div>
   </div>
+
+  <section class="task-board">
+    <div class="task-board-head">
+      <div>
+        <h3>Task <em>in esecuzione</em></h3>
+        <p>Monitoraggio rapido di import organigramma, linee strategiche, fonti RAG e generazione obiettivi.</p>
+      </div>
+      <button class="btn ghost" onclick="refreshTasks(true)">↻ Aggiorna task</button>
+    </div>
+    <div class="task-grid" id="task-board"></div>
+  </section>
 
   <!-- ============== VIEW 1: LINEE STRATEGICHE ============== -->
   <div class="view active" id="view-strat">
     <div class="section-head">
       <div>
-        <h2>Linee strategiche <em>del PIAO</em></h2>
-        <p>Ambiti prioritari di intervento estratti dalla Sezione 2 del PIAO 2026‑2028. Ogni linea sarà declinata in obiettivi operativi assegnati alle strutture competenti.</p>
+        <h2>Linee strategiche <em>del DEFRC</em></h2>
+        <p>Ambiti prioritari di intervento estratti dalla Sezione 2 del DEFRC 2026‑2028. Ogni linea sarà declinata in obiettivi operativi assegnati alle strutture competenti.</p>
       </div>
       <div class="toolbar">
-        <button class="btn" onclick="loadDemoStrat()">↻ Carica esempio PIAO</button>
+        <button class="btn" onclick="loadDemoStrat()">↻ Carica esempio DEFRC</button>
         <input type="file" id="pdfStrategicInput" accept="application/pdf" style="display:none" onchange="importStrategicPdf(event)">
         <button class="btn" id="btn-import-pdf" onclick="document.getElementById('pdfStrategicInput').click()">↑ Importa PDF</button>
+        <button class="btn ghost" id="btn-improve" onclick="openImproveModal()">✏️ Migliora</button>
         <button class="btn primary" onclick="openModal()">+ Nuova linea</button>
       </div>
     </div>
@@ -301,30 +426,24 @@ body{background-image:
     <div class="section-head">
       <div>
         <h2>Strutture <em>e performance storica</em></h2>
-        <p>Direzioni Generali e UOD coinvolte. L'indice di performance è calcolato come media ponderata triennale dei risultati raggiunti (fonte: Relazioni sulla Performance 2022‑2024).</p>
+        <p>Direzioni Generali, Settori e UOS coinvolte. L'indice di performance è calcolato come media ponderata triennale dei risultati raggiunti (fonte: Relazioni sulla Performance 2022‑2024).</p>
       </div>
       <div class="toolbar">
+        <input type="file" id="pdfOrganigramInput" accept="application/pdf" style="display:none" onchange="importOrganigramPdf(event)">
+        <button class="btn" id="btn-import-organigram-pdf" onclick="document.getElementById('pdfOrganigramInput').click()">↑ Importa organigramma PDF</button>
         <button class="btn primary" onclick="openStructModal()">+ Nuova struttura</button>
         <button class="btn ghost" onclick="exportStructuresCSV()">↓ Esporta CSV</button>
       </div>
     </div>
+    <div id="organigramImportStatus" style="display:none;margin:-8px 0 18px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);letter-spacing:.08em"></div>
 
-    <div class="struct-wrap">
-      <table class="struct-table" id="struct-table">
-        <thead>
-          <tr>
-            <th style="width:32%">Struttura</th>
-            <th style="width:14%">Codice</th>
-            <th>Perf. 2023</th>
-            <th>Perf. 2024</th>
-            <th>Perf. 2025</th>
-            <th style="width:18%">Indice medio</th>
-            <th>Fascia</th>
-            <th style="width:150px">Azioni</th>
-          </tr>
-        </thead>
-        <tbody id="struct-body"></tbody>
-      </table>
+    <div class="org-wrap">
+      <div class="org-legend">
+        <span class="org-legend-chip dg">Direzione Generale</span>
+        <span class="org-legend-chip sector">Settore</span>
+        <span class="org-legend-chip uos">UOS</span>
+      </div>
+      <div class="org-tree" id="struct-body"></div>
     </div>
 
     <div style="margin-top:24px;display:flex;justify-content:space-between">
@@ -338,7 +457,7 @@ body{background-image:
     <div class="section-head">
       <div>
         <h2>Generazione <em>assistita dall'AI</em></h2>
-        <p>Il modello riceve linee strategiche, composizione delle Direzioni Generali e indici storici, propone obiettivi SMART già assegnati alle strutture competenti e calibra i target secondo la matrice di stretch.</p>
+        <p>Il modello riceve linee strategiche, composizione delle Direzioni Generali e indici storici, propone obiettivi SMART già assegnati alle strutture competenti e calibra automaticamente i target in base alla performance storica di ciascuna struttura.</p>
       </div>
     </div>
 
@@ -346,7 +465,7 @@ body{background-image:
 
       <div class="panel">
         <h3>Parametri di <em>calibrazione</em></h3>
-        <div class="panel-sub">Definisce l'intensità di sfida per fascia di performance storica. Strutture con performance migliore ricevono target più ambiziosi.</div>
+        <div class="panel-sub">La calibrazione del target resta automatica in base alla performance storica; qui regoli come l'AI struttura gli obiettivi generati.</div>
 
         <div class="field">
           <label>Modalità di generazione</label>
@@ -365,28 +484,59 @@ body{background-image:
           </select>
         </div>
 
-        <div class="calibration">
-          <div class="calib-title">Matrice di stretch — coefficiente di incremento sul target base</div>
+        <input type="hidden" id="stretch-ecc" value="20">
+        <input type="hidden" id="stretch-buo" value="12">
+        <input type="hidden" id="stretch-ade" value="6">
+        <input type="hidden" id="stretch-rec" value="2">
 
-          <div class="tier-row">
-            <div class="label">Eccellente <small>indice ≥ 90</small></div>
-            <span class="perf-tier tier-eccellente">+sfida</span>
-            <input type="number" id="stretch-ecc" value="20" step="1" min="0" max="50"> %
+        <div class="calibration">
+          <div class="calib-title">Meta-parametri di generazione — solo modalità AI, calibrati sui dati reali del PIAO</div>
+
+          <div class="slider-row">
+            <div class="slider-head">
+              <div class="label">Azioni minime per struttura<small>almeno quante azioni generare per ciascuna struttura coinvolta</small></div>
+              <span class="slider-value" id="gen-min-actions-val">1</span>
+            </div>
+            <input type="range" id="gen-min-actions" min="1" max="8" step="1" value="1" oninput="syncSliderValue('gen-min-actions')">
           </div>
-          <div class="tier-row">
-            <div class="label">Buona <small>indice 80‑89</small></div>
-            <span class="perf-tier tier-buona">stretch</span>
-            <input type="number" id="stretch-buo" value="12" step="1" min="0" max="50"> %
+          <div class="slider-row">
+            <div class="slider-head">
+              <div class="label">Azioni massime per struttura<small>tetto massimo di azioni per ciascuna struttura coinvolta</small></div>
+              <span class="slider-value" id="gen-max-actions-val">3</span>
+            </div>
+            <input type="range" id="gen-max-actions" min="1" max="8" step="1" value="3" oninput="syncSliderValue('gen-max-actions')">
           </div>
-          <div class="tier-row">
-            <div class="label">Adeguata <small>indice 70‑79</small></div>
-            <span class="perf-tier tier-adeguata">consolida</span>
-            <input type="number" id="stretch-ade" value="6" step="1" min="0" max="50"> %
+          <div class="slider-row">
+            <div class="slider-head">
+              <div class="label">Quota obiettivi multi-struttura<small>nel PIAO reale ogni OBSA ha una sola struttura</small></div>
+              <span class="slider-value" id="gen-multi-structure-share-val">0%</span>
+            </div>
+            <input type="range" id="gen-multi-structure-share" min="0" max="100" step="5" value="0" oninput="syncSliderValue('gen-multi-structure-share', '%')">
           </div>
-          <div class="tier-row">
-            <div class="label">In recupero <small>indice &lt; 70</small></div>
-            <span class="perf-tier tier-recupero">recupero</span>
-            <input type="number" id="stretch-rec" value="2" step="1" min="0" max="50"> %
+          <div class="slider-row">
+            <div class="slider-head">
+              <div class="label">Peso minimo per azione<small>range osservato nel PIAO: 5-66</small></div>
+              <span class="slider-value" id="gen-weight-min-val">5</span>
+            </div>
+            <input type="range" id="gen-weight-min" min="1" max="100" step="1" value="5" oninput="syncSliderValue('gen-weight-min')">
+          </div>
+          <div class="slider-row">
+            <div class="slider-head">
+              <div class="label">Peso massimo per azione<small>range osservato nel PIAO: 5-66</small></div>
+              <span class="slider-value" id="gen-weight-max-val">70</span>
+            </div>
+            <input type="range" id="gen-weight-max" min="1" max="100" step="1" value="70" oninput="syncSliderValue('gen-weight-max')">
+          </div>
+          <div class="slider-row">
+            <div class="slider-head">
+              <div class="label">Quota valore pubblico<small>% obiettivi con impatto diretto su cittadini/imprese (campo "valore pubblico" del PIAO)</small></div>
+              <span class="slider-value" id="gen-public-value-val">30%</span>
+            </div>
+            <input type="range" id="gen-public-value-share" min="0" max="100" step="5" value="30" oninput="syncSliderValue('gen-public-value-share', '%')">
+          </div>
+          <div class="field" style="margin-top:14px;margin-bottom:0">
+            <label>Missioni e programmi da privilegiare <small style="text-transform:none;letter-spacing:0;font-weight:400">(opzionale)</small></label>
+            <input type="text" id="gen-preferred-missions" placeholder="es. Missione 1 - Programma 2, Missione 9 - Programma 1">
           </div>
         </div>
 
@@ -434,11 +584,14 @@ body{background-image:
     </div>
 
     <div class="panel" style="margin-bottom:18px;padding:16px">
-      <div class="field" style="margin-bottom:0">
-        <label>Versione simulazione</label>
-        <select id="generation-select" onchange="loadGenerationVersion(this.value)">
-          <option value="">Nessuna simulazione salvata</option>
-        </select>
+      <div style="display:flex;gap:12px;align-items:flex-end">
+        <div class="field" style="margin-bottom:0;flex:1">
+          <label>Versione simulazione</label>
+          <select id="generation-select" onchange="loadGenerationVersion(this.value)">
+            <option value="">Nessuna simulazione salvata</option>
+          </select>
+        </div>
+        <button class="btn ghost" id="btn-delete-generation" onclick="deleteGeneration()" style="border-color:var(--pompei);color:var(--pompei);white-space:nowrap">✕ Elimina simulazione</button>
       </div>
       <div id="generation-meta" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);letter-spacing:.08em;margin-top:10px">
         Le simulazioni salvate includono momento di esecuzione e obiettivi generati.
@@ -468,10 +621,31 @@ body{background-image:
     </div>
   </div>
 
+  <!-- ============== VIEW RAG: FONTI PER IL CONTESTO AI ============== -->
+  <div class="view" id="view-rag">
+    <div class="section-head">
+      <div>
+        <h2>Fonti <em>RAG</em></h2>
+        <p>Documenti (PDF o testo) caricati come contesto di supporto per le generazioni AI: obiettivi, estrazione linee strategiche e organigramma. Il materiale recuperato viene sempre iniettato come riferimento, mai come fonte primaria da cui copiare.</p>
+      </div>
+      <div class="toolbar">
+        <select id="ragSourcePurpose" title="Tipo di fonte">
+          <option value="CONTENT">Contenuto (sul tema delle linee)</option>
+          <option value="GUIDELINE">Linea guida/metodologia (normativa, manuali)</option>
+        </select>
+        <input type="file" id="ragSourceInput" accept="application/pdf,text/plain,.txt" style="display:none" onchange="importRagSource(event)">
+        <button class="btn" id="btn-import-rag" onclick="document.getElementById('ragSourceInput').click()">↑ Carica fonte</button>
+      </div>
+    </div>
+    <div id="ragImportStatus" style="display:none;margin:-8px 0 18px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);letter-spacing:.08em"></div>
+    <div id="rag-sources-empty" style="display:none;text-align:center;padding:60px;color:var(--ink-3);font-style:italic;font-family:Fraunces,serif;font-size:18px">Nessuna fonte RAG caricata.</div>
+    <div id="rag-sources-list" style="display:grid;gap:12px"></div>
+  </div>
+
   <!-- ============== FOOTER ============== -->
   <div class="footer">
     <div>OCR Assistant · prototipo dimostrativo · <em>Regione Campania</em></div>
-    <div>D.lgs. 150/2009 · D.L. 80/2021 art.6 · PIAO 2026‑2028</div>
+    <div>D.lgs. 150/2009 · D.L. 80/2021 art.6 · DEFRC 2026‑2028</div>
   </div>
 
 </div>
@@ -481,9 +655,17 @@ body{background-image:
   <div class="modal">
     <button class="close" onclick="closeModal()">×</button>
     <h3 id="modal-title">Nuova <em>linea strategica</em></h3>
-    <p id="modal-subtitle" style="color:var(--ink-3);font-size:13px;margin-bottom:18px">Inserisci un nuovo ambito di intervento estratto dal PIAO.</p>
-    <div class="field"><label>Codice</label><input id="m-code" placeholder="es. LS.07"></div>
+    <p id="modal-subtitle" style="color:var(--ink-3);font-size:13px;margin-bottom:18px">Inserisci un nuovo ambito di intervento estratto dal DEFRC.</p>
+    <div class="field"><label>Codice</label><input id="m-code" placeholder="es. LS.07 o OS.01"></div>
     <div class="field"><label>Titolo</label><input id="m-title" placeholder="es. Riduzione liste d'attesa sanitarie"></div>
+    <div class="grid" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+      <div class="field"><label>Tipo</label><select id="m-type" onchange="toggleStrategicParentField()">
+        <option value="macro_categoria">Linea strategica</option><option value="obiettivo_strategico">Obiettivo strategico</option>
+      </select></div>
+      <div class="field" id="m-parent-field"><label>Linea strategica madre</label><select id="m-parent"></select>
+        <div style="font-size:11px;color:var(--ink-3);margin-top:6px">Se non selezionata, l'obiettivo sarà associato alla linea strategica di default.</div>
+      </div>
+    </div>
     <div class="field"><label>Area</label><select id="m-area">
       <option>Sanita</option><option>Sviluppo Economico</option><option>Ambiente</option>
       <option>Cultura e Turismo</option><option>Politiche Sociali</option><option>Mobilita</option>
@@ -506,21 +688,44 @@ body{background-image:
     <button class="close" onclick="closeStructModal()">×</button>
     <h3 id="struct-modal-title">Nuova <em>struttura</em></h3>
     <p id="struct-modal-subtitle" style="color:var(--ink-3);font-size:13px;margin-bottom:18px">Inserisci struttura e performance storica.</p>
-    <div class="field"><label>Codice</label><input id="s-code" placeholder="es. DG.50.13"></div>
-    <div class="field"><label>Nome struttura</label><input id="s-name" placeholder="es. DG Programmazione strategica"></div>
+    <div class="field"><label>Codice</label><input id="s-code" placeholder="es. DG.50.13 oppure UOS.50.13"></div>
+    <div class="field"><label>Nome struttura</label><input id="s-name" placeholder="es. UOS Programmazione strategica"></div>
+    <div class="field"><label>Tipo</label><select id="s-type" onchange="toggleStructureParentField()">
+      <option value="direzione_generale">Direzione Generale</option>
+      <option value="settore">Settore</option>
+      <option value="uos">UOS</option>
+    </select></div>
+    <div class="field" id="s-parent-field" style="display:none"><label id="s-parent-label">Struttura padre</label><select id="s-parent"></select>
+      <div id="s-parent-help" style="font-size:11px;color:var(--ink-3);margin-top:6px">Per le UOS puoi selezionare un Settore oppure direttamente una Direzione Generale.</div>
+    </div>
     <div class="field"><label>Area</label><select id="s-area">
       <option>Sanita</option><option>Sviluppo Economico</option><option>Ambiente</option>
       <option>Cultura e Turismo</option><option>Politiche Sociali</option><option>Mobilita</option>
       <option>Digitalizzazione</option><option>Lavoro e Formazione</option><option>Trasversale</option>
     </select></div>
     <div class="grid" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
-      <div class="field"><label>Perf. 2023</label><input id="s-p2023" type="number" min="0" max="100" step="0.1" placeholder="0-100"></div>
-      <div class="field"><label>Perf. 2024</label><input id="s-p2024" type="number" min="0" max="100" step="0.1" placeholder="0-100"></div>
-      <div class="field"><label>Perf. 2025</label><input id="s-p2025" type="number" min="0" max="100" step="0.1" placeholder="0-100"></div>
+      <div class="field"><label>Perf. 2022</label><input id="s-p2023" type="number" min="0" max="100" step="0.1" placeholder="0-100"></div>
+      <div class="field"><label>Perf. 2023</label><input id="s-p2024" type="number" min="0" max="100" step="0.1" placeholder="0-100"></div>
+      <div class="field"><label>Perf. 2024</label><input id="s-p2025" type="number" min="0" max="100" step="0.1" placeholder="0-100"></div>
     </div>
     <div class="modal-actions">
       <button class="btn ghost" onclick="closeStructModal()">Annulla</button>
       <button class="btn primary" id="struct-modal-save-btn" onclick="saveStruct()">Aggiungi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============== MODAL: MIGLIORA LINEE STRATEGICHE ============== -->
+<div class="modal-bg" id="improve-modal">
+  <div class="modal" style="max-width:720px">
+    <button class="close" onclick="closeImproveModal()">×</button>
+    <h3>Migliora <em>linee strategiche</em></h3>
+    <p style="color:var(--ink-3);font-size:13px;margin-bottom:18px">L'AI cerca refusi, artefatti di estrazione PDF (es. legature rotte) ed errori grammaticali nei testi esistenti e propone una correzione, senza cambiarne il significato. Deseleziona le proposte che non vuoi applicare prima di confermare — nessuna modifica viene salvata finché non premi "Applica".</p>
+    <div id="improve-status" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);margin-bottom:12px"></div>
+    <div id="improve-list" style="max-height:50vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeImproveModal()">Annulla</button>
+      <button class="btn primary" id="improve-apply-btn" onclick="applyImprovements()" disabled>Applica</button>
     </div>
   </div>
 </div>
@@ -533,6 +738,9 @@ const STATE = {
   strategicLines: [],
   structures: [],
   objectives: [],
+  ragSources: [],
+  tasks: [],
+  taskPollHandle: null,
   generations: [],
   latestGenerationId: null,
   editingStrategicLineId: null,
@@ -543,8 +751,14 @@ const STATE = {
 const API = {
   strategicLines: '/api/strategic-lines',
   demoReset: '/api/strategic-lines/demo-reset',
-  extractStrategicPdf: '/api/strategic-lines/extract-pdf',
+  strategicLineImportJobs: '/api/strategic-lines/import-pdf',
+  improveAnalyze: '/api/strategic-lines/improve/analyze',
+  improveApply: '/api/strategic-lines/improve/apply',
   structures: '/api/structures',
+  organigramImportJobs: '/api/structures/import-organigram-pdf',
+  ragSources: '/api/rag/sources',
+  ragSourceImportJobs: '/api/rag/sources/import',
+  tasks: '/api/tasks',
   generations: '/api/generations',
   generationJobs: '/api/generation-jobs',
   objectives: '/api/objectives',
@@ -565,7 +779,7 @@ async function apiJson(url, options = {}){
 }
 
 /* ============================================================
-   DEMO DATA — PIAO Regione Campania (rappresentativo)
+   DEMO DATA — DEFRC Regione Campania (rappresentativo)
 ============================================================ */
 const DEMO_STRAT = [
   { code:"LS.01", title:"Semplificazione amministrativa e digitalizzazione", area:"Digitalizzazione", priority:"alta",
@@ -643,13 +857,17 @@ const OBJ_TEMPLATES = {
 ============================================================ */
 async function init(){
   try{
-    const [strategicLines, structures, latest] = await Promise.all([
+    const [strategicLines, structures, latest, tasks] = await Promise.all([
       apiJson(API.strategicLines),
       apiJson(API.structures),
-      apiJson(API.latestGeneration)
+      apiJson(API.latestGeneration),
+      apiJson(API.tasks).catch(() => [])
     ]);
     STATE.strategicLines = strategicLines;
+    sortStrategicLines();
     STATE.structures = structures;
+    sortStructures();
+    STATE.tasks = tasks;
     if(latest){
       STATE.latestGenerationId = latest.generationId;
       STATE.objectives = latest.objectives || [];
@@ -659,11 +877,16 @@ async function init(){
   } catch(e){
     console.warn('Backend non raggiungibile, uso dati demo in memoria', e);
     STATE.strategicLines = [...DEMO_STRAT];
+    sortStrategicLines();
+    STATE.tasks = [];
     STATE.structures = DEMO_STRUCT.map(s => ({
       ...s,
       avg: Math.round((s.h[0]*0.2 + s.h[1]*0.3 + s.h[2]*0.5)*10)/10
     }));
+    sortStructures();
   }
+  renderTaskBoard();
+  initTaskPolling();
   renderStrat();
   renderStruct();
   renderObjectives();
@@ -714,6 +937,41 @@ async function loadGenerationVersion(generationId){
   }
 }
 
+async function deleteGeneration(){
+  const select = document.getElementById('generation-select');
+  const generationId = select.value;
+  if(!generationId){
+    alert('Nessuna simulazione selezionata da eliminare.');
+    return;
+  }
+  const option = select.options[select.selectedIndex];
+  if(!confirm(`Eliminare definitivamente la simulazione ${option ? option.textContent.trim() : '#' + generationId}? L'operazione non è reversibile.`)){
+    return;
+  }
+
+  try{
+    await apiJson(`${API.generations}/${generationId}`, {method:'DELETE'});
+    STATE.generations = STATE.generations.filter(g => String(g.generationId) !== String(generationId));
+
+    if(String(STATE.latestGenerationId) === String(generationId)){
+      const next = STATE.generations[0];
+      STATE.latestGenerationId = next ? next.generationId : null;
+      if(next){
+        const generation = await apiJson(`${API.generations}/${next.generationId}`);
+        STATE.objectives = generation.objectives || [];
+      } else {
+        STATE.objectives = [];
+      }
+      document.getElementById('btn-to-result').disabled = STATE.objectives.length === 0;
+    }
+
+    renderGenerationVersions();
+    renderObjectives();
+  } catch(e){
+    alert(e.message || 'Impossibile eliminare la simulazione.');
+  }
+}
+
 function renderGenerationMeta(generation){
   const meta = document.getElementById('generation-meta');
   if(!meta) return;
@@ -742,26 +1000,122 @@ function goTo(view){
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + view).classList.add('active');
   window.scrollTo({top:0, behavior:'smooth'});
+  if(view === 'rag') loadRagSources();
 }
 
 /* ============================================================
    FASE I — LINEE STRATEGICHE
 ============================================================ */
+async function refreshTasks(silent = false){
+  try{
+    STATE.tasks = await apiJson(API.tasks);
+    renderTaskBoard();
+  } catch(e){
+    if(!silent) console.warn('Impossibile aggiornare i task', e);
+  }
+}
+
+function initTaskPolling(){
+  if(STATE.taskPollHandle) clearInterval(STATE.taskPollHandle);
+  STATE.taskPollHandle = setInterval(() => refreshTasks(true), 10000);
+}
+
+function taskStatusClass(status){
+  const normalized = String(status || '').toLowerCase();
+  if(normalized === 'completed') return 'completed';
+  if(normalized === 'failed') return 'failed';
+  return 'running';
+}
+
+function taskKindLabel(kind){
+  const normalized = String(kind || '').toLowerCase();
+  if(normalized === 'organigram') return 'Import organigramma';
+  if(normalized === 'generation' || normalized === 'generationjob') return 'Generazione AI';
+  if(normalized === 'rag-source') return 'Import fonte RAG';
+  return 'Task';
+}
+
+function renderTaskBoard(){
+  const board = document.getElementById('task-board');
+  if(!board) return;
+  if(!STATE.tasks.length){
+    board.innerHTML = '<div class="task-empty">Nessun task attivo o recente da mostrare.</div>';
+    return;
+  }
+
+  board.innerHTML = STATE.tasks.map(task => {
+    const statusClass = taskStatusClass(task.status);
+    const progress = Number.isFinite(task.progressCurrent) && Number.isFinite(task.progressTotal) && task.progressTotal > 0
+      ? `<div class="task-progress"><span>Progressione</span><span>${task.progressCurrent}/${task.progressTotal}</span></div>`
+      : '';
+    const processed = Number.isFinite(task.processedItems)
+      ? `<div class="task-progress"><span>Elementi salvati</span><span>${task.processedItems}</span></div>`
+      : '';
+    return `
+      <article class="task-card ${statusClass}">
+        <div class="task-topline">
+          <div>
+            <div class="task-kind">${escapeHtml(taskKindLabel(task.kind))}</div>
+            <div class="task-title">${escapeHtml(task.title || taskKindLabel(task.kind))}</div>
+          </div>
+          <span class="task-status ${statusClass}">${escapeHtml(task.status || 'RUNNING')}</span>
+        </div>
+        <div class="task-message">${escapeHtml(task.message || 'Task in esecuzione')}</div>
+        ${progress}
+        ${processed}
+      </article>
+    `;
+  }).join('');
+}
+
 function renderStrat(){
   const grid = document.getElementById('strat-grid');
-  grid.innerHTML = STATE.strategicLines.map(l => `
-    <div class="card">
-      <div class="priority ${l.priority==='alta'?'':l.priority==='media'?'med':'low'}">${l.priority}</div>
-      <div class="code">${l.code}</div>
-      <h3>${l.title}</h3>
-      <span class="area">${l.area}</span>
-      <p>${l.desc}</p>
-      <div class="card-actions">
-        <button class="btn ghost" onclick="openEditModal(${l.id})">Modifica</button>
-        <button class="btn ghost danger" onclick="deleteStrat(${l.id})">Cancella</button>
+  const groups = strategicLineGroups();
+  grid.innerHTML = groups.map(group => {
+    const macro = group.macro || DEFAULT_STRATEGIC_GROUP;
+    const priorityClass = macro.priority==='alta' ? '' : macro.priority==='media' ? 'med' : 'low';
+    const openChildArg = macro.id ?? 'null';
+    const childrenHtml = group.children.length
+      ? group.children.map(child => `
+        <div class="strat-child">
+          <div class="strat-child-head">
+            <div>
+              <div class="strat-child-code">${escapeHtml(child.code || 'OS')}</div>
+              <div class="strat-child-title">${escapeHtml(child.title || 'Obiettivo strategico')}</div>
+            </div>
+            <span class="area">${escapeHtml(child.area || 'Trasversale')}</span>
+          </div>
+          <p>${escapeHtml(child.desc || '—')}</p>
+          <div class="card-actions">
+            <button class="btn ghost" onclick="openEditModal(${child.id})">Modifica</button>
+            <button class="btn ghost danger" onclick="deleteStrat(${child.id})">Cancella</button>
+          </div>
+        </div>
+      `).join('')
+      : `<div class="strat-empty">Nessun obiettivo strategico specifico associato a questa linea strategica.</div>`;
+
+    return `
+      <div class="card strat-group-card${macro.isSynthetic ? ' synthetic' : ''}">
+        <div class="priority ${priorityClass}">${escapeHtml(macro.priority || 'media')}</div>
+        <div class="strat-group-head">
+          <div class="code">${escapeHtml(macro.code || DEFAULT_STRATEGIC_GROUP.code)}</div>
+          <div class="strat-type">Linea strategica</div>
+          <h3>${escapeHtml(macro.title || DEFAULT_STRATEGIC_GROUP.title)}</h3>
+          <span class="area">${escapeHtml(macro.area || 'Trasversale')}</span>
+          <p>${escapeHtml(macro.desc || DEFAULT_STRATEGIC_GROUP.desc)}</p>
+        </div>
+        <div class="strat-children">
+          <div class="strat-children-label">Obiettivi strategici specifici</div>
+          ${childrenHtml}
+        </div>
+        <div class="card-actions">
+          <button class="btn ghost" onclick="openChildModal(${openChildArg})">+ Obiettivo</button>
+          ${macro.id ? `<button class="btn ghost" onclick="openEditModal(${macro.id})">Modifica</button>
+          <button class="btn ghost danger" onclick="deleteStrat(${macro.id})">Cancella</button>` : ''}
+        </div>
       </div>
-    </div>
-  `).join('') + `
+    `;
+  }).join('') + `
     <div class="add-strat" onclick="openModal()">+ aggiungi linea strategica</div>
   `;
 }
@@ -769,36 +1123,49 @@ function renderStrat(){
 async function loadDemoStrat(){
   try{
     STATE.strategicLines = await apiJson(API.demoReset, {method:'POST'});
+    sortStrategicLines();
   } catch(e){
     alert('Backend non raggiungibile: carico solo l\'esempio locale.');
     STATE.strategicLines = [...DEMO_STRAT];
+    sortStrategicLines();
   }
   renderStrat();
 }
 
-function openModal(){
+function openModal(preset = {}){
   STATE.editingStrategicLineId = null;
   document.getElementById('modal-title').innerHTML = 'Nuova <em>linea strategica</em>';
-  document.getElementById('modal-subtitle').textContent = 'Inserisci un nuovo ambito di intervento estratto dal PIAO.';
+  document.getElementById('modal-subtitle').textContent = 'Inserisci una nuova macro-categoria oppure un obiettivo strategico specifico.';
   document.getElementById('modal-save-btn').textContent = 'Aggiungi';
   ['m-code','m-title','m-desc'].forEach(id => document.getElementById(id).value='');
-  document.getElementById('m-area').value = 'Sanita';
-  document.getElementById('m-pri').value = 'alta';
+  document.getElementById('m-type').value = preset.type || 'macro_categoria';
+  document.getElementById('m-area').value = preset.area || 'Sanita';
+  document.getElementById('m-pri').value = preset.priority || 'alta';
+  refreshStrategicParentOptions(preset.parentId ?? null);
+  toggleStrategicParentField();
   document.getElementById('modal').classList.add('show');
 }
 
 function openEditModal(id){
-  const line = STATE.strategicLines.find(l => l.id === id);
-  if(!line) return;
+  const source = STATE.strategicLines.find(l => l.id === id);
+  if(!source) return;
+  const line = normalizeStrategicLine(source);
   STATE.editingStrategicLineId = id;
-  document.getElementById('modal-title').innerHTML = 'Modifica <em>linea strategica</em>';
-  document.getElementById('modal-subtitle').textContent = 'Aggiorna codice, area, priorita e descrizione della linea strategica.';
+  document.getElementById('modal-title').innerHTML = line.type === 'obiettivo_strategico'
+    ? 'Modifica <em>obiettivo strategico</em>'
+    : 'Modifica <em>linea strategica</em>';
+  document.getElementById('modal-subtitle').textContent = line.type === 'obiettivo_strategico'
+    ? "Aggiorna titolo, linea strategica madre e descrizione dell'obiettivo strategico."
+    : 'Aggiorna codice, area, priorita e descrizione della linea strategica.';
   document.getElementById('modal-save-btn').textContent = 'Salva modifiche';
   document.getElementById('m-code').value = line.code || '';
   document.getElementById('m-title').value = line.title || '';
+  document.getElementById('m-type').value = line.type || 'macro_categoria';
   document.getElementById('m-area').value = line.area || 'Trasversale';
   document.getElementById('m-pri').value = line.priority || 'alta';
   document.getElementById('m-desc').value = line.desc || '';
+  refreshStrategicParentOptions(line.parentId, line.id);
+  toggleStrategicParentField();
   document.getElementById('modal').classList.add('show');
 }
 
@@ -811,8 +1178,13 @@ async function saveStrat(){
   const code = document.getElementById('m-code').value.trim();
   const title = document.getElementById('m-title').value.trim();
   if(!code || !title){ alert('Codice e titolo obbligatori'); return; }
+  const type = document.getElementById('m-type').value;
+  const parentValue = document.getElementById('m-parent').value;
   const payload = {
-    code, title,
+    code,
+    title,
+    type,
+    parentId: type === 'obiettivo_strategico' && parentValue ? Number(parentValue) : null,
     area: document.getElementById('m-area').value,
     priority: document.getElementById('m-pri').value,
     desc: document.getElementById('m-desc').value || '—'
@@ -828,6 +1200,7 @@ async function saveStrat(){
     } else {
       STATE.strategicLines.push(saved);
     }
+    sortStrategicLines();
   } catch(e){
     alert(e.message || 'Impossibile salvare la linea strategica.');
     return;
@@ -851,6 +1224,72 @@ async function deleteStrat(id){
   }
 }
 
+let improveSuggestions = [];
+
+async function openImproveModal(){
+  const modal = document.getElementById('improve-modal');
+  const status = document.getElementById('improve-status');
+  const list = document.getElementById('improve-list');
+  const applyBtn = document.getElementById('improve-apply-btn');
+
+  modal.classList.add('show');
+  list.innerHTML = '';
+  applyBtn.disabled = true;
+  status.textContent = "Analisi in corso con il modello AI, può richiedere qualche minuto su molte linee...";
+
+  try{
+    improveSuggestions = await apiJson(API.improveAnalyze, {method:'POST'});
+
+    if(!improveSuggestions.length){
+      status.textContent = 'Nessuna proposta: i testi sembrano già corretti.';
+      return;
+    }
+
+    status.textContent = `${improveSuggestions.length} correzioni proposte. Deseleziona quelle che non vuoi applicare.`;
+    list.innerHTML = improveSuggestions.map(s => `
+      <label style="display:flex;gap:10px;align-items:flex-start;border:1px solid var(--ink);padding:10px;cursor:pointer">
+        <input type="checkbox" data-id="${s.id}" checked style="margin-top:3px">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3)">${escapeHtml(s.code || '')}</div>
+          <div style="text-decoration:line-through;color:var(--ink-3)">${escapeHtml(s.originalText || '')}</div>
+          <div style="font-weight:600">${escapeHtml(s.correctedText || '')}</div>
+        </div>
+      </label>`).join('');
+    applyBtn.disabled = false;
+  } catch(e){
+    status.textContent = "Errore durante l'analisi.";
+    alert(e.message || 'Impossibile analizzare le linee strategiche.');
+  }
+}
+
+function closeImproveModal(){
+  document.getElementById('improve-modal').classList.remove('show');
+}
+
+async function applyImprovements(){
+  const checkedIds = new Set(
+    Array.from(document.querySelectorAll('#improve-list input[type=checkbox]:checked'))
+      .map(el => Number(el.dataset.id))
+  );
+  const payload = improveSuggestions.filter(s => checkedIds.has(s.id));
+
+  const btn = document.getElementById('improve-apply-btn');
+  btn.disabled = true;
+  try{
+    STATE.strategicLines = await apiJson(API.improveApply, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    sortStrategicLines();
+    renderStrat();
+    closeImproveModal();
+  } catch(e){
+    alert(e.message || 'Impossibile applicare i miglioramenti.');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
 async function importStrategicPdf(event){
   const input = event.target;
   const file = input.files?.[0];
@@ -868,10 +1307,10 @@ async function importStrategicPdf(event){
 
   btn.disabled = true;
   status.style.display = 'block';
-  status.textContent = 'Invio PDF a n8n e lettura response.kpi...';
+  status.textContent = 'Invio PDF al backend e normalizzazione della gerarchia strategica...';
 
   try{
-    const resp = await fetch(API.extractStrategicPdf, {
+    const resp = await fetch(API.strategicLineImportJobs, {
       method: 'POST',
       body: form
     });
@@ -880,24 +1319,20 @@ async function importStrategicPdf(event){
       throw new Error(msg || `Errore HTTP ${resp.status}`);
     }
 
-    const payload = await resp.json();
-    const kpi = extractKpi(payload);
-    if(!kpi.length){
-      throw new Error('La risposta non contiene response.kpi valorizzato.');
+    const job = await resp.json();
+    if(!job?.jobId){
+      throw new Error('Il backend non ha restituito un job valido per import linee strategiche.');
     }
 
-    const importedLines = kpiToStrategicLines(kpi);
-    const savedLines = [];
-    for(const line of importedLines){
-      savedLines.push(await apiJson(API.strategicLines, {
-        method: 'POST',
-        body: JSON.stringify(line)
-      }));
-    }
+    status.textContent = job.message || 'Import linee strategiche avviato...';
+    refreshTasks(true);
+    const importSummary = await waitForStrategicLineImportJob(job.jobId, status);
 
     STATE.strategicLines = await apiJson(API.strategicLines);
+    sortStrategicLines();
     renderStrat();
-    status.textContent = `Import completato: ${savedLines.length} linee strategiche aggiunte.`;
+    status.textContent = `Import completato: ${importSummary.pagesImported}/${importSummary.pagesProcessed} pagine analizzate · ${importSummary.savedCount} elementi strategici salvati${importSummary.pagesFailed ? ` · ${importSummary.pagesFailed} pagine senza estrazione utile` : ''}.`;
+    refreshTasks(true);
   } catch(e){
     status.textContent = 'Import non completato.';
     alert(e.message || 'Errore durante importazione del PDF.');
@@ -907,44 +1342,133 @@ async function importStrategicPdf(event){
   }
 }
 
-function extractKpi(payload){
-  if(Array.isArray(payload)) return payload;
-  if(Array.isArray(payload?.response?.kpi)) return payload.response.kpi;
-  if(Array.isArray(payload?.kpi)) return payload.kpi;
-  return [];
+async function waitForStrategicLineImportJob(jobId, statusEl){
+  let lastMessage = '';
+  while(true){
+    await sleep(10000);
+    const job = await apiJson(`${API.strategicLineImportJobs}/${jobId}`);
+    if(job.status === 'COMPLETED'){
+      return job.summary || {pagesProcessed:0,pagesImported:0,pagesFailed:0,itemsExtracted:0,savedCount:0};
+    }
+    if(job.status === 'FAILED'){
+      throw new Error(job.message || 'Import linee strategiche fallito');
+    }
+    if(job.message && job.message !== lastMessage){
+      lastMessage = job.message;
+      const summary = job.summary || {};
+      const progress = summary.pagesProcessed ? ` (${summary.pagesImported || 0}/${summary.pagesProcessed})` : '';
+      statusEl.textContent = `${job.message}${progress}`;
+    }
+  }
 }
 
-function kpiToStrategicLines(kpi){
-  let nextNumber = nextStrategicLineNumber();
-  return kpi.map((topicObj) => {
-    const title = truncateText(String(topicObj?.topic || 'Linea strategica da PDF').trim(), 240);
-    const objective = String(topicObj?.objective || '').trim();
-    const insights = Array.isArray(topicObj?.insights) ? topicObj.insights : [];
-    const insightText = insights
-      .map(i => [i?.title, i?.body].filter(Boolean).join(': '))
-      .filter(Boolean)
-      .join('\n');
-    const desc = truncateText(
-      [objective, insightText].filter(Boolean).join('\n\n') || 'Linea strategica estratta dal PDF.',
-      1150
-    );
+async function importRagSource(event){
+  const input = event.target;
+  const file = input.files?.[0];
+  if(!file) return;
 
-    return {
-      code: 'LS.' + String(nextNumber++).padStart(2, '0'),
-      title,
-      area: inferArea(title + ' ' + desc),
-      priority: 'alta',
-      desc
-    };
-  });
+  const btn = document.getElementById('btn-import-rag');
+  const status = document.getElementById('ragImportStatus');
+  const purpose = document.getElementById('ragSourcePurpose').value;
+  const form = new FormData();
+  form.append('data', file);
+  form.append('purpose', purpose);
+
+  btn.disabled = true;
+  status.style.display = 'block';
+  status.textContent = 'Invio fonte al backend, estrazione ed embedding in corso...';
+
+  try{
+    const resp = await fetch(API.ragSourceImportJobs, {
+      method: 'POST',
+      body: form
+    });
+    if(!resp.ok){
+      const msg = await resp.text();
+      throw new Error(msg || `Errore HTTP ${resp.status}`);
+    }
+
+    const job = await resp.json();
+    if(!job?.jobId){
+      throw new Error('Il backend non ha restituito un job valido per import fonte RAG.');
+    }
+
+    status.textContent = job.message || 'Import fonte RAG avviato...';
+    refreshTasks(true);
+    const importSummary = await waitForRagImportJob(job.jobId, status);
+
+    status.textContent = `Import completato: ${importSummary.pageCount} pagine, ${importSummary.chunkCount} chunk indicizzati.`;
+    refreshTasks(true);
+    await loadRagSources();
+  } catch(e){
+    status.textContent = 'Import non completato.';
+    alert(e.message || 'Errore durante il caricamento della fonte RAG.');
+  } finally {
+    btn.disabled = false;
+    input.value = '';
+  }
 }
 
-function nextStrategicLineNumber(){
-  const nums = STATE.strategicLines
-    .map(l => /^LS\.(\d+)$/i.exec(l.code || '')?.[1])
-    .filter(Boolean)
-    .map(n => Number(n));
-  return nums.length ? Math.max(...nums) + 1 : 1;
+async function waitForRagImportJob(jobId, statusEl){
+  let lastMessage = '';
+  while(true){
+    await sleep(10000);
+    const job = await apiJson(`${API.ragSourceImportJobs}/${jobId}`);
+    if(job.status === 'COMPLETED'){
+      return job.summary || {pageCount:0, chunkCount:0};
+    }
+    if(job.status === 'FAILED'){
+      throw new Error(job.message || 'Import fonte RAG fallito');
+    }
+    if(job.message && job.message !== lastMessage){
+      lastMessage = job.message;
+      statusEl.textContent = job.message;
+    }
+  }
+}
+
+async function loadRagSources(){
+  try{
+    STATE.ragSources = await apiJson(API.ragSources);
+    renderRagSources();
+  } catch(e){
+    console.error('Impossibile caricare le fonti RAG', e);
+  }
+}
+
+function renderRagSources(){
+  const empty = document.getElementById('rag-sources-empty');
+  const list = document.getElementById('rag-sources-list');
+  if(!list) return;
+  if(!STATE.ragSources.length){
+    empty.style.display = 'block';
+    list.innerHTML = '';
+    return;
+  }
+  empty.style.display = 'none';
+  list.innerHTML = STATE.ragSources.map(source => `
+    <div class="box" style="background:var(--parchment-2);border:1px solid var(--ink);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:16px">
+      <div>
+        <strong>${escapeHtml(source.fileName)}</strong>
+        <span class="chip" style="margin-left:8px">${source.purpose === 'GUIDELINE' ? 'Linea guida' : 'Contenuto'}</span>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);letter-spacing:.04em;margin-top:4px">
+          ${escapeHtml(source.status)} · ${source.pageCount} pagine · ${source.chunkCount} chunk · caricato ${formatDateTime(source.uploadedAt)}
+          ${source.status === 'FAILED' && source.statusMessage ? ' · ' + escapeHtml(source.statusMessage) : ''}
+        </div>
+      </div>
+      <button class="btn ghost" onclick="deleteRagSource(${source.id})">Elimina</button>
+    </div>
+  `).join('');
+}
+
+async function deleteRagSource(id){
+  if(!confirm('Eliminare questa fonte RAG e tutti i chunk associati?')) return;
+  try{
+    await apiJson(`${API.ragSources}/${id}`, {method: 'DELETE'});
+    await loadRagSources();
+  } catch(e){
+    alert(e.message || 'Errore durante l\'eliminazione della fonte RAG.');
+  }
 }
 
 function inferArea(text){
@@ -972,73 +1496,507 @@ function truncateText(value, maxLength){
   return value.slice(0, maxLength - 1).trimEnd() + '…';
 }
 
+const IMPORTED_PERFORMANCE_BASELINE = Object.freeze([97, 97, 97]);
+
+const DEFAULT_STRUCTURE_GROUP = {
+  id: null,
+  code: 'DG.DEFAULT',
+  name: 'Direzione Generale di default',
+  type: 'direzione_generale',
+  area: 'Trasversale',
+  h: [...IMPORTED_PERFORMANCE_BASELINE],
+  avg: 97,
+  isSynthetic: true
+};
+
+const DEFAULT_STRATEGIC_GROUP = {
+  id: null,
+  code: 'LS.DEFAULT',
+  title: 'Linea strategica di default',
+  area: 'Trasversale',
+  priority: 'media',
+  desc: 'Raccoglie gli obiettivi strategici non associati a una linea strategica esplicita.',
+  type: 'macro_categoria',
+  isSynthetic: true
+};
+
+function normalizeStrategicLine(line){
+  const type = line?.type || 'macro_categoria';
+  const isChild = type === 'obiettivo_strategico';
+  const categoryCode = line?.categoryCode || line?.parentCode || (isChild ? DEFAULT_STRATEGIC_GROUP.code : line?.code || DEFAULT_STRATEGIC_GROUP.code);
+  const categoryTitle = line?.categoryTitle || line?.parentTitle || (isChild ? DEFAULT_STRATEGIC_GROUP.title : line?.title || DEFAULT_STRATEGIC_GROUP.title);
+  return {
+    ...line,
+    type,
+    area: line?.area || 'Trasversale',
+    priority: line?.priority || 'media',
+    desc: line?.desc || '—',
+    parentId: line?.parentId ?? null,
+    parentCode: line?.parentCode || null,
+    parentTitle: line?.parentTitle || null,
+    categoryCode,
+    categoryTitle
+  };
+}
+
+function normalizedStrategicLines(){
+  return STATE.strategicLines.map(normalizeStrategicLine);
+}
+
+function sortStrategicLines(){
+  STATE.strategicLines.sort((leftRaw, rightRaw) => {
+    const left = normalizeStrategicLine(leftRaw);
+    const right = normalizeStrategicLine(rightRaw);
+    const groupCompare = String(left.categoryCode || '').localeCompare(String(right.categoryCode || ''));
+    if(groupCompare) return groupCompare;
+    if(left.type !== right.type) return left.type === 'macro_categoria' ? -1 : 1;
+    return String(left.code || '').localeCompare(String(right.code || ''));
+  });
+}
+
+function strategicLineGroups(){
+  const groups = new Map();
+  const ensureGroup = (key, seed = {}) => {
+    if(!groups.has(key)){
+      groups.set(key, {
+        macro: null,
+        children: [],
+        key,
+        seed
+      });
+    }
+    return groups.get(key);
+  };
+
+  normalizedStrategicLines().forEach(line => {
+    if(line.type === 'macro_categoria'){
+      const group = ensureGroup(line.code, line);
+      group.macro = line;
+      group.seed = line;
+    }
+  });
+
+  normalizedStrategicLines().forEach(line => {
+    if(line.type !== 'obiettivo_strategico') return;
+    const key = line.categoryCode || DEFAULT_STRATEGIC_GROUP.code;
+    const seed = {
+      ...DEFAULT_STRATEGIC_GROUP,
+      code: key,
+      title: line.categoryTitle || DEFAULT_STRATEGIC_GROUP.title,
+      area: line.area || DEFAULT_STRATEGIC_GROUP.area,
+      priority: line.priority || DEFAULT_STRATEGIC_GROUP.priority
+    };
+    ensureGroup(key, seed).children.push(line);
+  });
+
+  return Array.from(groups.values())
+    .map(group => ({
+      macro: group.macro || group.seed || DEFAULT_STRATEGIC_GROUP,
+      children: group.children.sort((a,b) => String(a.code || '').localeCompare(String(b.code || '')))
+    }))
+    .sort((a,b) => String(a.macro.code || '').localeCompare(String(b.macro.code || '')));
+}
+
+function strategicParentCandidates(excludeId = null){
+  return normalizedStrategicLines()
+    .filter(line => line.type === 'macro_categoria' && line.id !== excludeId)
+    .sort((a,b) => String(a.code || '').localeCompare(String(b.code || '')));
+}
+
+function refreshStrategicParentOptions(selectedParentId = null, excludeId = null){
+  const select = document.getElementById('m-parent');
+  if(!select) return;
+  const options = ['<option value="">Linea strategica di default</option>']
+    .concat(strategicParentCandidates(excludeId).map(line =>
+      `<option value="${line.id}">${escapeHtml(line.code)} · ${escapeHtml(line.title)}</option>`
+    ));
+  select.innerHTML = options.join('');
+  select.value = selectedParentId ? String(selectedParentId) : '';
+}
+
+function toggleStrategicParentField(){
+  const type = document.getElementById('m-type')?.value || 'macro_categoria';
+  const field = document.getElementById('m-parent-field');
+  if(!field) return;
+  field.style.display = type === 'obiettivo_strategico' ? 'block' : 'none';
+}
+
+function openChildModal(parentId = null){
+  openModal({type: 'obiettivo_strategico', parentId});
+}
+
 /* ============================================================
    FASE II — STRUTTURE
 ============================================================ */
 function tierOf(avg){
-  if(avg >= 90) return {key:'eccellente', label:'Eccellente'};
-  if(avg >= 80) return {key:'buona', label:'Buona'};
-  if(avg >= 70) return {key:'adeguata', label:'Adeguata'};
+  if(avg >= 99) return {key:'eccellente', label:'Eccellente'};
+  if(avg >= 98) return {key:'buona', label:'Buona'};
+  if(avg >= 97) return {key:'adeguata', label:'Adeguata'};
   return {key:'recupero', label:'In recupero'};
 }
 
 function colorOf(avg){
-  if(avg >= 90) return 'var(--olive)';
-  if(avg >= 80) return 'var(--olive-light)';
-  if(avg >= 70) return 'var(--bronze)';
+  if(avg >= 99) return 'var(--olive)';
+  if(avg >= 98) return 'var(--olive-light)';
+  if(avg >= 97) return 'var(--bronze)';
   return 'var(--pompei)';
+}
+
+function structureTypeOrder(type){
+  switch(String(type || '').toLowerCase()){
+    case 'direzione_generale': return 0;
+    case 'settore': return 1;
+    default: return 2;
+  }
+}
+
+function structureTypeLabel(type){
+  switch(String(type || '').toLowerCase()){
+    case 'direzione_generale': return 'Direzione Generale';
+    case 'settore': return 'Settore';
+    case 'uos': return 'UOS';
+    default: return String(type || 'Struttura').replaceAll('_', ' ');
+  }
+}
+
+function normalizeStructure(structure){
+  const type = structure?.type || (structure?.parentId ? 'uos' : 'direzione_generale');
+  const history = Array.isArray(structure?.h) && structure.h.length === 3
+    ? structure.h.map(value => Number(value))
+    : [...IMPORTED_PERFORMANCE_BASELINE];
+  const avg = Number.isFinite(structure?.avg)
+    ? Number(structure.avg)
+    : Math.round((history[0] * 0.2 + history[1] * 0.3 + history[2] * 0.5) * 10) / 10;
+  const dgCode = structure?.dgCode || (type === 'direzione_generale' ? structure?.code || DEFAULT_STRUCTURE_GROUP.code : structure?.parentCode || DEFAULT_STRUCTURE_GROUP.code);
+  const dgName = structure?.dgName || (type === 'direzione_generale' ? structure?.name || DEFAULT_STRUCTURE_GROUP.name : structure?.parentName || DEFAULT_STRUCTURE_GROUP.name);
+  const sectorId = structure?.sectorId ?? (type === 'settore' ? (structure?.id ?? null) : null);
+  const sectorCode = structure?.sectorCode || (type === 'settore' ? structure?.code || null : null);
+  const sectorName = structure?.sectorName || (type === 'settore' ? structure?.name || null : null);
+  return {
+    ...structure,
+    type,
+    parentId: structure?.parentId ?? null,
+    parentCode: structure?.parentCode || null,
+    parentName: structure?.parentName || null,
+    sectorId,
+    sectorCode,
+    sectorName,
+    dgCode,
+    dgName,
+    area: structure?.area || 'Trasversale',
+    h: history,
+    avg
+  };
+}
+
+function normalizedStructures(){
+  return STATE.structures.map(normalizeStructure);
+}
+
+function sortStructures(){
+  STATE.structures.sort((leftRaw, rightRaw) => {
+    const left = normalizeStructure(leftRaw);
+    const right = normalizeStructure(rightRaw);
+    const groupCompare = String(left.dgCode || '').localeCompare(String(right.dgCode || ''));
+    if(groupCompare !== 0) return groupCompare;
+    const typeCompare = structureTypeOrder(left.type) - structureTypeOrder(right.type);
+    if(typeCompare !== 0) return typeCompare;
+    const sectorCompare = String(left.sectorCode || '').localeCompare(String(right.sectorCode || ''));
+    if(sectorCompare !== 0) return sectorCompare;
+    const codeCompare = String(left.code || '').localeCompare(String(right.code || ''));
+    if(codeCompare !== 0) return codeCompare;
+    return String(left.name || '').localeCompare(String(right.name || ''));
+  });
+}
+
+function structureParentCandidates(type = 'uos', excludeId = null){
+  const structures = normalizedStructures().filter(structure => structure.id !== excludeId);
+  if(type === 'settore'){
+    return structures.filter(structure => structure.type === 'direzione_generale');
+  }
+  if(type === 'uos'){
+    return structures.filter(structure => structure.type === 'direzione_generale' || structure.type === 'settore');
+  }
+  return [];
+}
+
+function refreshStructureParentOptions(selectedParentId = null, excludeId = null){
+  const select = document.getElementById('s-parent');
+  const type = document.getElementById('s-type')?.value || 'direzione_generale';
+  if(!select) return;
+  if(type === 'direzione_generale'){
+    select.innerHTML = '<option value="">Nessun padre</option>';
+    select.value = '';
+    return;
+  }
+
+  const dgOptions = structureParentCandidates('settore', excludeId).map(structure =>
+    `<option value="${structure.id}">${escapeHtml(structure.code)} · ${escapeHtml(structure.name)}</option>`
+  );
+  const sectorOptions = structureParentCandidates('uos', excludeId)
+    .filter(structure => structure.type === 'settore')
+    .map(structure => `<option value="${structure.id}">${escapeHtml(structure.code)} · ${escapeHtml(structure.name)}</option>`);
+
+  const options = ['<option value="">Direzione Generale di default</option>'];
+  if(type === 'settore'){
+    options.push(...dgOptions);
+  } else {
+    if(dgOptions.length){
+      options.push(`<optgroup label="Direzioni Generali">${dgOptions.join('')}</optgroup>`);
+    }
+    if(sectorOptions.length){
+      options.push(`<optgroup label="Settori">${sectorOptions.join('')}</optgroup>`);
+    }
+  }
+  select.innerHTML = options.join('');
+  select.value = selectedParentId ? String(selectedParentId) : '';
+}
+
+function toggleStructureParentField(){
+  const type = document.getElementById('s-type')?.value || 'direzione_generale';
+  const field = document.getElementById('s-parent-field');
+  const label = document.getElementById('s-parent-label');
+  const help = document.getElementById('s-parent-help');
+  if(!field || !label || !help) return;
+
+  if(type === 'direzione_generale'){
+    field.style.display = 'none';
+    return;
+  }
+
+  field.style.display = 'block';
+  if(type === 'settore'){
+    label.textContent = 'Direzione Generale padre';
+    help.textContent = 'Se non selezionata, il Settore sarà associato alla Direzione Generale di default.';
+  } else {
+    label.textContent = 'Struttura padre';
+    help.textContent = 'Per le UOS puoi selezionare un Settore oppure direttamente una Direzione Generale.';
+  }
+  refreshStructureParentOptions(document.getElementById('s-parent')?.value || null, STATE.editingStructureId);
+}
+
+function structureGroups(){
+  const groups = new Map();
+  for(const structure of normalizedStructures()){
+    const key = structure.dgCode || DEFAULT_STRUCTURE_GROUP.code;
+    if(!groups.has(key)) groups.set(key, {dg: null, sectors: new Map(), directChildren: []});
+    const group = groups.get(key);
+    if(structure.type === 'direzione_generale'){
+      group.dg = structure;
+      continue;
+    }
+    if(structure.type === 'settore'){
+      const bucket = group.sectors.get(structure.code) || {sector: null, children: []};
+      bucket.sector = structure;
+      group.sectors.set(structure.code, bucket);
+      continue;
+    }
+    if(structure.sectorCode){
+      const bucket = group.sectors.get(structure.sectorCode) || {
+        sector: {
+          id: structure.sectorId,
+          code: structure.sectorCode,
+          name: structure.sectorName || 'Settore',
+          type: 'settore',
+          dgCode: structure.dgCode,
+          dgName: structure.dgName,
+          area: structure.area,
+          h: [...IMPORTED_PERFORMANCE_BASELINE],
+          avg: 97,
+          isSynthetic: true
+        },
+        children: []
+      };
+      bucket.children.push(structure);
+      group.sectors.set(structure.sectorCode, bucket);
+      continue;
+    }
+    group.directChildren.push(structure);
+  }
+
+  return Array.from(groups.entries())
+    .sort((left, right) => left[0].localeCompare(right[0]))
+    .map(([key, group]) => ({
+      dg: group.dg || {
+        ...DEFAULT_STRUCTURE_GROUP,
+        code: key,
+        name: group.directChildren[0]?.dgName || Array.from(group.sectors.values())[0]?.sector?.dgName || DEFAULT_STRUCTURE_GROUP.name
+      },
+      sectors: Array.from(group.sectors.values())
+        .sort((left, right) => String(left.sector?.code || '').localeCompare(String(right.sector?.code || '')))
+        .map(bucket => ({
+          sector: bucket.sector,
+          children: bucket.children.sort((left, right) => String(left.code || '').localeCompare(String(right.code || '')))
+        })),
+      directChildren: group.directChildren.sort((left, right) => String(left.code || '').localeCompare(String(right.code || '')))
+    }));
+}
+
+function structureNodeClass(type){
+  if(type === 'direzione_generale') return 'dg';
+  if(type === 'settore') return 'sector';
+  return 'uos';
+}
+
+function structureSummaryMeta(structure){
+  if(structure.type === 'direzione_generale') return `Area: ${escapeHtml(structure.area)}`;
+  if(structure.type === 'settore') return `Direzione Generale: ${escapeHtml(structure.dgCode || '—')} · Area: ${escapeHtml(structure.area)}`;
+  if(structure.sectorCode) return `Settore: ${escapeHtml(structure.sectorCode)} · DG: ${escapeHtml(structure.dgCode || '—')} · Area: ${escapeHtml(structure.area)}`;
+  return `UOS diretta della DG ${escapeHtml(structure.dgCode || '—')} · Area: ${escapeHtml(structure.area)}`;
+}
+
+function structureActionButtons(structure, insideSummary = false){
+  if(!structure?.id) return '';
+  const stop = insideSummary ? 'event.preventDefault();event.stopPropagation();' : '';
+  const buttons = [];
+  if(structure.type === 'direzione_generale'){
+    buttons.push(`<button class="btn ghost" onclick="${stop}openChildStructureModal(${structure.id}, 'settore')">+ Settore</button>`);
+    buttons.push(`<button class="btn ghost" onclick="${stop}openChildStructureModal(${structure.id}, 'uos')">+ UOS</button>`);
+  }
+  if(structure.type === 'settore'){
+    buttons.push(`<button class="btn ghost" onclick="${stop}openChildStructureModal(${structure.id}, 'uos')">+ UOS</button>`);
+  }
+  buttons.push(`<button class="btn ghost" onclick="${stop}openStructModal(${structure.id})">Modifica</button>`);
+  buttons.push(`<button class="btn ghost danger" onclick="${stop}deleteStruct(${structure.id})">Cancella</button>`);
+  return `<div class="org-actions">${buttons.join('')}</div>`;
+}
+
+function structureMetricsHtml(structure){
+  const tier = tierOf(structure.avg);
+  return `
+    <div class="org-node-metrics">
+      <div class="org-year-grid">
+        <div class="org-year-cell"><label>2022</label><strong>${structure.h[0]}</strong></div>
+        <div class="org-year-cell"><label>2023</label><strong>${structure.h[1]}</strong></div>
+        <div class="org-year-cell"><label>2024</label><strong>${structure.h[2]}</strong></div>
+      </div>
+      <div class="org-score-line">
+        <span class="perf-tier tier-${tier.key}">${tier.label}</span>
+        <strong>${structure.avg.toFixed(1)}</strong>
+      </div>
+    </div>
+  `;
+}
+
+function structureNodeContent(structure, countLabel = '', insideSummary = false, withDisclosure = false){
+  const typeClass = structureNodeClass(structure.type);
+  return `
+    <div class="org-node-main">
+      <div class="org-node-topline">
+        <span class="org-type-chip ${typeClass}">${escapeHtml(structureTypeLabel(structure.type))}</span>
+        ${countLabel ? `<span class="org-count-pill">${escapeHtml(countLabel)}</span>` : ''}
+      </div>
+      <div class="org-node-title">${escapeHtml(structure.name)}</div>
+      <div class="org-node-meta">
+        <span class="struct-code">${escapeHtml(structure.code || '—')}</span>
+        <span>${structureSummaryMeta(structure)}</span>
+      </div>
+    </div>
+    ${structureMetricsHtml(structure)}
+    ${structureActionButtons(structure, insideSummary)}
+    ${withDisclosure ? '<span class="org-disclosure" aria-hidden="true"></span>' : ''}
+  `;
+}
+
+function renderStructureLeaf(structure){
+  const typeClass = structureNodeClass(structure.type);
+  return `
+    <article class="org-leaf">
+      <div class="org-leaf-card org-card-${typeClass}">
+        ${structureNodeContent(structure)}
+      </div>
+    </article>
+  `;
+}
+
+function renderSectorBranch(bucket){
+  const sector = bucket.sector;
+  const typeClass = structureNodeClass(sector.type || 'settore');
+  const countLabel = `${bucket.children.length} ${bucket.children.length === 1 ? 'UOS' : 'UOS'}`;
+  return `
+    <details class="org-node ${sector?.isSynthetic ? 'is-synthetic' : ''}" open>
+      <summary class="org-summary org-card-${typeClass}">
+        ${structureNodeContent(sector, countLabel, true, true)}
+      </summary>
+      <div class="org-children">
+        ${bucket.children.length
+          ? `<div class="org-branch">${bucket.children.map(child => renderStructureLeaf(child)).join('')}</div>`
+          : `<div class="org-empty">Nessuna UOS associata a questo Settore.</div>`}
+      </div>
+    </details>
+  `;
+}
+
+function renderDirectUosCluster(children){
+  if(!children.length) return '';
+  return `
+    <section class="org-cluster">
+      <div class="org-cluster-head">UOS dirette della Direzione Generale</div>
+      <div class="org-branch">
+        ${children.map(child => renderStructureLeaf(child)).join('')}
+      </div>
+    </section>
+  `;
 }
 
 function renderStruct(){
   const body = document.getElementById('struct-body');
-  body.innerHTML = STATE.structures.map(s => {
-    const tier = tierOf(s.avg);
+  const groups = structureGroups();
+  if(!groups.length){
+    body.innerHTML = `<div class="org-empty">Nessuna struttura caricata. Importa l'organigramma oppure crea manualmente una Direzione Generale.</div>`;
+    return;
+  }
+
+  body.innerHTML = groups.map(group => {
+    const totalUos = group.directChildren.length + group.sectors.reduce((sum, bucket) => sum + bucket.children.length, 0);
+    const countLabel = `${group.sectors.length} ${group.sectors.length === 1 ? 'settore' : 'settori'} · ${totalUos} UOS`;
     return `
-      <tr>
-        <td>
-          <div class="struct-name">${s.name}</div>
-          <div style="font-size:11px;color:var(--ink-3);margin-top:2px">Area: ${s.area}</div>
-        </td>
-        <td><span class="struct-code">${s.code}</span></td>
-        <td><span class="perf-val">${s.h[0]}</span></td>
-        <td><span class="perf-val">${s.h[1]}</span></td>
-        <td><span class="perf-val">${s.h[2]}</span></td>
-        <td>
-          <div class="perf-bar">
-            <div class="perf-track"><div class="perf-fill" style="width:${s.avg}%;background:${colorOf(s.avg)}"></div></div>
-            <span class="perf-val">${s.avg.toFixed(1)}</span>
-          </div>
-        </td>
-        <td><span class="perf-tier tier-${tier.key}">${tier.label}</span></td>
-        <td>
-          <div class="card-actions" style="margin:0;padding:0;border-top:none">
-            <button class="btn ghost" onclick="openStructModal(${s.id})">Modifica</button>
-            <button class="btn ghost danger" onclick="deleteStruct(${s.id})">Cancella</button>
-          </div>
-        </td>
-      </tr>
+      <details class="org-node" open>
+        <summary class="org-summary org-card-dg">
+          ${structureNodeContent(group.dg, countLabel, true, true)}
+        </summary>
+        <div class="org-children">
+          ${renderDirectUosCluster(group.directChildren)}
+          ${group.sectors.length ? `<div class="org-branch">${group.sectors.map(bucket => renderSectorBranch(bucket)).join('')}</div>` : ''}
+          ${!group.directChildren.length && !group.sectors.length ? `<div class="org-empty">Nessuna struttura figlia associata a questa Direzione Generale.</div>` : ''}
+        </div>
+      </details>
     `;
   }).join('');
 }
 
-function openStructModal(id = null){
+function openChildStructureModal(parentId = null, childType = 'uos'){
+  openStructModal(null, {type: childType, parentId});
+}
+
+function structureModalDescription(type, isEditing){
+  if(type === 'direzione_generale') return isEditing ? 'Aggiorna Direzione Generale e performance storica.' : 'Inserisci Direzione Generale e performance storica.';
+  if(type === 'settore') return isEditing ? 'Aggiorna Settore, Direzione Generale padre e performance storica.' : 'Inserisci Settore, Direzione Generale padre e performance storica.';
+  return isEditing ? 'Aggiorna UOS, struttura padre e performance storica.' : 'Inserisci UOS, struttura padre e performance storica.';
+}
+
+function openStructModal(id = null, preset = {}){
   STATE.editingStructureId = id;
   const isEditing = id !== null;
-  const structure = isEditing ? STATE.structures.find(s => s.id === id) : null;
+  const structure = isEditing ? normalizedStructures().find(s => s.id === id) : null;
   if(isEditing && !structure) return;
 
+  const type = structure?.type || preset.type || 'direzione_generale';
+  const parentId = structure?.parentId ?? preset.parentId ?? null;
+
   document.getElementById('struct-modal-title').innerHTML = isEditing ? 'Modifica <em>struttura</em>' : 'Nuova <em>struttura</em>';
-  document.getElementById('struct-modal-subtitle').textContent = isEditing
-    ? 'Aggiorna struttura e valori di performance storica.'
-    : 'Inserisci struttura e performance storica.';
+  document.getElementById('struct-modal-subtitle').textContent = structureModalDescription(type, isEditing);
   document.getElementById('struct-modal-save-btn').textContent = isEditing ? 'Salva modifiche' : 'Aggiungi';
 
   document.getElementById('s-code').value = structure?.code || '';
   document.getElementById('s-name').value = structure?.name || '';
-  document.getElementById('s-area').value = structure?.area || 'Trasversale';
-  document.getElementById('s-p2023').value = structure?.h?.[0] ?? '';
-  document.getElementById('s-p2024').value = structure?.h?.[1] ?? '';
-  document.getElementById('s-p2025').value = structure?.h?.[2] ?? '';
+  document.getElementById('s-type').value = type;
+  refreshStructureParentOptions(parentId, id);
+  document.getElementById('s-area').value = structure?.area || preset.area || 'Trasversale';
+  document.getElementById('s-p2023').value = structure?.h?.[0] ?? preset.performance2023 ?? '';
+  document.getElementById('s-p2024').value = structure?.h?.[1] ?? preset.performance2024 ?? '';
+  document.getElementById('s-p2025').value = structure?.h?.[2] ?? preset.performance2025 ?? '';
+  toggleStructureParentField();
   document.getElementById('struct-modal').classList.add('show');
 }
 
@@ -1047,9 +2005,17 @@ function closeStructModal(){
   STATE.editingStructureId = null;
 }
 
+async function reloadStructures(){
+  STATE.structures = await apiJson(API.structures);
+  sortStructures();
+  renderStruct();
+}
+
 async function saveStruct(){
   const code = document.getElementById('s-code').value.trim();
   const name = document.getElementById('s-name').value.trim();
+  const type = document.getElementById('s-type').value;
+  const parentValue = document.getElementById('s-parent').value;
   const p2023 = Number(document.getElementById('s-p2023').value);
   const p2024 = Number(document.getElementById('s-p2024').value);
   const p2025 = Number(document.getElementById('s-p2025').value);
@@ -1062,6 +2028,8 @@ async function saveStruct(){
   const payload = {
     code,
     name,
+    type,
+    parentId: type === 'direzione_generale' ? null : (parentValue ? Number(parentValue) : null),
     area: document.getElementById('s-area').value,
     performance2023: p2023,
     performance2024: p2024,
@@ -1070,35 +2038,209 @@ async function saveStruct(){
 
   try{
     const isEditing = STATE.editingStructureId !== null;
-    const saved = await apiJson(isEditing ? `${API.structures}/${STATE.editingStructureId}` : API.structures, {
+    await apiJson(isEditing ? `${API.structures}/${STATE.editingStructureId}` : API.structures, {
       method: isEditing ? 'PUT' : 'POST',
       body: JSON.stringify(payload)
     });
-    if(isEditing){
-      STATE.structures = STATE.structures.map(structure => structure.id === saved.id ? saved : structure);
-    } else {
-      STATE.structures.push(saved);
-    }
-    STATE.structures.sort((a,b) => String(a.code).localeCompare(String(b.code)));
+    await reloadStructures();
     closeStructModal();
-    renderStruct();
   } catch(e){
     alert(e.message || 'Impossibile salvare la struttura.');
   }
 }
 
 async function deleteStruct(id){
-  const structure = STATE.structures.find(s => s.id === id);
+  const structure = normalizedStructures().find(s => s.id === id);
   if(!structure) return;
   if(!confirm(`Cancellare la struttura "${structure.code} - ${structure.name}"?`)) return;
 
   try{
     await apiJson(`${API.structures}/${id}`, {method:'DELETE'});
-    STATE.structures = STATE.structures.filter(s => s.id !== id);
-    renderStruct();
+    await reloadStructures();
   } catch(e){
     alert(e.message || 'Impossibile cancellare la struttura.');
   }
+}
+
+async function importOrganigramPdf(event){
+  const input = event.target;
+  const file = input.files?.[0];
+  if(!file) return;
+  if(file.type && file.type !== 'application/pdf'){
+    alert('Seleziona un file PDF.');
+    input.value = '';
+    return;
+  }
+
+  const btn = document.getElementById('btn-import-organigram-pdf');
+  const status = document.getElementById('organigramImportStatus');
+  const form = new FormData();
+  form.append('data', file);
+
+  btn.disabled = true;
+  status.style.display = 'block';
+  status.textContent = 'Estraggo il testo del PDF e lo organizzo con Ollama...';
+
+  try{
+    const resp = await fetch(API.organigramImportJobs, {
+      method: 'POST',
+      body: form
+    });
+    if(!resp.ok){
+      const msg = await resp.text();
+      throw new Error(msg || `Errore HTTP ${resp.status}`);
+    }
+
+    const job = await resp.json();
+    if(!job?.jobId){
+      throw new Error("Il backend non ha restituito un job valido per l'import organigramma.");
+    }
+
+    status.textContent = job.message || 'Import organigramma avviato...';
+    refreshTasks(true);
+    const importSummary = await waitForOrganigramImportJob(job.jobId, status);
+
+    STATE.structures = await apiJson(API.structures);
+    sortStructures();
+    renderStruct();
+    status.textContent = `Import completato: ${importSummary.pagesImported}/${importSummary.pagesProcessed} pagine sincronizzate · ${importSummary.savedCount} strutture salvate${importSummary.baselineCount ? ` · ${importSummary.baselineCount} nuove strutture con baseline storica 97-97-97` : ''}${importSummary.pagesFailed ? ` · ${importSummary.pagesFailed} pagine senza estrazione utile` : ''}.`;
+    refreshTasks(true);
+  } catch(e){
+    status.textContent = 'Import non completato.';
+    alert(e.message || "Errore durante importazione dell'organigramma.");
+  } finally {
+    btn.disabled = false;
+    input.value = '';
+  }
+}
+
+async function waitForOrganigramImportJob(jobId, statusEl){
+  let lastMessage = '';
+  while(true){
+    await sleep(10000);
+    const job = await apiJson(`${API.organigramImportJobs}/${jobId}`);
+    if(job.status === 'COMPLETED'){
+      return job.summary || {pagesProcessed:0,pagesImported:0,pagesFailed:0,savedCount:0,baselineCount:0};
+    }
+    if(job.status === 'FAILED'){
+      throw new Error(job.message || 'Import organigramma fallito');
+    }
+    if(job.message && job.message !== lastMessage){
+      lastMessage = job.message;
+      const summary = job.summary || {};
+      const progress = summary.pagesProcessed ? ` (${summary.pagesImported || 0}/${summary.pagesProcessed})` : '';
+      statusEl.textContent = `${job.message}${progress}`;
+    }
+  }
+}
+
+async function saveExtractedStructures(extractedStructures){
+  const saved = [];
+  const relation = new Map();
+  let baselineCount = 0;
+  let nextCode = nextImportedStructureNumber();
+  const ordered = [...extractedStructures].sort((left, right) => {
+    const leftType = importedStructureType(left, extractedStructures);
+    const rightType = importedStructureType(right, extractedStructures);
+    const rank = structureTypeOrder(leftType) - structureTypeOrder(rightType);
+    if(rank !== 0) return rank;
+    return String(left.externalKey || '').localeCompare(String(right.externalKey || ''));
+  });
+
+  for(const item of ordered){
+    const name = String(item?.name || '').trim();
+    if(!name) continue;
+
+    const type = importedStructureType(item, extractedStructures);
+    const extractedCode = sanitizeImportedStructureCode(item?.code);
+    const existing = normalizedStructures().find(structure => {
+      const sameCode = extractedCode && String(structure.code || '').trim().toLowerCase() === extractedCode.toLowerCase();
+      const sameName = String(structure.name || '').trim().toLowerCase() === name.toLowerCase();
+      return sameCode || sameName;
+    });
+
+    const history = Array.isArray(existing?.h) && existing.h.length === 3 ? existing.h : IMPORTED_PERFORMANCE_BASELINE;
+    if(!existing) baselineCount += 1;
+
+    const payload = {
+      code: existing?.code || extractedCode || generateImportedStructureCode(type, nextCode++),
+      name,
+      type,
+      parentId: type === 'direzione_generale'
+        ? null
+        : (item?.parentExternalKey ? (relation.get(item.parentExternalKey) ?? existing?.parentId ?? null) : (existing?.parentId ?? null)),
+      area: existing?.area || normalizeImportedStructureArea(item?.area, `${name} ${type}`),
+      performance2023: Number(history[0]),
+      performance2024: Number(history[1]),
+      performance2025: Number(history[2])
+    };
+
+    const savedStructure = await apiJson(existing ? `${API.structures}/${existing.id}` : API.structures, {
+      method: existing ? 'PUT' : 'POST',
+      body: JSON.stringify(payload)
+    });
+    relation.set(item?.externalKey, savedStructure.id);
+    if(existing) STATE.structures = STATE.structures.map(structure => structure.id === savedStructure.id ? savedStructure : structure);
+    else STATE.structures.push(savedStructure);
+    saved.push(savedStructure);
+  }
+
+  return {saved, baselineCount};
+}
+
+function importedStructureType(item, allItems = []){
+  const explicit = String(item?.type || '').toLowerCase();
+  const hasChildren = allItems.some(candidate => String(candidate?.parentExternalKey || '') === String(item?.externalKey || ''));
+  if(explicit === 'direzione_generale') return 'direzione_generale';
+  if(explicit === 'settore') return 'settore';
+  if(explicit === 'uos') return 'uos';
+  if(hasChildren) return item?.parentExternalKey ? 'settore' : 'direzione_generale';
+  if(item?.parentExternalKey) return 'uos';
+  return 'direzione_generale';
+}
+
+function nextImportedStructureNumber(){
+  const nums = STATE.structures
+    .map(structure => /ORG\.[A-Z]+\.(\d+)$/i.exec(String(structure.code || ''))?.[1])
+    .filter(Boolean)
+    .map(value => Number(value));
+  return nums.length ? Math.max(...nums) + 1 : 1;
+}
+
+function generateImportedStructureCode(type, index){
+  const prefix = importedStructurePrefix(type);
+  return `ORG.${prefix}.${String(index).padStart(3, '0')}`;
+}
+
+function importedStructurePrefix(type){
+  switch(String(type || '').toLowerCase()){
+    case 'direzione_generale': return 'DG';
+    case 'settore': return 'SET';
+    case 'uos': return 'UOS';
+    default: return 'STR';
+  }
+}
+
+function sanitizeImportedStructureCode(value){
+  const code = String(value || '').trim().replace(/\s+/g, ' ');
+  const officialLike = /^[A-Z0-9.\-/ ]+$/i.test(code) && (/[0-9]/.test(code) || code.includes('.'));
+  return officialLike ? code.slice(0, 32) : '';
+}
+
+function normalizeImportedStructureArea(area, fallbackText){
+  const allowed = new Set([
+    'Trasversale',
+    'Digitalizzazione',
+    'Sanita',
+    'Ambiente',
+    'Lavoro e Formazione',
+    'Cultura e Turismo',
+    'Politiche Sociali',
+    'Mobilita',
+    'Sviluppo Economico'
+  ]);
+  const value = String(area || '').trim();
+  return allowed.has(value) ? value : inferArea(`${value} ${fallbackText || ''}`);
 }
 
 function validPerformance(value){
@@ -1112,12 +2254,14 @@ function exportStructuresCSV(){
   }
 
   const rows = [
-    ['codice','struttura','area','performance_2023','performance_2024','performance_2025','indice_medio','fascia'],
-    ...STATE.structures.map(s => {
+    ['codice','struttura','tipo','direzione_generale','area','performance_2022','performance_2023','performance_2024','indice_medio','fascia'],
+    ...normalizedStructures().map(s => {
       const tier = tierOf(s.avg);
       return [
         s.code,
         s.name,
+        s.type,
+        s.type === 'direzione_generale' ? s.code : `${s.dgCode} - ${s.dgName}`,
         s.area,
         formatCsvNumber(s.h?.[0]),
         formatCsvNumber(s.h?.[1]),
@@ -1153,14 +2297,20 @@ function formatCsvNumber(value){
 /* ============================================================
    FASE III — GENERAZIONE OBIETTIVI
 ============================================================ */
+function syncSliderValue(id, suffix = ''){
+  const input = document.getElementById(id);
+  const label = document.getElementById(`${id}-val`);
+  if(input && label) label.textContent = input.value + suffix;
+}
+
 function getStretch(avg){
   const ecc = +document.getElementById('stretch-ecc').value / 100;
   const buo = +document.getElementById('stretch-buo').value / 100;
   const ade = +document.getElementById('stretch-ade').value / 100;
   const rec = +document.getElementById('stretch-rec').value / 100;
-  if(avg >= 90) return ecc;
-  if(avg >= 80) return buo;
-  if(avg >= 70) return ade;
+  if(avg >= 99) return ecc;
+  if(avg >= 98) return buo;
+  if(avg >= 97) return ade;
   return rec;
 }
 
@@ -1191,6 +2341,7 @@ async function generateObjectives(){
   log(`Strutture coinvolte: ${STATE.structures.length}`);
   if(mode === 'ai'){
     log('Avvio generazione Ollama per singola linea strategica', 'ai');
+    log(`Meta-parametri: azioni ${document.getElementById('gen-min-actions').value}-${document.getElementById('gen-max-actions').value} per struttura · quota multi-struttura ${document.getElementById('gen-multi-structure-share').value}% · peso ${document.getElementById('gen-weight-min').value}-${document.getElementById('gen-weight-max').value} · quota valore pubblico ${document.getElementById('gen-public-value-share').value}%`, 'calc');
   }
   log('Invio parametri al backend Spring Boot', 'calc');
 
@@ -1203,10 +2354,18 @@ async function generateObjectives(){
         stretchEcc: +document.getElementById('stretch-ecc').value,
         stretchBuo: +document.getElementById('stretch-buo').value,
         stretchAde: +document.getElementById('stretch-ade').value,
-        stretchRec: +document.getElementById('stretch-rec').value
+        stretchRec: +document.getElementById('stretch-rec').value,
+        minActionsPerAssignment: +document.getElementById('gen-min-actions').value,
+        maxActionsPerAssignment: +document.getElementById('gen-max-actions').value,
+        multiStructureSharePercent: +document.getElementById('gen-multi-structure-share').value,
+        actionWeightMin: +document.getElementById('gen-weight-min').value,
+        actionWeightMax: +document.getElementById('gen-weight-max').value,
+        publicValueSharePercent: +document.getElementById('gen-public-value-share').value,
+        preferredMissions: document.getElementById('gen-preferred-missions').value.trim()
       })
     });
     log(`Job asincrono avviato · ${job.jobId}`, 'ok');
+    refreshTasks(true);
     const generation = await waitForGenerationJob(job.jobId);
     STATE.latestGenerationId = generation.generationId;
     STATE.objectives = generation.objectives;
@@ -1216,6 +2375,7 @@ async function generateObjectives(){
     log(`Output pronto per fase IV — assegnazione`, 'ok');
     document.getElementById('btn-to-result').disabled = false;
     await refreshGenerationVersions();
+    refreshTasks(true);
     renderObjectives();
   } catch(e){
     log(`Errore backend: ${e.message}`, 'calc');
@@ -1255,57 +2415,172 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 /* ============================================================
    FASE IV — OBIETTIVI ASSEGNATI
 ============================================================ */
+function normalizeObjective(objective){
+  const lineCode = objective.line || 'OS.DEFAULT';
+  const lineTitle = objective.lineTitle || 'Obiettivo senza linea strategica';
+  return {
+    ...objective,
+    line: lineCode,
+    lineTitle,
+    categoryCode: objective.categoryCode || (objective.line ? objective.line : DEFAULT_STRATEGIC_GROUP.code),
+    categoryTitle: objective.categoryTitle || (objective.lineTitle ? objective.lineTitle : DEFAULT_STRATEGIC_GROUP.title)
+  };
+}
+
+function groupedObjectives(objectives){
+  const groups = new Map();
+  objectives.map(normalizeObjective).forEach(objective => {
+    if(!groups.has(objective.categoryCode)){
+      groups.set(objective.categoryCode, {
+        code: objective.categoryCode,
+        title: objective.categoryTitle,
+        lines: new Map(),
+        count: 0
+      });
+    }
+    const group = groups.get(objective.categoryCode);
+    if(!group.lines.has(objective.line)){
+      group.lines.set(objective.line, {
+        code: objective.line,
+        title: objective.lineTitle,
+        objectives: []
+      });
+    }
+    group.lines.get(objective.line).objectives.push(objective);
+    group.count++;
+  });
+
+  return Array.from(groups.values())
+    .sort((left, right) => String(left.code || '').localeCompare(String(right.code || '')))
+    .map(group => ({
+      ...group,
+      lines: Array.from(group.lines.values())
+        .sort((left, right) => String(left.code || '').localeCompare(String(right.code || '')))
+    }));
+}
+
+const PAGE_STATE = {};
+
+function paginatedListHtml(pageKey, items, renderItemFn, initialCount, increment, rerenderFn){
+  const visible = PAGE_STATE[pageKey] || initialCount;
+  const shown = items.slice(0, visible);
+  const remaining = items.length - shown.length;
+  let html = shown.map(renderItemFn).join('');
+  if(remaining > 0){
+    const next = Math.min(increment, remaining);
+    html += `<div style="text-align:center;margin:14px 0">
+      <button class="btn ghost" onclick="PAGE_STATE['${pageKey}']=${visible}+${increment}; ${rerenderFn}()">Mostra altri ${next} (${remaining} rimanenti su ${items.length})</button>
+    </div>`;
+  }
+  return html;
+}
+
+const TIER_SEVERITY = {recupero: 0, adeguata: 1, buona: 2, eccellente: 3};
+
+function worstTier(assignments){
+  return (assignments || []).reduce((worst, a) => {
+    if(!worst) return a.tier;
+    return TIER_SEVERITY[a.tier] < TIER_SEVERITY[worst] ? a.tier : worst;
+  }, null) || 'adeguata';
+}
+
+function objectiveActionHtml(o, assignmentIndex, actionIndex, action){
+  const arrow = action.direction === 'up' ? '↑' : '↓';
+  const objectiveKey = objectiveDomKey(o);
+  const inputId = `base-target-${objectiveKey}-${assignmentIndex}-${actionIndex}`;
+  return `
+    <div class="obj-attrs" style="border-top:1px solid var(--ink);padding-top:10px;margin-top:10px">
+      <div class="attr">Azione<strong>${escapeHtml(action.action || action.indicator)} · peso ${escapeHtml(action.weight)}</strong></div>
+      <div class="attr">Indicatore<strong>${escapeHtml(action.indicator)}</strong></div>
+      <div class="attr">Direzione<strong>${arrow} ${action.direction === 'up' ? 'incremento' : 'riduzione'}</strong></div>
+    </div>
+    <div class="target-block">
+      <div class="target-label">Target base</div>
+      <div class="target-base">${action.baseTarget} ${escapeHtml(action.unit)}</div>
+      <div class="target-edit">
+        <input id="${inputId}" type="number" min="0" step="0.1" value="${action.baseTarget}" aria-label="Target base">
+        <button class="btn ghost" onclick="saveObjectiveBaseTarget('${objectiveKey}', ${assignmentIndex}, ${actionIndex})">Salva</button>
+      </div>
+      <div class="target-label" style="margin-top:10px">Target calibrato</div>
+      <div class="target-cal">${action.calibratedTarget}<em>${escapeHtml(action.unit)}</em></div>
+    </div>
+  `;
+}
+
+function objectiveAssignmentHtml(o, assignment, assignmentIndex){
+  const rationale = rationaleFor(assignment);
+  return `
+    <div style="border-top:2px solid var(--ink);padding-top:14px;margin-top:14px">
+      <div class="assigned-to">
+        <div class="label">Assegnato a</div>
+        <div class="name">${escapeHtml(assignment.structureName)}</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-3);margin-top:4px">${escapeHtml(assignment.structureCode)} · perf. media ${assignment.avgPerf.toFixed(1)} · <span class="perf-tier tier-${assignment.tier}" style="font-size:8px">${escapeHtml(assignment.tierLabel)}</span> · stretch +${assignment.stretch}%</div>
+      </div>
+      <div class="stretch-rationale">${escapeHtml(rationale)}</div>
+      ${assignment.actions.map((action, actionIndex) => objectiveActionHtml(o, assignmentIndex, actionIndex, action)).join('')}
+    </div>
+  `;
+}
+
+function objectiveCardHtml(o){
+  const tier = worstTier(o.assignments);
+  return `
+    <div class="obj-card" data-tier="${tier}" style="grid-template-columns:1fr">
+      <div class="obj-main">
+        <div class="obj-meta">${escapeHtml(o.id)} · ${escapeHtml(o.line)} · peso totale ${escapeHtml(o.totalWeight)} · ${(o.assignments || []).length} strutture</div>
+        <h4>${escapeHtml(o.title)}</h4>
+        <p class="desc">${escapeHtml(o.desc)}</p>
+        <div class="obj-attrs">
+          <div class="attr">Linea strategica<strong>${escapeHtml(o.lineTitle)}</strong></div>
+          ${o.publicValue !== null && o.publicValue !== undefined ? `<div class="attr">Valore pubblico<strong>${o.publicValue ? 'Sì' : 'No'}</strong></div>` : ''}
+          ${o.missionsPrograms ? `<div class="attr">Missioni e programmi<strong>${escapeHtml(o.missionsPrograms)}</strong></div>` : ''}
+        </div>
+        ${(o.assignments || []).map((assignment, assignmentIndex) => objectiveAssignmentHtml(o, assignment, assignmentIndex)).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function objectiveMatchesTierFilter(o, filter){
+  return filter === 'all' || (o.assignments || []).some(a => a.tier === filter);
+}
+
 function renderObjectives(){
   const list = document.getElementById('obj-list');
   const filtered = STATE.filter === 'all'
     ? STATE.objectives
-    : STATE.objectives.filter(o => o.tier === STATE.filter);
+    : STATE.objectives.filter(o => objectiveMatchesTierFilter(o, STATE.filter));
 
   document.getElementById('obj-count').textContent = filtered.length;
   document.getElementById('struct-count').textContent =
-    new Set(filtered.map(o => o.structureCode)).size;
+    new Set(filtered.flatMap(o => (o.assignments || []).map(a => a.structureCode))).size;
 
   if(filtered.length === 0){
     list.innerHTML = `<div style="text-align:center;padding:60px;color:var(--ink-3);font-style:italic;font-family:Fraunces,serif;font-size:18px">Nessun obiettivo per il filtro selezionato</div>`;
     return;
   }
 
-  list.innerHTML = filtered.map(o => {
-    const arrow = o.direction === 'up' ? '↑' : '↓';
-    const stretchSign = o.direction === 'up' ? '+' : '−';
-    const rationale = rationaleFor(o);
-    const objectiveKey = objectiveDomKey(o);
+  list.innerHTML = groupedObjectives(filtered).map(group => {
+    const structuresCount = new Set(group.lines.flatMap(line => line.objectives.flatMap(objective => (objective.assignments || []).map(a => a.structureCode)))).size;
     return `
-      <div class="obj-card" data-tier="${o.tier}">
-        <div class="obj-main">
-          <div class="obj-meta">${o.id} · ${o.line} · peso ${o.weight}%</div>
-          <h4>${o.title}</h4>
-          <p class="desc">${o.desc}</p>
-          <div class="obj-attrs">
-            <div class="attr">Indicatore<strong>${o.indicator}</strong></div>
-            <div class="attr">Linea strategica<strong>${o.lineTitle}</strong></div>
-            <div class="attr">Direzione<strong>${arrow} ${o.direction === 'up' ? 'incremento' : 'riduzione'}</strong></div>
-          </div>
-          <div class="stretch-rationale">${rationale}</div>
+      <div class="obj-group">
+        <div class="obj-group-head">
+          <div class="obj-group-kicker">Linea strategica</div>
+          <h3>${escapeHtml(group.title)}</h3>
+          <div class="obj-group-meta">${group.count} obiettivi specifici · ${structuresCount} strutture coinvolte</div>
         </div>
-        <div class="obj-side">
-          <div class="target-block">
-            <div class="target-label">Target base</div>
-            <div class="target-base">${o.baseTarget} ${o.unit}</div>
-            <div class="target-edit">
-              <input id="base-target-${objectiveKey}" type="number" min="0" step="0.1" value="${o.baseTarget}" aria-label="Target base">
-              <button class="btn ghost" onclick="saveObjectiveBaseTarget('${objectiveKey}')">Salva</button>
+        ${group.lines.map(line => `
+          <div class="obj-subgroup">
+            <div class="obj-subgroup-head">
+              <div class="obj-subgroup-title">
+                <span class="obj-subgroup-code">${escapeHtml(line.code)}</span>
+                <span class="obj-subgroup-name">${escapeHtml(line.title)}</span>
+              </div>
+              <div class="obj-subgroup-count">${line.objectives.length} obiettivi operativi</div>
             </div>
-            <div class="target-label" style="margin-top:10px">Target calibrato</div>
-            <div class="target-cal">${o.calibratedTarget}<em>${o.unit}</em></div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--pompei);margin-top:2px">stretch ${stretchSign}${o.stretch}%</div>
+            ${paginatedListHtml(`obj-${group.code}-${line.code}`, line.objectives, objectiveCardHtml, 5, 3, 'renderObjectives')}
           </div>
-          <div class="assigned-to">
-            <div class="label">Assegnato a</div>
-            <div class="name">${o.structure}</div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-3);margin-top:4px">${o.structureCode} · perf. media ${o.avgPerf.toFixed(1)} · <span class="perf-tier tier-${o.tier}" style="font-size:8px">${o.tierLabel}</span></div>
-          </div>
-        </div>
+        `).join('')}
       </div>
     `;
   }).join('');
@@ -1315,8 +2590,8 @@ function objectiveDomKey(objective){
   return objective.objectiveId ? `db-${objective.objectiveId}` : `public-${objective.id}`;
 }
 
-async function saveObjectiveBaseTarget(objectiveKey){
-  const input = document.getElementById(`base-target-${objectiveKey}`);
+async function saveObjectiveBaseTarget(objectiveKey, assignmentIndex, actionIndex){
+  const input = document.getElementById(`base-target-${objectiveKey}-${assignmentIndex}-${actionIndex}`);
   if(!input) return;
   const baseTarget = Number(input.value);
   if(!Number.isFinite(baseTarget) || baseTarget < 0){
@@ -1339,7 +2614,7 @@ async function saveObjectiveBaseTarget(objectiveKey){
       : `${API.generations}/${STATE.latestGenerationId}/objectives/${encodeURIComponent(objective.id)}/base-target`;
     const updated = await apiJson(url, {
       method: 'PUT',
-      body: JSON.stringify({baseTarget})
+      body: JSON.stringify({assignmentIndex, actionIndex, baseTarget})
     });
     STATE.objectives = STATE.objectives.map(o => {
       const sameDbId = updated.objectiveId && o.objectiveId === updated.objectiveId;
@@ -1352,16 +2627,16 @@ async function saveObjectiveBaseTarget(objectiveKey){
   }
 }
 
-function rationaleFor(o){
-  switch(o.tier){
+function rationaleFor(assignment){
+  switch(assignment.tier){
     case 'eccellente':
-      return `Struttura con performance storica eccellente (${o.avgPerf.toFixed(1)}). Applicato stretch sfidante del +${o.stretch}% per valorizzare la capacità realizzativa consolidata e prevenire fenomeni di plateau.`;
+      return `Struttura con performance storica eccellente (${assignment.avgPerf.toFixed(1)}). Applicato stretch sfidante del +${assignment.stretch}% per valorizzare la capacità realizzativa consolidata e prevenire fenomeni di plateau.`;
     case 'buona':
-      return `Struttura con performance buona (${o.avgPerf.toFixed(1)}). Applicato stretch del +${o.stretch}% per consolidare i risultati e progredire verso la fascia di eccellenza.`;
+      return `Struttura con performance buona (${assignment.avgPerf.toFixed(1)}). Applicato stretch del +${assignment.stretch}% per consolidare i risultati e progredire verso la fascia di eccellenza.`;
     case 'adeguata':
-      return `Struttura con performance adeguata (${o.avgPerf.toFixed(1)}). Applicato stretch contenuto del +${o.stretch}% orientato al consolidamento dei risultati raggiunti.`;
+      return `Struttura con performance adeguata (${assignment.avgPerf.toFixed(1)}). Applicato stretch contenuto del +${assignment.stretch}% orientato al consolidamento dei risultati raggiunti.`;
     case 'recupero':
-      return `Struttura in fase di recupero (${o.avgPerf.toFixed(1)}). Stretch minimo del +${o.stretch}% per garantire un percorso sostenibile di miglioramento progressivo.`;
+      return `Struttura in fase di recupero (${assignment.avgPerf.toFixed(1)}). Stretch minimo del +${assignment.stretch}% per garantire un percorso sostenibile di miglioramento progressivo.`;
   }
 }
 
@@ -1380,7 +2655,7 @@ function exportJSON(){
   const blob = new Blob([JSON.stringify(STATE.objectives, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = 'obiettivi-calibrati-piao.json';
+  a.href = url; a.download = 'obiettivi-calibrati-defrc.json';
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -1388,7 +2663,7 @@ function exportJSON(){
 function printObjectivesSheet(){
   const objectives = STATE.filter === 'all'
     ? STATE.objectives
-    : STATE.objectives.filter(o => o.tier === STATE.filter);
+    : STATE.objectives.filter(o => objectiveMatchesTierFilter(o, STATE.filter));
 
   if(!objectives.length){
     alert('Nessun obiettivo da stampare per la simulazione/filtro selezionato.');
@@ -1432,9 +2707,9 @@ function printObjectivesSheet(){
     Modalità: ${escapeHtml(generation?.mode || 'n.d.')} · Filtro: ${escapeHtml(STATE.filter)} · Obiettivi stampati: ${objectives.length}
   </div>
   <div class="summary">
-    <div class="box"><small>Strutture</small><strong>${new Set(objectives.map(o => o.structureCode)).size}</strong></div>
+    <div class="box"><small>Strutture</small><strong>${new Set(objectives.flatMap(o => (o.assignments || []).map(a => a.structureCode))).size}</strong></div>
     <div class="box"><small>Linee</small><strong>${new Set(objectives.map(o => o.line)).size}</strong></div>
-    <div class="box"><small>Stretch medio</small><strong>${averageOf(objectives.map(o => o.stretch)).toFixed(1)}%</strong></div>
+    <div class="box"><small>Stretch medio</small><strong>${averageOf(objectives.flatMap(o => (o.assignments || []).map(a => a.stretch))).toFixed(1)}%</strong></div>
   </div>
   ${objectives.map(printObjectiveHtml).join('')}
 </body>
@@ -1454,23 +2729,32 @@ function printObjectivesSheet(){
   };
 }
 
+function printAssignmentRows(assignment){
+  return assignment.actions.map(action => {
+    const arrow = action.direction === 'up' ? 'incremento' : 'riduzione';
+    return `
+      <tr><th>Struttura</th><td>${escapeHtml(assignment.structureName)} (${escapeHtml(assignment.structureCode)}) · ${escapeHtml(assignment.tierLabel)} · media ${Number(assignment.avgPerf).toFixed(1)}</td></tr>
+      <tr><th>Azione</th><td>${escapeHtml(action.action || action.indicator)} · peso ${escapeHtml(action.weight)}</td></tr>
+      <tr><th>Indicatore</th><td>${escapeHtml(action.indicator)}</td></tr>
+      <tr><th>Direzione</th><td>${escapeHtml(arrow)}</td></tr>
+      <tr><th>Target base → calibrato</th><td>${escapeHtml(action.baseTarget)} → ${escapeHtml(action.calibratedTarget)} ${escapeHtml(action.unit)} · stretch +${escapeHtml(assignment.stretch)}%</td></tr>
+    `;
+  }).join('');
+}
+
 function printObjectiveHtml(o){
-  const arrow = o.direction === 'up' ? 'incremento' : 'riduzione';
   return `
     <section class="objective">
-      <div class="code">${escapeHtml(o.id)} · ${escapeHtml(o.line)} · peso ${escapeHtml(o.weight)}%</div>
+      <div class="code">${escapeHtml(o.id)} · ${escapeHtml(o.line)} · peso totale ${escapeHtml(o.totalWeight)}</div>
       <h2>${escapeHtml(o.title)}</h2>
       <p>${escapeHtml(o.desc)}</p>
       <table>
         <tr><th>Linea strategica</th><td>${escapeHtml(o.lineTitle)}</td></tr>
-        <tr><th>Struttura assegnata</th><td>${escapeHtml(o.structure)} (${escapeHtml(o.structureCode)})</td></tr>
-        <tr><th>Fascia performance</th><td>${escapeHtml(o.tierLabel)} · media ${Number(o.avgPerf).toFixed(1)}</td></tr>
-        <tr><th>Indicatore</th><td>${escapeHtml(o.indicator)}</td></tr>
-        <tr><th>Direzione</th><td>${escapeHtml(arrow)}</td></tr>
-        <tr><th>Target base</th><td>${escapeHtml(o.baseTarget)} ${escapeHtml(o.unit)}</td></tr>
-        <tr><th>Target calibrato</th><td>${escapeHtml(o.calibratedTarget)} ${escapeHtml(o.unit)} · stretch ${escapeHtml(o.stretch)}%</td></tr>
+        ${o.publicValue !== null && o.publicValue !== undefined ? `<tr><th>Valore pubblico</th><td>${o.publicValue ? 'Sì' : 'No'}</td></tr>` : ''}
+        ${o.missionsPrograms ? `<tr><th>Missioni e programmi</th><td>${escapeHtml(o.missionsPrograms)}</td></tr>` : ''}
+        ${(o.assignments || []).map(printAssignmentRows).join('')}
       </table>
-      <div class="rationale">${escapeHtml(rationaleFor(o))}</div>
+      ${(o.assignments || []).map(assignment => `<div class="rationale">${escapeHtml(rationaleFor(assignment))}</div>`).join('')}
     </section>
   `;
 }

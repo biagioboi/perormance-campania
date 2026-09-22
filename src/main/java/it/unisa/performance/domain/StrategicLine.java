@@ -7,6 +7,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -23,6 +25,14 @@ public class StrategicLine {
 
   @Column(nullable = false)
   private String title;
+
+  @Enumerated(EnumType.STRING)
+  @Column(length = 32)
+  private StrategicLineType type;
+
+  @ManyToOne
+  @JoinColumn(name = "parent_strategic_line_id")
+  private StrategicLine parent;
 
   @Column(nullable = false, length = 80)
   private String area;
@@ -52,6 +62,25 @@ public class StrategicLine {
 
   public void setTitle(String title) {
     this.title = title;
+  }
+
+  public StrategicLineType getType() {
+    if (type != null) {
+      return type;
+    }
+    return parent == null ? StrategicLineType.macro_categoria : StrategicLineType.obiettivo_strategico;
+  }
+
+  public void setType(StrategicLineType type) {
+    this.type = type;
+  }
+
+  public StrategicLine getParent() {
+    return parent;
+  }
+
+  public void setParent(StrategicLine parent) {
+    this.parent = parent;
   }
 
   public String getArea() {
