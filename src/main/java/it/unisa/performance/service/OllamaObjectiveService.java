@@ -327,13 +327,11 @@ public class OllamaObjectiveService {
       unit = "n.";
     }
     var direction = parseDirection(requiredText(node, "direction"));
-    var base = node.path("base").asDouble(Double.NaN);
-    if (!Double.isFinite(base) || base < 0) {
-      throw new IllegalStateException("Target base non valido nella risposta Ollama");
-    }
-    if (base == 0) {
-      base = fallbackBase(unit);
-    }
+    // Base target is intentionally always 0 here (never asked of the model, never invented): there is
+    // no real historical data for these structures, so any number the AI produced would be fabricated.
+    // 0 is the "not yet set" sentinel the frontend uses to prompt a human reviewer for the real value;
+    // calibratedTarget stays 0 too until that happens (see calibratedTarget()).
+    var base = 0d;
     var weight = node.path("weight").asInt(Integer.MIN_VALUE);
     if (weight == Integer.MIN_VALUE || weight < 0) {
       weight = DEFAULT_ACTION_WEIGHT;
@@ -382,15 +380,6 @@ public class OllamaObjectiveService {
     return allowedCodes.stream()
         .filter(candidate::contains)
         .findFirst();
-  }
-
-  private double fallbackBase(String unit) {
-    return switch (unit) {
-      case "%" -> 10;
-      case "gg" -> 30;
-      case "km" -> 1;
-      default -> 1;
-    };
   }
 
   private JsonNode readOllamaJson(String rawJson) throws Exception {
@@ -515,12 +504,11 @@ public class OllamaObjectiveService {
               "missionsPrograms": "missione e programma di bilancio pertinenti, es. Missione 1 - Programma 2",
               "assignments": [
                 {
-                  "structureCode": "DG.50.01",
+                  "structureCode": "%s",
                   "actions": [
                     {
                       "action": "descrizione sintetica dell'azione",
                       "indicator": "indicatore",
-                      "base": 50,
                       "unit": "%%|gg|km|n.",
                       "direction": "up oppure down",
                       "weight": 30
@@ -543,11 +531,13 @@ public class OllamaObjectiveService {
         - unit mai vuoto, usa "n." per conteggi
         - direction solo "up" o "down"
         - indicator deve essere specifico e coerente con l'azione a cui appartiene: NON riutilizzare mai lo stesso indicator (nome o sigla) per azioni diverse in questa risposta, anche se i CRITERI METODOLOGICI qui sotto menzionano esempi, sigle o terminologia (es. "VPT"): sono principi generali sulla qualita' degli indicatori, non nomi di indicatori da copiare o riadattare
+        - NON includere un valore numerico di partenza (base): non abbiamo dati storici reali per queste strutture, quindi qualunque numero inventeresti sarebbe falso. Il valore di partenza verra' inserito manualmente da un revisore umano dopo la generazione
         """.formatted(
         strategicLineForPrompt(line),
         ragContextBlock(contentContext, guidelineContext),
         structuresForPrompt(structures),
         line.getCode(),
+        exampleStructureCode(structures),
         request.nPerLine(),
         line.getCode(),
         request.minActionsPerAssignment(),
@@ -617,7 +607,8 @@ public class OllamaObjectiveService {
         Usa SOLO questi structureCode: %s.
         Restituisci ESATTAMENTE %d obiettivi.
         Ogni struttura coinvolta deve avere da %d a %d azioni, con weight tra %d e %d.
-        Output SOLO JSON valido: {"objectives":[{"lineCode":"%s","title":"...","description":"...","publicValue":false,"missionsPrograms":"...","assignments":[{"structureCode":"DG.50.01","actions":[{"action":"...","indicator":"...","base":1,"unit":"n.","direction":"up","weight":10}]}]}]}
+        Output SOLO JSON valido: {"objectives":[{"lineCode":"%s","title":"...","description":"...","publicValue":false,"missionsPrograms":"...","assignments":[{"structureCode":"%s","actions":[{"action":"...","indicator":"...","unit":"n.","direction":"up","weight":10}]}]}]}
+        NON includere un campo "base": nessun dato storico reale, lo inserisce un revisore umano dopo.
 
         LINEA:
         %s
@@ -634,6 +625,7 @@ public class OllamaObjectiveService {
         request.actionWeightMin(),
         request.actionWeightMax(),
         line.getCode(),
+        exampleStructureCode(structures),
         strategicLineForPrompt(line),
         structuresForPrompt(structures));
   }
@@ -650,6 +642,15 @@ public class OllamaObjectiveService {
   private String categoryLabel(StrategicLine line) {
     var category = line.getParent() != null ? line.getParent() : line;
     return category.getCode() + " - " + category.getTitle();
+  }
+
+  // The JSON schema example needs a structureCode that actually exists, otherwise a small model tends
+  // to imitate the example literally instead of picking a real code from "DG DISPONIBILI" — this used
+  // to be a hardcoded "DG.50.01", a naming convention from before structures were re-imported under the
+  // ORG.DG.*/ORG.SET.*/ORG.UOS.* scheme, which caused every generated assignment to reference a
+  // nonexistent code and fail validateAssignedObjectivesForLine on every line, every time.
+  private String exampleStructureCode(List<StructureUnit> structures) {
+    return structures.isEmpty() ? "CODICE-STRUTTURA" : structures.get(0).getCode();
   }
 
   private String structuresForPrompt(List<StructureUnit> structures) {

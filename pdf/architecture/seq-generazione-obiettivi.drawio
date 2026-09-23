@@ -1,0 +1,149 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.8.0 Safari/537.36" version="29.6.1">
+  <diagram id="seq" name="Sequence">
+    <mxGraphModel dx="1198" dy="816" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="990" pageHeight="970" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontFamily=IBM Plex Sans;fontSize=20;fontStyle=1;fontColor=#16212C;" value="Fase 3 · Generazione AI degli obiettivi" vertex="1">
+          <mxGeometry height="30" width="900" x="20" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="head-browser" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#16212C;strokeWidth=2;fillColor=#FFFFFF;fontFamily=IBM Plex Sans;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;" value="Browser" vertex="1">
+          <mxGeometry height="36" width="90" x="10" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="head-app" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#16212C;strokeWidth=2;fillColor=#FFFFFF;fontFamily=IBM Plex Sans;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;" value="Spring Boot" vertex="1">
+          <mxGeometry height="36" width="100" x="140" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="head-ollama" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#16212C;strokeWidth=2;fillColor=#FFFFFF;fontFamily=IBM Plex Sans;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;" value="Ollama" vertex="1">
+          <mxGeometry height="36" width="80" x="270" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="head-qdrant" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#16212C;strokeWidth=2;fillColor=#FFFFFF;fontFamily=IBM Plex Sans;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;" value="Qdrant" vertex="1">
+          <mxGeometry height="36" width="85" x="375" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="head-mysql" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#16212C;strokeWidth=2;fillColor=#FFFFFF;fontFamily=IBM Plex Sans;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;" value="MySQL" vertex="1">
+          <mxGeometry height="36" width="90" x="405" y="476" as="geometry" />
+        </mxCell>
+        <mxCell id="m6" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;fontFamily=IBM Plex Mono;fontSize=13;fontColor=#16212C;strokeColor=#16212C;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;fontStyle=1" value="POST /api/generation-jobs">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="60" y="180" as="sourcePoint" />
+            <mxPoint x="190" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m7" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;dashed=1;fontFamily=IBM Plex Mono;fontSize=13;fontColor=#93A3B0;strokeColor=#93A3B0;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;fontStyle=3" value="202 { jobId }">
+          <mxGeometry relative="1" x="0.0025" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="190" y="212" as="sourcePoint" />
+            <mxPoint x="60" y="212" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m8" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;fontFamily=IBM Plex Mono;fontSize=13;fontColor=#16212C;strokeColor=#16212C;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;fontStyle=1" value="embed: testo della linea strategica">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="190" y="230" as="sourcePoint" />
+            <mxPoint x="310" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m8-d" parent="1" style="text;html=1;align=center;verticalAlign=top;fontFamily=IBM Plex Mono;fontSize=13;fontColor=#93A3B0;fontStyle=0" value="nomic-embed-text, vettore riusato negli step 2 e 3" vertex="1">
+          <mxGeometry height="16" width="170" x="170" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="m10" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;dashed=1;fontFamily=IBM Plex Mono;fontSize=13;fontColor=#93A3B0;strokeColor=#93A3B0;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;fontStyle=1" value="vettore 768d">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="280" as="sourcePoint" />
+            <mxPoint x="190" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m14" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;fontFamily=IBM Plex Mono;fontSize=13;fontColor=#16212C;strokeColor=#16212C;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;fontStyle=3" value="search CONTENT (per similarità)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="190" y="361" as="sourcePoint" />
+            <mxPoint x="420" y="361" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m15" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;dashed=1;fontFamily=IBM Plex Mono;fontSize=13;fontColor=#93A3B0;strokeColor=#93A3B0;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;fontStyle=3" value="top-K chunk tematici">
+          <mxGeometry relative="1" x="0.0017" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="420" y="386" as="sourcePoint" />
+            <mxPoint x="190" y="386" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m16" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;fontFamily=IBM Plex Mono;fontSize=13;fontColor=#16212C;strokeColor=#16212C;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;fontStyle=3" value="search GUIDELINE (query fissa, cache)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="190" y="410" as="sourcePoint" />
+            <mxPoint x="420" y="410" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m17" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;dashed=1;fontFamily=IBM Plex Mono;fontSize=13;fontColor=#93A3B0;strokeColor=#93A3B0;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;fontStyle=3" value="top-K chunk normativi/metodologici">
+          <mxGeometry relative="1" x="-0.0014" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="420" y="436" as="sourcePoint" />
+            <mxPoint x="190" y="436" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m19" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;fontFamily=IBM Plex Mono;fontSize=13;fontColor=#16212C;strokeColor=#16212C;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;fontStyle=3" value="generate: prompt con criteri + contesto + vincoli">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="190" y="469" as="sourcePoint" />
+            <mxPoint x="310" y="469" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m19-d" parent="1" style="text;html=1;align=center;verticalAlign=top;fontFamily=IBM Plex Mono;fontSize=13;fontColor=#93A3B0;" value="temperature=0, num_ctx=8192, anti-ripetizione" vertex="1">
+          <mxGeometry height="16" width="170" x="170" y="476" as="geometry" />
+        </mxCell>
+        <mxCell id="m21" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;dashed=1;fontFamily=IBM Plex Mono;fontSize=13;fontColor=#93A3B0;strokeColor=#93A3B0;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;fontStyle=3" value="{ objectives, assignments }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="516" as="sourcePoint" />
+            <mxPoint x="190" y="516" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m23" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;fontFamily=IBM Plex Mono;fontSize=13;fontColor=#16212C;strokeColor=#16212C;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;fontStyle=3" value="INSERT generation_run, objectives, assignments">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="190" y="550" as="sourcePoint" />
+            <mxPoint x="450" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m24" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;fontFamily=IBM Plex Mono;fontSize=13;fontColor=#16212C;strokeColor=#16212C;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;fontStyle=3" value="GET /generations/{id}/objectives">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="57" y="570" as="sourcePoint" />
+            <mxPoint x="190" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m25" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;dashed=1;fontFamily=IBM Plex Mono;fontSize=13;fontColor=#93A3B0;strokeColor=#93A3B0;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;" value="obiettivi generati">
+          <mxGeometry relative="1" x="0.004" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="190" y="599" as="sourcePoint" />
+            <mxPoint x="50" y="599" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="line-browser" edge="1" parent="1" style="html=1;dashed=1;strokeColor=#93A3B0;endArrow=none;startArrow=none;fontSize=13;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="54.68" y="146" as="sourcePoint" />
+            <mxPoint x="55" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="line-app" edge="1" parent="1" style="html=1;dashed=1;strokeColor=#93A3B0;endArrow=none;startArrow=none;fontSize=13;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="189.68" y="146" as="sourcePoint" />
+            <mxPoint x="190" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="line-ollama" edge="1" parent="1" style="html=1;dashed=1;strokeColor=#93A3B0;endArrow=none;startArrow=none;fontSize=13;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="309.68" y="146" as="sourcePoint" />
+            <mxPoint x="310" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="line-qdrant" edge="1" parent="1" style="html=1;dashed=1;strokeColor=#93A3B0;endArrow=none;startArrow=none;fontSize=13;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="417.18" y="146" as="sourcePoint" />
+            <mxPoint x="417" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="line-mysql" edge="1" parent="1" style="html=1;dashed=1;strokeColor=#93A3B0;endArrow=none;startArrow=none;fontSize=13;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="449.50000000000006" y="510" as="sourcePoint" />
+            <mxPoint x="450" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="note12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0E8F8A;strokeWidth=1;fillColor=#F4F6F8;fontFamily=IBM Plex Sans;fontSize=13;align=center;spacingLeft=8;spacingTop=4;verticalAlign=middle;dashed=0;fontStyle=1" value="Similarità coseno col vettore della linea sulle strutture organizzative → top-K candidate." vertex="1">
+          <mxGeometry height="44" width="330" x="141" y="291" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -4,7 +4,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      DB_URL: ${DB_URL:-jdbc:mysql://mysql:3306/performance?useSSL=false&serverTimezone=Europe/Rome&allowPublicKeyRetrieval=true}
+      DB_URL: ${DB_URL:-jdbc:mysql://mysql:3306/performance?useSSL=false&serverTimezone=Europe/Rome&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&useUnicode=true&connectionCollation=utf8mb4_unicode_ci}
       DB_USERNAME: ${DB_USERNAME:-root}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_DRIVER: com.mysql.cj.jdbc.Driver

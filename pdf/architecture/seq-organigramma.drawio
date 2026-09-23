@@ -1,0 +1,113 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.8.0 Safari/537.36" version="29.6.1">
+  <diagram id="seq" name="Sequence">
+    <mxGraphModel dx="885" dy="603" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="990" pageHeight="854" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="line-pdfext" edge="1" parent="1" style="html=1;dashed=1;strokeColor=#93A3B0;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="389.71" y="146" as="sourcePoint" />
+            <mxPoint x="390" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="line-browser" edge="1" parent="1" style="html=1;dashed=1;strokeColor=#93A3B0;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="94.69" y="146" as="sourcePoint" />
+            <mxPoint x="95" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="line-app" edge="1" parent="1" style="html=1;dashed=1;strokeColor=#93A3B0;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="249.69" y="146" as="sourcePoint" />
+            <mxPoint x="250" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="title" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontFamily=IBM Plex Sans;fontSize=20;fontStyle=1;fontColor=#16212C;" value="Fase 2 · Caricamento organigramma" vertex="1">
+          <mxGeometry height="30" width="900" x="40" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="head-browser" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#16212C;strokeWidth=2;fillColor=#FFFFFF;fontFamily=IBM Plex Sans;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;" value="Browser" vertex="1">
+          <mxGeometry height="36" width="90" x="50" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="head-app" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#16212C;strokeWidth=2;fillColor=#FFFFFF;fontFamily=IBM Plex Sans;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;" value="Spring Boot" vertex="1">
+          <mxGeometry height="36" width="100" x="200" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="head-pdfext" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#16212C;strokeWidth=2;fillColor=#FFFFFF;fontFamily=IBM Plex Sans;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;" value="pdf-extractor" vertex="1">
+          <mxGeometry height="36" width="100" x="340" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="head-ollama" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#16212C;strokeWidth=2;fillColor=#FFFFFF;fontFamily=IBM Plex Sans;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;" value="Ollama vision" vertex="1">
+          <mxGeometry height="36" width="90" x="480" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="head-mysql" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#16212C;strokeWidth=2;fillColor=#FFFFFF;fontFamily=IBM Plex Sans;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;" value="MySQL" vertex="1">
+          <mxGeometry height="36" width="90" x="340" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="m6" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;fontFamily=IBM Plex Mono;fontSize=10;fontColor=#16212C;strokeColor=#16212C;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;fontStyle=3" value="POST /api/structures/import-organigram-pdf">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="90" y="178" as="sourcePoint" />
+            <mxPoint x="250" y="178" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m6-d" parent="1" style="text;html=1;align=center;verticalAlign=top;fontFamily=IBM Plex Mono;fontSize=9;fontColor=#93A3B0;" value="multipart, campo &quot;data&quot;" vertex="1">
+          <mxGeometry height="16" width="170" x="80" y="173" as="geometry" />
+        </mxCell>
+        <mxCell id="m8" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;dashed=1;fontFamily=IBM Plex Mono;fontSize=10;fontColor=#93A3B0;strokeColor=#93A3B0;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;" value="202 { jobId }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="250" y="210" as="sourcePoint" />
+            <mxPoint x="100" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m10" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;fontFamily=IBM Plex Mono;fontSize=10;fontColor=#16212C;strokeColor=#16212C;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;fontStyle=3" value="POST /extract-pages">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="250" y="230" as="sourcePoint" />
+            <mxPoint x="390" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m11" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;dashed=1;fontFamily=IBM Plex Mono;fontSize=10;fontColor=#93A3B0;strokeColor=#93A3B0;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;" value="testo nativo + PNG 150dpi per pagina">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="390" y="260" as="sourcePoint" />
+            <mxPoint x="250" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="note13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0E8F8A;strokeWidth=1;fillColor=#F4F6F8;fontFamily=IBM Plex Sans;fontSize=10;align=left;spacingLeft=8;spacingTop=4;verticalAlign=middle;dashed=0;" value="Per ogni pagina: se il testo è sufficiente lo usa, altrimenti passa in fallback l&#39;immagine." vertex="1">
+          <mxGeometry height="34" width="190" x="140" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="m14" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;fontFamily=IBM Plex Mono;fontSize=10;fontColor=#16212C;strokeColor=#16212C;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;fontStyle=3" value="generate (vision): testo + immagine pagina">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="250" y="320" as="sourcePoint" />
+            <mxPoint x="520" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m14-d" parent="1" style="text;html=1;align=center;verticalAlign=top;fontFamily=IBM Plex Mono;fontSize=9;fontColor=#93A3B0;" value="1 nodo di vertice per pagina, gerarchia DG→Settore→UOS" vertex="1">
+          <mxGeometry height="16" width="360" x="210" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="m16" edge="1" parent="1" style="html=1;endArrow=open;endFill=0;dashed=1;fontFamily=IBM Plex Mono;fontSize=10;fontColor=#93A3B0;strokeColor=#93A3B0;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;" value="{ structures: [...] }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="520" y="359" as="sourcePoint" />
+            <mxPoint x="250" y="359" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="note18" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#0E8F8A;strokeWidth=1;fillColor=#F4F6F8;fontFamily=IBM Plex Sans;fontSize=10;align=left;spacingLeft=8;spacingTop=4;verticalAlign=middle;dashed=0;" value="Merge tra pagine: dedup per externalKey/nome." vertex="1">
+          <mxGeometry height="34" width="180" x="140" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="m19" edge="1" parent="1" style="html=1;endArrow=block;endFill=1;fontFamily=IBM Plex Mono;fontSize=10;fontColor=#16212C;strokeColor=#16212C;rounded=0;labelBackgroundColor=#FFFFFF;align=center;verticalAlign=bottom;fontStyle=3" value="INSERT structure_units">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="250" y="440" as="sourcePoint" />
+            <mxPoint x="380" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="line-ollama" edge="1" parent="1" source="head-ollama" style="html=1;dashed=1;strokeColor=#93A3B0;endArrow=none;startArrow=none;exitX=0.5;exitY=1;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="524.71" y="146" as="sourcePoint" />
+            <mxPoint x="525" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p4vAgp-gVtYKS5a5og3--1" edge="1" parent="1" style="html=1;dashed=1;strokeColor=#93A3B0;endArrow=none;startArrow=none;exitX=0.5;exitY=1;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="384.66999999999996" y="416" as="sourcePoint" />
+            <mxPoint x="385" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

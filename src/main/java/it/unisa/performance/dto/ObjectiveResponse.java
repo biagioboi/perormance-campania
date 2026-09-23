@@ -28,7 +28,9 @@ public record ObjectiveResponse(
       double calibratedTarget,
       String unit,
       String direction,
-      int weight) {}
+      int weight,
+      Boolean approved,
+      Integer reviewScore) {}
 
   public record AssignmentResponse(
       int index,
@@ -59,7 +61,9 @@ public record ObjectiveResponse(
             action.getCalibratedTarget(),
             action.getUnit(),
             action.getDirection().name(),
-            action.getWeight()));
+            action.getWeight(),
+            action.getApproved(),
+            action.getReviewScore()));
       }
       assignments.add(new AssignmentResponse(
           i,

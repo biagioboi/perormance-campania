@@ -17,6 +17,7 @@ import it.unisa.performance.dto.GenerateObjectivesRequest;
 import it.unisa.performance.dto.GenerationResponse;
 import it.unisa.performance.dto.GenerationSummaryResponse;
 import it.unisa.performance.dto.ObjectiveResponse;
+import it.unisa.performance.dto.ReviewObjectiveActionRequest;
 import it.unisa.performance.dto.StrategicLineImprovementSuggestion;
 import it.unisa.performance.dto.StrategicLineRequest;
 import it.unisa.performance.dto.StructureRequest;
@@ -504,7 +505,45 @@ public class DashboardService {
     var current = actions.get(actionIndex);
     var calibrated = calibratedTarget(baseTarget, assignment.getStretch(), current.getDirection());
     actions.set(actionIndex, new ObjectiveAction(
-        current.getAction(), current.getIndicator(), baseTarget, calibrated, current.getUnit(), current.getDirection(), current.getWeight()));
+        current.getAction(), current.getIndicator(), baseTarget, calibrated, current.getUnit(), current.getDirection(),
+        current.getWeight(), current.getApproved(), current.getReviewScore()));
+    return objectiveRepository.save(objective);
+  }
+
+  public ObjectiveResponse reviewObjectiveAction(Long objectiveId, ReviewObjectiveActionRequest request) {
+    var objective = objectiveRepository.findById(objectiveId)
+        .orElseThrow(() -> new IllegalArgumentException("Obiettivo non trovato"));
+    return ObjectiveResponse.from(
+        reviewObjectiveAction(objective, request.assignmentIndex(), request.actionIndex(), request.approved(), request.score()));
+  }
+
+  @Transactional
+  public ObjectiveResponse reviewObjectiveAction(
+      Long generationId, String publicId, ReviewObjectiveActionRequest request) {
+    var objective = objectiveRepository.findByGenerationRunIdAndPublicId(generationId, publicId)
+        .orElseThrow(() -> new IllegalArgumentException("Obiettivo non trovato"));
+    return ObjectiveResponse.from(
+        reviewObjectiveAction(objective, request.assignmentIndex(), request.actionIndex(), request.approved(), request.score()));
+  }
+
+  private Objective reviewObjectiveAction(
+      Objective objective, int assignmentIndex, int actionIndex, Boolean approved, Integer score) {
+    var assignments = objective.getAssignments();
+    if (assignmentIndex < 0 || assignmentIndex >= assignments.size()) {
+      throw new IllegalArgumentException("Struttura non trovata per l'obiettivo " + objective.getPublicId());
+    }
+    var assignment = assignments.get(assignmentIndex);
+    var actions = assignment.getActions();
+    if (actionIndex < 0 || actionIndex >= actions.size()) {
+      throw new IllegalArgumentException("Azione non trovata per l'obiettivo " + objective.getPublicId());
+    }
+    if (score != null && (score < 0 || score > 100)) {
+      throw new IllegalArgumentException("Il punteggio deve essere tra 0 e 100");
+    }
+    var current = actions.get(actionIndex);
+    actions.set(actionIndex, new ObjectiveAction(
+        current.getAction(), current.getIndicator(), current.getBaseTarget(), current.getCalibratedTarget(),
+        current.getUnit(), current.getDirection(), current.getWeight(), approved, score));
     return objectiveRepository.save(objective);
   }
 

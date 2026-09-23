@@ -30,6 +30,13 @@ public class ObjectiveAction {
   @Column(nullable = false)
   private int weight;
 
+  // Human-in-the-loop review: null = not yet reviewed, true/false = approved/rejected by a reviewer.
+  // Independent of baseTarget/calibratedTarget so an indicator can be reviewed before or after the
+  // real base value is entered.
+  private Boolean approved;
+
+  private Integer reviewScore;
+
   protected ObjectiveAction() {}
 
   public ObjectiveAction(
@@ -40,6 +47,19 @@ public class ObjectiveAction {
       String unit,
       Direction direction,
       int weight) {
+    this(action, indicator, baseTarget, calibratedTarget, unit, direction, weight, null, null);
+  }
+
+  public ObjectiveAction(
+      String action,
+      String indicator,
+      double baseTarget,
+      double calibratedTarget,
+      String unit,
+      Direction direction,
+      int weight,
+      Boolean approved,
+      Integer reviewScore) {
     this.action = action;
     this.indicator = indicator;
     this.baseTarget = baseTarget;
@@ -47,6 +67,8 @@ public class ObjectiveAction {
     this.unit = unit;
     this.direction = direction;
     this.weight = weight;
+    this.approved = approved;
+    this.reviewScore = reviewScore;
   }
 
   public String getAction() {
@@ -75,5 +97,13 @@ public class ObjectiveAction {
 
   public int getWeight() {
     return weight;
+  }
+
+  public Boolean getApproved() {
+    return approved;
+  }
+
+  public Integer getReviewScore() {
+    return reviewScore;
   }
 }

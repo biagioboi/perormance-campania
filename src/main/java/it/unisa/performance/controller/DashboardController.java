@@ -9,6 +9,7 @@ import it.unisa.performance.dto.GenerationResponse;
 import it.unisa.performance.dto.GenerationSummaryResponse;
 import it.unisa.performance.dto.ObjectiveResponse;
 import it.unisa.performance.dto.OrganigramImportJobResponse;
+import it.unisa.performance.dto.ReviewObjectiveActionRequest;
 import it.unisa.performance.dto.StrategicLineImprovementSuggestion;
 import it.unisa.performance.dto.StrategicLineImportJobResponse;
 import it.unisa.performance.dto.StrategicLineRequest;
@@ -235,6 +236,21 @@ public class DashboardController {
       @PathVariable String publicId,
       @Valid @RequestBody UpdateObjectiveBaseTargetRequest request) {
     return dashboardService.updateObjectiveBaseTarget(generationId, publicId, request);
+  }
+
+  @PutMapping("/objectives/{objectiveId}/review")
+  public ObjectiveResponse reviewObjectiveAction(
+      @PathVariable Long objectiveId,
+      @Valid @RequestBody ReviewObjectiveActionRequest request) {
+    return dashboardService.reviewObjectiveAction(objectiveId, request);
+  }
+
+  @PutMapping("/generations/{generationId}/objectives/{publicId}/review")
+  public ObjectiveResponse reviewObjectiveActionByPublicId(
+      @PathVariable Long generationId,
+      @PathVariable String publicId,
+      @Valid @RequestBody ReviewObjectiveActionRequest request) {
+    return dashboardService.reviewObjectiveAction(generationId, publicId, request);
   }
 
   @ExceptionHandler(IllegalArgumentException.class)
